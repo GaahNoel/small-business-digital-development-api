@@ -1,0 +1,18 @@
+{
+  "name": "small-business-digital-development-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@swc/core": "^1.2.156",
+    "@swc/jest": "^0.2.20",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.21",
+    "jest": "^27.5.1",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
