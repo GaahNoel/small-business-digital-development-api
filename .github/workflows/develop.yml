@@ -1,0 +1,30 @@
+name: Development workflow
+
+on:
+  pull_request:
+    types: [synchronize, opened, reopened, ready_for_review, labeled]
+
+jobs: 
+  QualityGate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Yarn Install
+        run: yarn
+
+      - name: Yarn Audit
+        run: yarn audit
+
+      - name: Lint code
+        run: yarn lint
+
+      - name: Unit tests
+        run: yarn test
+
