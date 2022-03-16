@@ -34,8 +34,12 @@ export default {
   },
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/**/*.protocols.ts',
+    '!<rootDir>/src/**/index.ts',
     '!<rootDir>/src/main/**',
-    '!**/test/**'
+    '!**/test/**',
+    '!**/protocols/**',
+    '!**/domain/**',
   ],
   roots: ['<rootDir>/src'],
   moduleNameMapper: {
