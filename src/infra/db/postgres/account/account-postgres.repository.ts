@@ -1,3 +1,1 @@
-export class AccountPostgresRepository {
-  
-}
+export class AccountPostgresRepository {}

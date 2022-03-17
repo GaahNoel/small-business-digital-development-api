@@ -1,6 +1,6 @@
-import { AddAccountRepository } from "@/data/protocols/db/account/add-account-repository";
-import { AccountModel, AddAccountParams } from "@/data/usecases/account/add-account/db-add-account.protocols";
-import { mockAccountModel } from "@/domain/test/account.mock";
+import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository';
+import { AccountModel, AddAccountParams } from '@/data/usecases/account/add-account/db-add-account.protocols';
+import { mockAccountModel } from '@/domain/test/account.mock';
 
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
@@ -10,4 +10,4 @@ export const mockAddAccountRepository = (): AddAccountRepository => {
     }
   }
   return new AddAccountRepositoryStub();
-}
+};
