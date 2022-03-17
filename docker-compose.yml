@@ -20,7 +20,7 @@ services:
     restart: always
     command: bash -c "yarn --prod && yarn add -D nodemon && yarn debug" # Trouxe o CMD yarn debug do Dockerfile para cá
     environment:
-      - MONGO_URL=mongodb://db:27017/small-business-digital-development
+      - DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sbdd?schema=public"
     # Trouxe o COPY ./dist ./dist do Dockerfile para cá para garantir que o cache não vai impedir de atualizar o projeto
     volumes:
       - ./dist/:/usr/src/small-business-digital-development/dist/ # A barra no final indica que qualquer arquivo que mudar na dist também de trigger
