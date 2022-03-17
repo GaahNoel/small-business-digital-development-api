@@ -1,7 +1,9 @@
-import { AccountModel, AddAccountParams, AddAccountRepository } from './db-add-account.protocols';
+import {
+  AccountModel, AddAccount, AddAccountParams, AddAccountRepository
+} from './db-add-account.protocols';
 
-export class DbAddAccount {
-  constructor(private addAccountRepository: AddAccountRepository) {}
+export class DbAddAccount implements AddAccount {
+  constructor(private readonly addAccountRepository: AddAccountRepository) {}
 
   add = async (data: AddAccountParams): Promise<AccountModel> => this.addAccountRepository.add(data);
 }

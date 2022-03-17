@@ -20,6 +20,7 @@
     "import/extensions": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "max-len": "off",
-    "no-multiple-empty-lines": "off"
+    "no-multiple-empty-lines": "off",
+    "@typescript-eslint/comma-dangle": "off"
   }  
 }
