@@ -18,4 +18,15 @@ describe('AccountPostgresRepository', () => {
     expect(account).toBeTruthy();
     expect(account.id).toBeTruthy();
   });
+
+  it('should return existent account by email', async () => {
+    const sut = makeSut();
+
+    const httpRequest = mockAddAccountParams();
+    const addedAccount = await sut.add(httpRequest);
+    const foundAccount = await sut.findByEmail(httpRequest.email);
+
+    delete foundAccount.createdAt;
+    expect(foundAccount).toEqual(addedAccount);
+  });
 });

@@ -3,4 +3,5 @@ export type AccountModel = {
   name: string;
   password?: string;
   email: string;
+  createdAt?: Date;
 };

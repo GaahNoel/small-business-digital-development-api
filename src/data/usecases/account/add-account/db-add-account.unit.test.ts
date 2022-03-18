@@ -41,6 +41,13 @@ describe('DbAddAccount Usecase', () => {
     expect(promise).rejects.toThrow();
   });
 
+  it('should return null if account already exists', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut();
+    jest.spyOn(addAccountRepositoryStub, 'findByEmail').mockReturnValue(Promise.resolve(mockAccountModel()));
+    const response = await sut.add(mockAddAccountParams());
+    expect(response).toBeFalsy();
+  });
+
   it('should return an account on success', async () => {
     const { sut } = makeSut();
     const account = await sut.add(mockAddAccountParams());

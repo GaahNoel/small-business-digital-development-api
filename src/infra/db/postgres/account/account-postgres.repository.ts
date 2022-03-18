@@ -14,4 +14,13 @@ export class AccountPostgresRepository implements AddAccountRepository {
       ...data,
     };
   }
+
+  async findByEmail(email: string): Promise<AddAccountRepository.Result> {
+    const result = await prisma.account.findFirst({
+      where: {
+        email,
+      },
+    });
+    return result;
+  }
 }

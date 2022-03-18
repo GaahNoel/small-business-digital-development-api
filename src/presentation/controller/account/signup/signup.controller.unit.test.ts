@@ -1,6 +1,6 @@
 import { AddAccount } from '@/domain/usecases/account/add-account';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
-import { badRequest, success } from '@/presentation/helpers/http.helpers';
+import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
 import { mockAddAccount } from '@/presentation/test/account.mock';
 import { SignUpController } from './signup.controller';
 
@@ -81,6 +81,6 @@ describe('SignUpController', () => {
     };
 
     const httpResponse = await sut.handle(httpRequest);
-    expect(httpResponse).toEqual(badRequest(new Error()));
+    expect(httpResponse).toEqual(internalServerError(new Error()));
   });
 });

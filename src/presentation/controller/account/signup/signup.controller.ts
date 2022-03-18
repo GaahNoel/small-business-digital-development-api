@@ -10,7 +10,7 @@ export class SignUpController implements BaseController {
 
   async handle(data: HttpRequest): Promise<HttpResponse> {
     try {
-      const { name, email, password } = data.body;
+      const { name, email } = data.body;
 
       if (!name || !email) {
         return badRequest(new MissingParamsError());
