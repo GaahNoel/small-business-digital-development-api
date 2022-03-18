@@ -11,6 +11,6 @@ describe('AccountPostgresRepository', () => {
     const account = await sut.add(httpRequest);
 
     expect(account).toBeTruthy();
-    expect(account.id).toBe('any_id');
+    expect(account.id).toBeTruthy();
   });
 });
