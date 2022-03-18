@@ -17,3 +17,36 @@ model Account {
   email String @unique
   createdAt DateTime @default(now())
 }
+
+model Product {
+  id String @id @default(uuid())
+  name String
+  price Int
+  description String
+  createdAt DateTime @default(now())
+  businessId String 
+  bussines Business @relation(fields: [businessId], references: [id])
+}
+
+model Business {
+  id String @id @default(uuid())
+  name String
+  description String
+  createdAt DateTime @default(now())
+  services Service[] 
+  products Product[]
+}
+
+model Service {
+  id String @id @default(uuid())
+  name String
+  price Int
+  description String
+  createdAt DateTime @default(now())
+  businessId String 
+  bussines Business @relation(fields: [businessId], references: [id])
+}
+
+
+
+
