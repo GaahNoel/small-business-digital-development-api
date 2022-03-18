@@ -1,13 +1,5 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "jest": true
-  },
-  "extends": [
-    "airbnb-base",
-    "airbnb-typescript/base"
-  ],
+  "extends": ["airbnb-base", "airbnb-typescript/base"],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
@@ -19,8 +11,6 @@
     "no-restricted-syntax": "off",
     "import/extensions": "off",
     "@typescript-eslint/no-unused-vars": "warn",
-    "max-len": "off",
-    "no-multiple-empty-lines": "off",
-    "@typescript-eslint/comma-dangle": "off"
-  }  
+    "max-len": "off"
+  }
 }
