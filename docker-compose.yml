@@ -16,15 +16,15 @@ services:
   api:
     container_name: api-container
     image: node:16
-    working_dir: /usr/src/small-business-digital-development
+    working_dir: /usr/src/small-business-digital-development-api
     restart: always
-    command: bash -c "yarn --prod && yarn add -D nodemon && yarn debug" # Trouxe o CMD yarn debug do Dockerfile para cá
+    command: bash -c "yarn && yarn migrations:run && yarn start" # Trouxe o CMD yarn debug do Dockerfile para cá
     environment:
-      - DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sbdd?schema=public"
-    # Trouxe o COPY ./dist ./dist do Dockerfile para cá para garantir que o cache não vai impedir de atualizar o projeto
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sbdd?schema=public
     volumes:
-      - ./dist/:/usr/src/small-business-digital-development/dist/ # A barra no final indica que qualquer arquivo que mudar na dist também de trigger
-      - ./package.json:/usr/src/small-business-digital-development/package.json
+      - ./dist/:/usr/src/small-business-digital-development-api/dist/ 
+      - ./package.json:/usr/src/small-business-digital-development-api/package.json
+      - ./prisma:/usr/src/small-business-digital-development-api/prisma/
     ports: # Quando for expor portas aqui, pode retirar o EXPOSE 3333 do Dockerfile
       - "3333:3333"
       - "9222:9222"

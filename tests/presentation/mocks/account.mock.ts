@@ -1,4 +1,4 @@
-import { mockAccountModel } from '@/domain/test/account.mock';
+import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { AddAccount } from '@/domain/usecases/account/add-account';
 
 export const mockAddAccount = (): AddAccount => {

@@ -1,0 +1,37 @@
+name: Production workflow
+
+on:
+  push:
+    branches:
+      - main
+
+env: 
+  DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+
+jobs: 
+  QualityGate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Yarn Install
+        run: yarn
+
+      - name: Run migrations
+        run: yarn prisma migrate deploy
+
+      - name: Heroku Deploy
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "YOUR APP's NAME" 
+          heroku_email: "YOUR EMAIL"
+
+
+

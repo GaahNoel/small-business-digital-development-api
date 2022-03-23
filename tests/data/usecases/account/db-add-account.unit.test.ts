@@ -1,8 +1,8 @@
-import { mockAddAccountRepository } from '@/data/test/db-account.mock';
-import { mockAccountModel } from '@/domain/test/account.mock';
-import { throwError } from '@/domain/test/test.helpers';
-import { DbAddAccount } from './db-add-account';
-import { AddAccountRepository } from './db-add-account.protocols';
+import { mockAddAccountRepository } from '@/tests/data/mocks/db-account.mock';
+import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
+import { throwError } from '@/tests/domain/mocks/test.helpers';
+import { DbAddAccount } from '@/data/usecases/account/db-add-account';
+import { AddAccountRepository } from '@/data';
 
 const mockAddAccountParams = () => ({
   name: 'any_name',

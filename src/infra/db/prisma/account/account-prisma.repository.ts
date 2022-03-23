@@ -1,6 +1,7 @@
-import { AddAccountRepository, prisma } from './account-postgres.repository.protocols';
+import { AddAccountRepository } from '@/data';
+import { prisma } from '@/infra/db/helpers';
 
-export class AccountPostgresRepository implements AddAccountRepository {
+export class AccountPrismaRepository implements AddAccountRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const result = await prisma.account.create({
       data: {

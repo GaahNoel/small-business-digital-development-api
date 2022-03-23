@@ -1,11 +1,11 @@
-import { DbAddAccount } from '@/data/usecases/account/add-account/db-add-account';
-import { AccountPostgresRepository } from '@/infra/db/postgres/account/account-postgres.repository';
-import { SignUpController } from '@/presentation/controller/account/signup/signup.controller';
+import { DbAddAccount } from '@/data/usecases/account/db-add-account';
+import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
+import { SignUpController } from '@/presentation/controller/account/signup.controller';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeSignUpController = (): BaseController => {
   // Infra
-  const addAccountRepository = new AccountPostgresRepository();
+  const addAccountRepository = new AccountPrismaRepository();
 
   // Data
   const addAccount = new DbAddAccount(addAccountRepository);

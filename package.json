@@ -28,9 +28,12 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src",
-    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn src/main/server.ts",
+    "local": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn src/main/server.ts",
+    "dev:up": "docker-compose up -d",
+    "dev:down": "docker-compose up -d",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
-    "start": "node dist/main/server.js"
+    "start": "node dist/main/server.js",
+    "migrations:run": "prisma migrate deploy --schema ./prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^3.11.0",

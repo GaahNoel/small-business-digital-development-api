@@ -1,8 +1,3 @@
-/*
- * For a detailed explanation regarding each configuration property and type check, visit:
- * https://jestjs.io/docs/configuration
- */
-
 export default {
   clearMocks: true,
   collectCoverage: true,
@@ -41,8 +36,9 @@ export default {
     '!**/protocols/**',
     '!**/domain/**',
   ],
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/tests'],
   moduleNameMapper: {
+    '@/tests/(.*)': '<rootDir>/tests/$1',
     '@/(.*)': '<rootDir>/src/$1',
   },
   testEnvironment: 'jest-environment-node',

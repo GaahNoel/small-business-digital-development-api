@@ -1,10 +1,10 @@
-import { mockAddAccountParams } from '@/domain/test/account.mock';
-import { AccountPostgresRepository } from './account-postgres.repository';
-import { prisma } from './account-postgres.repository.protocols';
+import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
+import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
+import { prisma } from '@/infra/db/helpers';
 
-const makeSut = (): AccountPostgresRepository => new AccountPostgresRepository();
+const makeSut = (): AccountPrismaRepository => new AccountPrismaRepository();
 
-describe('AccountPostgresRepository', () => {
+describe('AccountPrismaRepository', () => {
   beforeEach(async () => {
     await prisma.account.deleteMany({});
   });

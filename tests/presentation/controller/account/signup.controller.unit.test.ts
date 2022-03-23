@@ -1,8 +1,8 @@
 import { AddAccount } from '@/domain/usecases/account/add-account';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
-import { mockAddAccount } from '@/presentation/test/account.mock';
-import { SignUpController } from './signup.controller';
+import { mockAddAccount } from '@/tests/presentation/mocks/account.mock';
+import { SignUpController } from '@/presentation/controller/account/signup.controller';
 
 type SutTypes = {
   sut: SignUpController,

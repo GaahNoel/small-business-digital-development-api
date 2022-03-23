@@ -30,7 +30,7 @@ jobs:
       - name: Lint code
         run: yarn lint
        
-      - name: Build the stack
+      - name: Run docker compose
         run: docker-compose up -d
       
       - name: Run migrations
