@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { HttpRequest, Middleware } from '@/presentation/protocols';
+import { Middleware } from '@/presentation/protocols';
 
 export const adaptMiddleware = (middleware: Middleware) => async (
   req: Request,
   res: Response, next: NextFunction,
 ) => {
-  const httpRequest: HttpRequest = {
-    headers: req.headers,
+  const httpRequest = {
+    ...(req.headers || {}),
   };
 
   const successStatusCodes = [200, 204];

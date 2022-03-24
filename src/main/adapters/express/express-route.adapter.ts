@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { BaseController, HttpRequest } from '@/presentation/protocols';
+import { BaseController } from '@/presentation/protocols';
 
 export const adaptRoute = (controller: BaseController) => async (req: Request, res: Response) => {
-  const httpRequest: HttpRequest = {
-    body: req.body,
+  const httpRequest = {
+    ...(req.body || {}),
   };
 
   const successStatus = [200];
