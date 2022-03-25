@@ -2,14 +2,19 @@ name: Development workflow
 
 on:
   pull_request:
+    branches:
+      - develop
     types: [synchronize, opened, reopened, ready_for_review, labeled]
+
+env: 
+  DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
 
 jobs: 
   QualityGate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
@@ -24,6 +29,12 @@ jobs:
 
       - name: Lint code
         run: yarn lint
+       
+      - name: Run docker compose
+        run: docker-compose up -d
+      
+      - name: Run migrations
+        run: yarn prisma migrate deploy
 
       - name: Unit tests
         run: yarn test

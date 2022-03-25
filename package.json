@@ -6,18 +6,21 @@
   "devDependencies": {
     "@swc/core": "^1.2.156",
     "@swc/jest": "^0.2.20",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.15.0",
-    "eslint": "^8.2.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-jest": "^26.1.1",
-    "eslint-plugin-prettier": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "eslint": "^7.12.1",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.0.0",
     "jest": "^27.5.1",
-    "prettier": "^2.6.0",
+    "nodemon": "^2.0.15",
+    "prisma": "^3.11.0",
+    "supertest": "^6.2.2",
     "ts-node": "^10.7.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.6.2"
@@ -25,9 +28,23 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src",
-    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn src/index.ts",
-    "build": "yarn && tsc --project tsconfig.build.json",
-    "start": "node dist/src/index.js"
+    "local": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn src/main/server.ts",
+    "dev:up": "docker-compose up -d",
+    "dev:down": "docker-compose up -d",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
+    "start": "node dist/main/server.js",
+    "migrations:run": "prisma migrate deploy --schema ./prisma/schema.prisma"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@prisma/client": "^3.11.0",
+    "express": "^4.17.3",
+    "module-alias": "^2.2.2",
+    "yarn-audit-fix": "^9.2.1"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "_moduleAliases": {
+    "@": "dist"
+  }
 }
