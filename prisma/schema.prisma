@@ -26,6 +26,8 @@ model Product {
   createdAt DateTime @default(now())
   businessId String 
   bussines Business @relation(fields: [businessId], references: [id])
+  imageUrl String
+  type String 
 }
 
 model Business {
@@ -35,6 +37,7 @@ model Business {
   createdAt DateTime @default(now())
   services Service[] 
   products Product[]
+  imageUrl String
 }
 
 model Service {

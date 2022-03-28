@@ -1,7 +1,8 @@
 import { AddAccountRepository } from '@/data';
+import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
 import { prisma } from '@/infra/db/helpers';
 
-export class AccountPrismaRepository implements AddAccountRepository {
+export class AccountPrismaRepository implements AddAccountRepository, FindAccountByEmailRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const result = await prisma.account.create({
       data: {
@@ -12,11 +13,10 @@ export class AccountPrismaRepository implements AddAccountRepository {
     });
     return {
       id: result.id,
-      ...data,
     };
   }
 
-  async findByEmail(email: string): Promise<AddAccountRepository.Result> {
+  async findByEmail({ email }: FindAccountByEmailRepository.Params): Promise<FindAccountByEmailRepository.Result> {
     const result = await prisma.account.findFirst({
       where: {
         email,

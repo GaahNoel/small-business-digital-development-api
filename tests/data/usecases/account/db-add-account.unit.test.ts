@@ -1,8 +1,9 @@
-import { mockAddAccountRepository } from '@/tests/data/mocks/db-account.mock';
+import { mockAddAccountRepository, mockFindAccountByEmailRepository } from '@/tests/data/mocks/db-account.mock';
 import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { throwError } from '@/tests/domain/mocks/test.helpers';
 import { DbAddAccount } from '@/data/usecases/account/db-add-account';
 import { AddAccountRepository } from '@/data';
+import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
 
 const mockAddAccountParams = () => ({
   name: 'any_name',
@@ -13,19 +14,23 @@ const mockAddAccountParams = () => ({
 type SutTypes = {
   sut: DbAddAccount,
   addAccountRepositoryStub: AddAccountRepository,
+  findAccountByEmailRepositoryStub: FindAccountByEmailRepository,
 };
 
 const makeSut = (): SutTypes => {
   const addAccountRepositoryStub = mockAddAccountRepository();
 
-  const sut = new DbAddAccount(addAccountRepositoryStub);
+  const findAccountByEmailRepositoryStub = mockFindAccountByEmailRepository();
+
+  const sut = new DbAddAccount(addAccountRepositoryStub, findAccountByEmailRepositoryStub);
   return {
     sut,
     addAccountRepositoryStub,
+    findAccountByEmailRepositoryStub,
   };
 };
 
-describe('DbAddAccount Usecase', () => {
+describe('DbAddAccount UseCase', () => {
   it('should call AddAccountRepository with correct values', async () => {
     const { sut, addAccountRepositoryStub } = makeSut();
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
@@ -42,15 +47,17 @@ describe('DbAddAccount Usecase', () => {
   });
 
   it('should return null if account already exists', async () => {
-    const { sut, addAccountRepositoryStub } = makeSut();
-    jest.spyOn(addAccountRepositoryStub, 'findByEmail').mockReturnValue(Promise.resolve(mockAccountModel()));
+    const { sut, findAccountByEmailRepositoryStub } = makeSut();
+    jest.spyOn(findAccountByEmailRepositoryStub, 'findByEmail').mockReturnValue(Promise.resolve(mockAccountModel()));
     const response = await sut.add(mockAddAccountParams());
     expect(response).toBeFalsy();
   });
 
-  it('should return an account on success', async () => {
+  it('should return an account id on success', async () => {
     const { sut } = makeSut();
     const account = await sut.add(mockAddAccountParams());
-    expect(account).toEqual(mockAccountModel());
+    expect(account).toEqual({
+      id: mockAccountModel().id,
+    });
   });
 });

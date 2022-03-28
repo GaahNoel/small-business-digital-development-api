@@ -6,9 +6,10 @@ import { BaseController } from '@/presentation/protocols';
 export const makeSignUpController = (): BaseController => {
   // Infra
   const addAccountRepository = new AccountPrismaRepository();
+  const findAccountByEmailRepository = new AccountPrismaRepository();
 
   // Data
-  const addAccount = new DbAddAccount(addAccountRepository);
+  const addAccount = new DbAddAccount(addAccountRepository, findAccountByEmailRepository);
 
   // Presentation
   return new SignUpController(addAccount);
