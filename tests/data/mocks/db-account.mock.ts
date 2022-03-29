@@ -1,6 +1,4 @@
 import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository';
-import { AccountModel } from '@/domain/models';
-import { AddAccountParams } from '@/domain/usecases';
 import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { FindAccountByEmailRepository } from '../protocols/db/account/find-account-by-email-repository';
 

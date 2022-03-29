@@ -4,6 +4,7 @@ import { prisma } from '@/infra/db/helpers';
 
 export class AccountPrismaRepository implements AddAccountRepository, FindAccountByEmailRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
+    console.log(data);
     const result = await prisma.account.create({
       data: {
         name: data.name,

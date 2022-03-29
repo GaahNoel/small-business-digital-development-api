@@ -9,9 +9,10 @@
     "baseUrl": "src",
     "paths": {
       "@/tests/*": ["../tests/*"],
-      "@/*": ["*"],
+      "@/*": ["./*"],
     },
   },
   "include": ["src", "tests"],
-  "exclude": []
+  "exclude": [],
+  "require": ["tsconfig-paths/register"]
 }

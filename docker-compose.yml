@@ -18,11 +18,13 @@ services:
     image: node:16
     working_dir: /usr/src/small-business-digital-development-api
     restart: always
-    command: bash -c "yarn && yarn migrations:run && yarn start" # Trouxe o CMD yarn debug do Dockerfile para cá
+    command: bash -c "yarn && yarn migrations:run && yarn local" # Trouxe o CMD yarn debug do Dockerfile para cá
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/sbdd?schema=public
     volumes:
-      - ./dist/:/usr/src/small-business-digital-development-api/dist/ 
+      - ./src/:/usr/src/small-business-digital-development-api/src/ 
+      - ./tsconfig.json:/usr/src/small-business-digital-development-api/tsconfig.json 
+      - ./tsconfig.build.json:/usr/src/small-business-digital-development-api/tsconfig.build.json 
       - ./package.json:/usr/src/small-business-digital-development-api/package.json
       - ./prisma:/usr/src/small-business-digital-development-api/prisma/
     ports: # Quando for expor portas aqui, pode retirar o EXPOSE 3333 do Dockerfile
