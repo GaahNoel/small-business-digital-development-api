@@ -39,10 +39,13 @@
   },
   "dependencies": {
     "@prisma/client": "^3.11.0",
+    "@types/nodemailer": "^6.4.4",
     "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
+    "nodemailer": "^6.7.3",
     "yarn-audit-fix": "^9.2.1"
   },
   "engines": {

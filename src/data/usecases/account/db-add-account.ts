@@ -1,30 +1,41 @@
 import { AddAccountRepository } from '@/data/protocols';
 import { Hasher } from '@/data/protocols/cryptography';
 import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
+import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 import { AddAccount } from '@/domain/usecases';
 
 export class DbAddAccount implements AddAccount {
   constructor(
     private readonly addAccountRepository: AddAccountRepository,
     private readonly findAccountByEmailRepository: FindAccountByEmailRepository,
+    private readonly emailVerificationSender: EmailVerificationSender,
     private readonly hasher: Hasher,
   ) {}
 
   async add(data: AddAccount.Params): Promise<AddAccount.Result> {
+    const { email, password } = data;
     const accountAlreadyExists = await this.findAccountByEmailRepository.findByEmail({
-      email: data.email,
+      email,
     });
 
     if (accountAlreadyExists) {
       return null;
     }
 
-    const hashedPassword = await this.hasher.hash(data.password);
+    const hashedPassword = await this.hasher.hash(password);
 
     const result = await this.addAccountRepository.add({
       ...data,
       password: hashedPassword,
     });
+
+    if (data.password) {
+      this.emailVerificationSender.send({
+        toEmail: email,
+        subject: 'Verification email',
+        message: 'Verification email',
+      });
+    }
 
     return {
       id: result.id,
