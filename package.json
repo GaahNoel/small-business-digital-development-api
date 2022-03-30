@@ -19,7 +19,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.0.0",
     "jest": "^27.5.1",
-    "nodemon": "^2.0.15",
     "prisma": "^3.11.0",
     "supertest": "^6.2.2",
     "ts-node": "^10.7.0",
@@ -30,8 +29,8 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src",
-    "local": "yarn build && ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --watch src,tests --ignore-watch node_modules --respawn src/main/server.ts",
-    "dev:up": "yarn build && docker-compose up",
+    "local": "ts-node-dev -r tsconfig-paths/register --exit-child --inspect --transpile-only --ignore-watch node_modules --respawn src/main/server.ts",
+    "dev:up": "docker-compose up",
     "dev:down": "docker-compose down",
     "db": "docker-compose up -d db",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
@@ -50,6 +49,6 @@
     "node": "16.x"
   },
   "_moduleAliases": {
-    "@": "dist"
+    "@": "src"
   }
 }
