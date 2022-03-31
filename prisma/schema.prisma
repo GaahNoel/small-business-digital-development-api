@@ -16,18 +16,8 @@ model Account {
   password String?
   email String @unique
   createdAt DateTime @default(now())
-}
-
-model Product {
-  id String @id @default(uuid())
-  name String
-  price Int
-  description String
-  createdAt DateTime @default(now())
-  businessId String 
-  bussines Business @relation(fields: [businessId], references: [id])
-  imageUrl String
-  type String 
+  verified Boolean @default(false)
+  Businesses Business[] 
 }
 
 model Business {
@@ -37,7 +27,23 @@ model Business {
   createdAt DateTime @default(now())
   services Service[] 
   products Product[]
+  accountId String 
+  account Account @relation(fields: [accountId], references: [id])
   imageUrl String
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String
+  price Int
+  description String
+  createdAt DateTime @default(now())
+  businessId String 
+  business Business @relation(fields: [businessId], references: [id])
+  imageUrl String
+  type String 
+  categoryId String 
+  category Category @relation(fields: [categoryId], references: [id])
 }
 
 model Service {
@@ -47,7 +53,16 @@ model Service {
   description String
   createdAt DateTime @default(now())
   businessId String 
-  bussines Business @relation(fields: [businessId], references: [id])
+  business Business @relation(fields: [businessId], references: [id])
+  categoryId String 
+  category Category @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id String @id @default(uuid())
+  name String
+  products Product[]
+  services Service[]
 }
 
 

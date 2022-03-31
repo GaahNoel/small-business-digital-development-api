@@ -2,9 +2,9 @@ import faker from '@faker-js/faker';
 import { Hasher } from '../protocols/cryptography';
 
 export class HasherSpy implements Hasher {
-  plaintext: string; // Parâmetro recebido
+  plaintext: string;
 
-  digest = faker.datatype.uuid(); // Retorno forçado
+  digest = faker.datatype.uuid();
 
   async hash(plaintext: string): Promise<string> {
     this.plaintext = plaintext;

@@ -7,6 +7,7 @@ on:
     types: [synchronize, opened, reopened, ready_for_review, labeled]
 
 env: 
+  DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
   EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
   EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
