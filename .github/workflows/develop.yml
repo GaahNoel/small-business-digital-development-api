@@ -8,6 +8,8 @@ on:
 
 env: 
   DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+  EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs: 
   QualityGate:
@@ -31,8 +33,11 @@ jobs:
         run: yarn lint
        
       - name: Run docker compose
-        run: docker-compose up -d
-      
+        run: docker-compose up -d db
+        env:
+          EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}      
+
       - name: Run migrations
         run: yarn prisma migrate deploy
 

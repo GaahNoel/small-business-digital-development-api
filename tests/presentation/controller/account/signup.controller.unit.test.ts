@@ -64,6 +64,22 @@ describe('SignUpController', () => {
     }));
   });
 
+  it('should return response status success if receive correct params and no password', async () => {
+    const { sut } = makeSut();
+    const request = {
+      email: 'any_email',
+      name: 'any_name',
+    };
+
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse).toEqual(success({
+      id: 'any_id',
+      name: 'any_name',
+      email: 'any_email',
+      password: expect.anything(),
+    }));
+  });
+
   it('should return internal server error if addAccount throw an error', async () => {
     const { sut, addAccountStub } = makeSut();
     jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => Promise.reject(new Error()));

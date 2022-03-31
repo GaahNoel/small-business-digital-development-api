@@ -24,9 +24,9 @@ describe('AccountPrismaRepository', () => {
 
     const httpRequest = mockAddAccountParams();
     const addedAccount = await sut.add(httpRequest);
-    const foundAccount = await sut.findByEmail(httpRequest.email);
+    const foundAccount = await sut.findByEmail({ email: httpRequest.email });
 
     delete foundAccount.createdAt;
-    expect(foundAccount).toEqual(addedAccount);
+    expect(foundAccount.id).toEqual(addedAccount.id);
   });
 });
