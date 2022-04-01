@@ -1,6 +1,7 @@
 import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository';
 import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { FindAccountByEmailRepository } from '../protocols/db/account/find-account-by-email-repository';
+import { VerifyAccountRepository } from '../protocols/db/account/verify-account-repository';
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
@@ -23,4 +24,14 @@ export const mockFindAccountByEmailRepository = (): FindAccountByEmailRepository
   }
 
   return new FindAccountByEmailRepositoryStub();
+};
+
+export const mockVerifyAccountRepository = (): VerifyAccountRepository => {
+  class VerifyAccountRepositoryStub implements VerifyAccountRepository {
+    async verify(data: VerifyAccountRepository.Params): Promise<VerifyAccountRepository.Result> {
+      return Promise.resolve(true);
+    }
+  }
+
+  return new VerifyAccountRepositoryStub();
 };

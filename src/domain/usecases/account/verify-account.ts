@@ -1,7 +1,5 @@
 export namespace VerifyAccount {
-  export type Params = {
-    id: string;
-  };
+  export type Params = string;
   export type Result = {
     verified: boolean;
   };

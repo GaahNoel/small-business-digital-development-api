@@ -32,7 +32,7 @@ jobs:
       - name: Lint code
         run: yarn lint
        
-      - name: Run docker compose
+      - name: Run instance of DB
         run: docker-compose up -d db
         env:
           EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
@@ -41,6 +41,6 @@ jobs:
       - name: Run migrations
         run: yarn prisma migrate deploy
 
-      - name: Unit tests
+      - name: Run tests
         run: yarn test
 

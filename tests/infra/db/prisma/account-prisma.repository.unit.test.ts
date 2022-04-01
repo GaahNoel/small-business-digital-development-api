@@ -29,4 +29,14 @@ describe('AccountPrismaRepository', () => {
     delete foundAccount.createdAt;
     expect(foundAccount.id).toEqual(addedAccount.id);
   });
+
+  it('should verify account by id', async () => {
+    const sut = makeSut();
+
+    const httpRequest = mockAddAccountParams();
+    const { id } = await sut.add(httpRequest);
+    const verified = await sut.verify(id);
+
+    expect(verified).toBe(true);
+  });
 });
