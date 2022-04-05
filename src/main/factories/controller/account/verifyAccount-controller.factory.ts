@@ -4,14 +4,11 @@ import { VerifyAccountController } from '@/presentation/controller/account/verif
 import { BaseController } from '@/presentation/protocols';
 
 export const makeVerifyAccountController = (): BaseController => {
-  // Infra
   const verifyAccountRepository = new AccountPrismaRepository();
 
-  // Data
   const addAccount = new EmailVerifyAccount(
     verifyAccountRepository,
   );
 
-  // Presentation
   return new VerifyAccountController(addAccount);
 };

@@ -8,7 +8,7 @@ import { BaseController } from '@/presentation/protocols';
 
 export const makeSignUpController = (): BaseController => {
   const salt = 12;
-  // Infra
+
   const addAccountRepository = new AccountPrismaRepository();
   const findAccountByEmailRepository = new AccountPrismaRepository();
   const emailVerificationSender = new NodeMailerAdapter(
@@ -21,7 +21,6 @@ export const makeSignUpController = (): BaseController => {
   );
   const hasher = new BcryptAdapter(salt);
 
-  // Data
   const addAccount = new DbAddAccount(
     addAccountRepository,
     findAccountByEmailRepository,
@@ -29,6 +28,5 @@ export const makeSignUpController = (): BaseController => {
     hasher,
   );
 
-  // Presentation
   return new SignUpController(addAccount);
 };
