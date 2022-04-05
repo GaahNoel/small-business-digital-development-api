@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - develop
+      - main
     types: [synchronize, opened, reopened, ready_for_review, labeled]
 
 env: 

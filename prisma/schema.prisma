@@ -25,7 +25,6 @@ model Business {
   name String
   description String
   createdAt DateTime @default(now())
-  services Service[] 
   products Product[]
   accountId String 
   account Account @relation(fields: [accountId], references: [id])
@@ -46,23 +45,12 @@ model Product {
   category Category @relation(fields: [categoryId], references: [id])
 }
 
-model Service {
-  id String @id @default(uuid())
-  name String
-  price Int
-  description String
-  createdAt DateTime @default(now())
-  businessId String 
-  business Business @relation(fields: [businessId], references: [id])
-  categoryId String 
-  category Category @relation(fields: [categoryId], references: [id])
-}
-
 model Category {
   id String @id @default(uuid())
   name String
+  description String
   products Product[]
-  services Service[]
+  createdAt DateTime @default(now())
 }
 
 
