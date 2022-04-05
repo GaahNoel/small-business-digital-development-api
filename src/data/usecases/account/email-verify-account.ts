@@ -1,4 +1,4 @@
-import { VerifyAccountRepository } from '@/data/protocols/db/account/verify-account-repository';
+import { VerifyAccountRepository } from '@/data/protocols/db/account';
 import { VerifyAccount } from '@/domain/usecases/account/verify-account';
 
 export class EmailVerifyAccount implements VerifyAccount {

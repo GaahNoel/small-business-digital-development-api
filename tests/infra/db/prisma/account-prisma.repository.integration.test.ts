@@ -6,6 +6,7 @@ const makeSut = (): AccountPrismaRepository => new AccountPrismaRepository();
 
 describe('AccountPrismaRepository', () => {
   beforeEach(async () => {
+    await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
   });
 

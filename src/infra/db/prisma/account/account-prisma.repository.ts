@@ -1,6 +1,5 @@
 import { AddAccountRepository } from '@/data';
-import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
-import { VerifyAccountRepository } from '@/data/protocols/db/account/verify-account-repository';
+import { FindAccountByEmailRepository, VerifyAccountRepository } from '@/data/protocols/db/account';
 import { prisma } from '@/infra/db/helpers';
 
 export class AccountPrismaRepository implements AddAccountRepository, FindAccountByEmailRepository, VerifyAccountRepository {

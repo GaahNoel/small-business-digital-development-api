@@ -1,16 +1,16 @@
-import { BusinessModel } from '@/domain/models/business';
-
 export type AddBusinessParams = {
   name: string;
-  email: string;
-  password?: string;
+  imageUrl: string;
+  accountId: string;
+  description: string;
 };
 
 export interface AddBusiness {
-  add(addAccountParams: AddBusinessParams): Promise<BusinessModel>;
+  add(addBusinessParams: AddBusiness.Params): Promise<AddBusiness.Result>;
 }
-
 export namespace AddBusiness {
   export type Params = AddBusinessParams;
-  export type Result = BusinessModel;
+  export type Result = {
+    id: string
+  };
 }

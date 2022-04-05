@@ -3,4 +3,5 @@ export type BusinessModel = {
   name: string;
   description: string;
   accountId: string;
+  imageUrl: string;
 };

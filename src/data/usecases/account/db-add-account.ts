@@ -1,8 +1,8 @@
 import { AddAccountRepository } from '@/data/protocols';
 import { Hasher } from '@/data/protocols/cryptography';
-import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
+import { FindAccountByEmailRepository } from '@/data/protocols/db/account';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
-import { AddAccount } from '@/domain/usecases';
+import { AddAccount } from '@/domain/usecases/account';
 import { makeVerifyAccountMessage } from '@/utils/email-messages/verify-account-message';
 
 export class DbAddAccount implements AddAccount {
