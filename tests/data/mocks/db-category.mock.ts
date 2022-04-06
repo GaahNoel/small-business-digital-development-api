@@ -1,5 +1,5 @@
 import { mockAddCategoryModel } from '@/tests/domain/mocks/category.mock';
-import { AddCategoryRepository } from '../protocols/db/category/addCategory.repository';
+import { AddCategoryRepository } from '../protocols/db/category/add-category.repository';
 
 export const mockAddCategoryRepository = (): AddCategoryRepository => {
   class AddCategoryRepositoryStub implements AddCategoryRepository {

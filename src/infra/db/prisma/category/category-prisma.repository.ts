@@ -1,4 +1,4 @@
-import { AddCategoryRepository } from '@/data/protocols/db/category/addCategory.repository';
+import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { prisma } from '@/infra/db/helpers';
 
 export class CategoryPrismaRepository implements AddCategoryRepository {

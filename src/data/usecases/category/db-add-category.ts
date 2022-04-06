@@ -1,4 +1,4 @@
-import { AddCategoryRepository } from '@/data/protocols/db/category/addCategory.repository';
+import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { AddCategory } from '@/domain/usecases/category/add-category';
 
 export class DbAddCategory implements AddCategory {

@@ -34,7 +34,8 @@ model Business {
 model Product {
   id String @id @default(uuid())
   name String
-  price Int
+  listPrice Float
+  salePrice Float
   description String
   createdAt DateTime @default(now())
   businessId String 

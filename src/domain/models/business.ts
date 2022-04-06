@@ -4,4 +4,5 @@ export type BusinessModel = {
   description: string;
   accountId: string;
   imageUrl: string;
+  productIds?: string[];
 };

@@ -1,4 +1,4 @@
-import { AddCategoryRepository } from '@/data/protocols/db/category/addCategory.repository';
+import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { mockAddCategoryParams } from '@/tests/domain/mocks/category.mock';
 import { mockAddCategoryRepository } from '../../mocks/db-category.mock';
 import { DbAddCategory } from '@/data/usecases/category';

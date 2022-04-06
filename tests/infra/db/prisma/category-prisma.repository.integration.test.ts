@@ -1,4 +1,4 @@
-import { AddCategoryRepository } from '@/data/protocols/db/category/addCategory.repository';
+import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { mockAddCategoryParams } from '@/tests/domain/mocks/category.mock';
 import { prisma } from '@/infra/db/helpers';
 import { CategoryPrismaRepository } from '@/infra/db/prisma/category';

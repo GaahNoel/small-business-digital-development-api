@@ -1,8 +1,7 @@
-import { AddCategory } from '@/domain/usecases/category/add-category';
 import { mockAddCategoryParams } from '@/tests/domain/mocks/category.mock';
 import { mockAddCategoryRepository } from '@/tests/data/mocks/db-category.mock';
 import { AddCategoryController } from '@/presentation/controller/category/addCategory.controller';
-import { AddCategoryRepository } from '@/data/protocols/db/category/addCategory.repository';
+import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
 
 type SutTypes = {
