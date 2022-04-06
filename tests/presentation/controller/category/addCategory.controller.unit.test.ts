@@ -3,27 +3,29 @@ import { mockAddCategoryRepository } from '@/tests/data/mocks/db-category.mock';
 import { AddCategoryController } from '@/presentation/controller/category/addCategory.controller';
 import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { mockAddCategory } from '../../mocks/category.mock';
+import { AddCategory } from '@/domain/usecases/category/add-category';
 
 type SutTypes = {
   sut: AddCategoryController,
-  addCategoryRepositoryStub: AddCategoryRepository,
+  addCategoryStub: AddCategory,
 };
 
 const makeSut = (): SutTypes => {
-  const addCategoryRepositoryStub = mockAddCategoryRepository();
+  const addCategoryStub = mockAddCategory();
 
-  const sut = new AddCategoryController(addCategoryRepositoryStub);
+  const sut = new AddCategoryController(addCategoryStub);
 
   return {
     sut,
-    addCategoryRepositoryStub,
+    addCategoryStub,
   };
 };
 
 describe('AddCategory Controller', () => {
   it('should call AddCategory with correct values', async () => {
-    const { sut, addCategoryRepositoryStub } = makeSut();
-    const addSpy = jest.spyOn(addCategoryRepositoryStub, 'add');
+    const { sut, addCategoryStub } = makeSut();
+    const addSpy = jest.spyOn(addCategoryStub, 'add');
     const request = mockAddCategoryParams();
 
     await sut.handle(request);
@@ -39,8 +41,8 @@ describe('AddCategory Controller', () => {
   });
 
   it('should return internal server error if add category throws', async () => {
-    const { sut, addCategoryRepositoryStub } = makeSut();
-    jest.spyOn(addCategoryRepositoryStub, 'add').mockReturnValue(Promise.reject(new Error()));
+    const { sut, addCategoryStub } = makeSut();
+    jest.spyOn(addCategoryStub, 'add').mockReturnValue(Promise.reject(new Error()));
 
     const request = mockAddCategoryParams();
 
