@@ -1,4 +1,3 @@
-import { AddCategoryRepository } from '@/data/protocols/db/category';
 import { mockAddCategoryParams } from '@/tests/domain/mocks/category.mock';
 import { prisma } from '@/infra/db/helpers';
 import { CategoryPrismaRepository } from '@/infra/db/prisma/category';
@@ -11,6 +10,13 @@ const makeSut = () => {
 };
 
 describe('CategoryPrismaRepository', () => {
+  beforeAll(async () => {
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
   beforeEach(async () => {
     await prisma.category.deleteMany({});
   });

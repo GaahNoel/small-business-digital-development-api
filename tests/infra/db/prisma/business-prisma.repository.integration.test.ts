@@ -20,6 +20,13 @@ const makeSut = (): SutTypes => {
 };
 
 describe('BusinessPrismaRepository', () => {
+  beforeAll(async () => {
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
   beforeEach(async () => {
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});

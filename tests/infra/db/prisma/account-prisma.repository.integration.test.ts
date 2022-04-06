@@ -5,6 +5,13 @@ import { prisma } from '@/infra/db/helpers';
 const makeSut = (): AccountPrismaRepository => new AccountPrismaRepository();
 
 describe('AccountPrismaRepository', () => {
+  beforeAll(async () => {
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
   beforeEach(async () => {
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
