@@ -2,7 +2,7 @@ import { AddProduct } from '@/domain/usecases/product/add-product';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
 import { mockAddProductParams } from '@/tests/domain/mocks/product.mock';
 import { mockAddProduct } from '../../mocks/product.mock';
-import { AddProductController } from '@/presentation/controller/product/add-product.controller';
+import { AddProductController } from '@/presentation/controller/product';
 
 type SutTypes = {
   sut: AddProductController,

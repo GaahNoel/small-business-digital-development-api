@@ -1,6 +1,6 @@
 import { AddBusiness, AddBusinessParams } from '@/domain/usecases/business';
 import { mockAddBusiness } from '../../mocks/business.mock';
-import { AddBusinessController } from '@/presentation/controller/business/addBusiness.controller';
+import { AddBusinessController } from '@/presentation/controller/business';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
 
 type SutTypes = {

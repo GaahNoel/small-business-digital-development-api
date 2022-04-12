@@ -1,5 +1,5 @@
 import { mockVerifyAccount } from '../../mocks/account.mock';
-import { VerifyAccountController } from '@/presentation/controller/account/verifyAccount.controller';
+import { VerifyAccountController } from '@/presentation/controller/account';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
 
 const makeSut = () => {
