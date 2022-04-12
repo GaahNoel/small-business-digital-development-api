@@ -54,4 +54,16 @@ describe('ProductPrismaRepository', () => {
       categoryId: mockCategory.id,
     });
   });
+
+  it('should list all products from business', async () => {
+    const { sut } = makeSut();
+
+    const addedProduct = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
+
+    const response = await sut.list({
+      businessId: mockBusiness.id,
+    });
+
+    expect(response).toEqual([addedProduct]);
+  });
 });

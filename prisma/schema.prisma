@@ -31,7 +31,7 @@ model Business {
   imageUrl String
 }
 
-model Product {
+model Product {listProductFromBusinessRepository
   id String @id @default(uuid())
   name String
   listPrice Float
@@ -41,7 +41,7 @@ model Product {
   businessId String 
   business Business @relation(fields: [businessId], references: [id])
   imageUrl String
-  type String 
+  type ProductType 
   categoryId String 
   category Category @relation(fields: [categoryId], references: [id])
 }
@@ -52,6 +52,11 @@ model Category {
   description String
   products Product[]
   createdAt DateTime @default(now())
+}
+
+enum ProductType {
+  service
+  product
 }
 
 
