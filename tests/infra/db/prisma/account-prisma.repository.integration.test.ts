@@ -1,0 +1,50 @@
+import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
+import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
+import { prisma } from '@/infra/db/helpers';
+
+const makeSut = (): AccountPrismaRepository => new AccountPrismaRepository();
+
+describe('AccountPrismaRepository', () => {
+  beforeAll(async () => {
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
+  beforeEach(async () => {
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
+  it('should return account on add success ', async () => {
+    const sut = makeSut();
+
+    const httpRequest = mockAddAccountParams();
+    const account = await sut.add(httpRequest);
+
+    expect(account).toBeTruthy();
+    expect(account.id).toBeTruthy();
+  });
+
+  it('should return existent account by email', async () => {
+    const sut = makeSut();
+
+    const httpRequest = mockAddAccountParams();
+    const addedAccount = await sut.add(httpRequest);
+    const foundAccount = await sut.findByEmail({ email: httpRequest.email });
+
+    delete foundAccount.createdAt;
+    expect(foundAccount.id).toEqual(addedAccount.id);
+  });
+
+  it('should verify account by id', async () => {
+    const sut = makeSut();
+
+    const httpRequest = mockAddAccountParams();
+    const { id } = await sut.add(httpRequest);
+    const verified = await sut.verify(id);
+
+    expect(verified).toBe(true);
+  });
+});
