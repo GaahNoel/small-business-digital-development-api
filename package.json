@@ -24,7 +24,6 @@
     "supertest": "^6.2.2",
     "ts-node": "^10.7.0",
     "ts-node-dev": "^1.1.8",
-    "tsconfig-paths": "^3.14.1",
     "typescript": "^4.6.2"
   },
   "scripts": {
@@ -34,7 +33,7 @@
     "dev:up": "docker-compose up",
     "dev:down": "docker-compose down",
     "db": "docker-compose up -d db",
-    "build": "rm -rf dist && tsc --project tsconfig.build.json",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "start": "node dist/main/server.js",
     "migrations:run": "prisma migrate deploy --schema ./prisma/schema.prisma"
   },
@@ -52,6 +51,6 @@
     "node": "16.x"
   },
   "_moduleAliases": {
-    "@": "src"
+    "@": "dist"
   }
 }
