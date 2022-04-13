@@ -7,6 +7,8 @@ on:
 
 env: 
   DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+  EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs: 
   QualityGate:
@@ -30,8 +32,10 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "YOUR APP's NAME" 
-          heroku_email: "YOUR EMAIL"
-
-
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          branch: "main"
+        env:
+          EMAIL_ACCOUNT: ${{env.EMAIL_ACCOUNT}}
+          EMAIL_PASSWORD: ${{env.EMAIL_PASSWORD}}
 

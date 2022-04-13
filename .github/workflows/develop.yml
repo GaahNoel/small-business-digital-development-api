@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/sbdd?schema=public"
+      EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}  
 
     steps:
       - name: Checkout
@@ -38,10 +40,7 @@ jobs:
        
       - name: Run instance of DB
         run: docker-compose up -d db
-        env:
-          EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}      
-
+        
       - name: Run migrations
         run: yarn prisma migrate deploy
 
