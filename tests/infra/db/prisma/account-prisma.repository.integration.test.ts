@@ -5,7 +5,15 @@ import { prisma } from '@/infra/db/helpers';
 const makeSut = (): AccountPrismaRepository => new AccountPrismaRepository();
 
 describe('AccountPrismaRepository', () => {
+  beforeAll(async () => {
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
   beforeEach(async () => {
+    await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
   });
 
@@ -28,5 +36,15 @@ describe('AccountPrismaRepository', () => {
 
     delete foundAccount.createdAt;
     expect(foundAccount.id).toEqual(addedAccount.id);
+  });
+
+  it('should verify account by id', async () => {
+    const sut = makeSut();
+
+    const httpRequest = mockAddAccountParams();
+    const { id } = await sut.add(httpRequest);
+    const verified = await sut.verify(id);
+
+    expect(verified).toBe(true);
   });
 });

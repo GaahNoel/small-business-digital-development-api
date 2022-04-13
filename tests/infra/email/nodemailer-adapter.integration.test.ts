@@ -1,5 +1,6 @@
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 
+jest.setTimeout(30000);
 describe('NodeMailer Adapter', () => {
   it('should send email when receive a email and message ', async () => {
     const sut = new NodeMailerAdapter(

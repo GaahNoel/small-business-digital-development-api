@@ -1,10 +1,9 @@
 import { AddAccountRepository } from '@/data';
-import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
+import { FindAccountByEmailRepository, VerifyAccountRepository } from '@/data/protocols/db/account';
 import { prisma } from '@/infra/db/helpers';
 
-export class AccountPrismaRepository implements AddAccountRepository, FindAccountByEmailRepository {
+export class AccountPrismaRepository implements AddAccountRepository, FindAccountByEmailRepository, VerifyAccountRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
-    console.log(data);
     const result = await prisma.account.create({
       data: {
         name: data.name,
@@ -24,5 +23,17 @@ export class AccountPrismaRepository implements AddAccountRepository, FindAccoun
       },
     });
     return result;
+  }
+
+  async verify(id: string): Promise<boolean> {
+    const result = await prisma.account.update({
+      where: {
+        id,
+      },
+      data: {
+        verified: true,
+      },
+    });
+    return result.verified;
   }
 }

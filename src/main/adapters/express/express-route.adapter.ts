@@ -4,6 +4,7 @@ import { BaseController } from '@/presentation/protocols';
 export const adaptRoute = (controller: BaseController) => async (req: Request, res: Response) => {
   const httpRequest = {
     ...(req.body || {}),
+    ...(req.params || {}),
   };
 
   const successStatus = [200];
