@@ -24,12 +24,23 @@ const mockCategory = { id: 'any_id' };
 const mockBusiness = { id: 'any_id' };
 
 describe('ProductPrismaRepository', () => {
-  beforeAll(async () => {
-    await prisma.product.deleteMany({});
-    await prisma.category.deleteMany({});
-    await prisma.business.deleteMany({});
-    await prisma.account.deleteMany({});
+  afterAll(async () => {
+    const deleteProduct = prisma.product.deleteMany();
+    const deleteCategory = prisma.category.deleteMany();
+    const deleteBusiness = prisma.business.deleteMany();
+    const deleteAccount = prisma.account.deleteMany();
 
+    await prisma.$transaction([
+      deleteProduct,
+      deleteCategory,
+      deleteBusiness,
+      deleteAccount,
+    ]);
+
+    prisma.$disconnect();
+  });
+
+  beforeAll(async () => {
     const account = await addAccountRepository.add(mockAddAccountParams());
     const business = await addBusinessRepository.add(mockAddBusinessParams(account.id));
     const category = await addCategoryRepository.add(mockAddCategoryParams());

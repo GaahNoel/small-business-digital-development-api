@@ -21,16 +21,25 @@ const makeSut = (): SutTypes => {
 };
 
 describe('BusinessPrismaRepository', () => {
-  beforeAll(async () => {
-    await prisma.product.deleteMany({});
-    await prisma.category.deleteMany({});
+  beforeEach(async () => {
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
   });
 
-  beforeEach(async () => {
-    await prisma.business.deleteMany({});
-    await prisma.account.deleteMany({});
+  afterAll(async () => {
+    const deleteProduct = prisma.product.deleteMany();
+    const deleteCategory = prisma.category.deleteMany();
+    const deleteBusiness = prisma.business.deleteMany();
+    const deleteAccount = prisma.account.deleteMany();
+
+    await prisma.$transaction([
+      deleteProduct,
+      deleteCategory,
+      deleteBusiness,
+      deleteAccount,
+    ]);
+
+    prisma.$disconnect();
   });
   it('should return business on add success ', async () => {
     const { sut, addAccountRepository } = makeSut();

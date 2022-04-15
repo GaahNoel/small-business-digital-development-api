@@ -5,16 +5,25 @@ import { prisma } from '@/infra/db/helpers';
 const makeSut = (): AccountPrismaRepository => new AccountPrismaRepository();
 
 describe('AccountPrismaRepository', () => {
-  beforeAll(async () => {
-    await prisma.product.deleteMany({});
-    await prisma.category.deleteMany({});
+  beforeEach(async () => {
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
   });
 
-  beforeEach(async () => {
-    await prisma.business.deleteMany({});
-    await prisma.account.deleteMany({});
+  afterAll(async () => {
+    const deleteProduct = prisma.product.deleteMany();
+    const deleteCategory = prisma.category.deleteMany();
+    const deleteBusiness = prisma.business.deleteMany();
+    const deleteAccount = prisma.account.deleteMany();
+
+    await prisma.$transaction([
+      deleteProduct,
+      deleteCategory,
+      deleteBusiness,
+      deleteAccount,
+    ]);
+
+    prisma.$disconnect();
   });
 
   it('should return account on add success ', async () => {
