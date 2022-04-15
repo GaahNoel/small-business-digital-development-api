@@ -6,6 +6,9 @@ on:
       - develop
       - main
     types: [synchronize, opened, reopened, ready_for_review, labeled]
+  push:
+    branches:
+      - develop  
 
 env: 
   DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
