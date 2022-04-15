@@ -11,7 +11,7 @@ env:
   EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs: 
-  QualityGate:
+  Deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
