@@ -22,6 +22,13 @@ const fakeRequest : AddBusinessParams = {
   description: 'any_email',
   accountId: 'any_account_id',
   imageUrl: 'any_image_url',
+  city: 'any_city',
+  country: 'any_country',
+  latitude: 'any_latitude',
+  longitude: 'any_longitude',
+  state: 'any_state',
+  street: 'any_street',
+  zip: 'any_zip',
 };
 
 describe('AddBusiness Controller', () => {

@@ -5,5 +5,5 @@ import { auth } from '@/main/middlewares/auth';
 
 export default (router: Router): void => {
   router.post('/business/create', auth(), adaptRoute(makeAddBusinessController()));
-  router.get('/business/list/:accountId', auth(), adaptRoute(makeListBusinessFromAccountController()));
+  router.get('/business/list/:accountId', adaptRoute(makeListBusinessFromAccountController()));
 };

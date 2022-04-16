@@ -8,6 +8,13 @@ namespace AddBusinessController {
     description: string;
     imageUrl: string;
     accountId: string;
+    city: string;
+    country: string;
+    latitude: string;
+    longitude: string;
+    state: string;
+    street: string;
+    zip: string;
   };
 }
 
@@ -18,16 +25,7 @@ export class AddBusinessController implements BaseController {
 
   async handle(data: AddBusinessController.Request): Promise<HttpResponse> {
     try {
-      const {
-        name, description, imageUrl, accountId,
-      } = data;
-
-      const result = await this.addBusiness.add({
-        name,
-        description,
-        imageUrl,
-        accountId,
-      });
+      const result = await this.addBusiness.add(data);
 
       return success({ id: result.id });
     } catch (error) {
