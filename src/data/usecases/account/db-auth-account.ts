@@ -9,15 +9,14 @@ export class DbAuthAccount implements AuthAccount {
   ) {}
 
   async auth(authAccountParams: AuthAccount.Params): Promise<AuthAccount.Result> {
-    const decryptedToken = await this.decrypter.decrypt(authAccountParams.token);
-    const { email } = JSON.parse(decryptedToken);
+    const decryptedToken = await this.decrypter.decrypt(authAccountParams.token) as any;
 
     const account = await this.findAccountByEmailRepository.findByEmail({
-      email,
+      email: decryptedToken.email,
     });
 
     if (!account) {
-      throw new Error('User not found');
+      return null;
     }
 
     return {

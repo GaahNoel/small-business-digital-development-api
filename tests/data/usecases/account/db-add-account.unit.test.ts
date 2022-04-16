@@ -3,7 +3,7 @@ import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { throwError } from '@/tests/domain/mocks/test.helpers';
 import { DbAddAccount } from '@/data/usecases/account/db-add-account';
 import { AddAccountRepository } from '@/data';
-import { FindAccountByEmailRepository } from '@/data/protocols/db/account/find-account-by-email-repository';
+import { FindAccountByEmailRepository } from '@/data/protocols/db/account';
 import { HasherSpy } from '../../mocks/cryptograph.mock';
 import { mockEmailVerificationSender } from '../../mocks/email.mock';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
@@ -54,6 +54,18 @@ describe('DbAddAccount UseCase', () => {
       name: 'any_name',
       email: 'any_email',
       password: expect.anything(),
+    });
+  });
+
+  it('should call AddAccountRepository with empty password if it was not provided', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut();
+    const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
+    const { password, ...mockedAccountWithoutPassword } = mockAddAccountParams();
+    await sut.add(mockedAccountWithoutPassword);
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'any_email',
+      password: '',
     });
   });
 

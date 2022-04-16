@@ -13,9 +13,9 @@ describe('DbAuthAccount UseCase', () => {
 
   beforeEach(() => {
     decrypter = {
-      decrypt: jest.fn(async () => Promise.resolve(JSON.stringify({
+      decrypt: jest.fn(async () => Promise.resolve(({
         email: 'any-email',
-      }))),
+      }) as any)),
     };
     findAccountByEmailRepository = {
       findByEmail: jest.fn(async () => Promise.resolve(mockAccountModel())),
@@ -44,11 +44,11 @@ describe('DbAuthAccount UseCase', () => {
     });
   });
 
-  it('should throw error if account not exists', async () => {
+  it('should return null if account not exists', async () => {
     jest.spyOn(findAccountByEmailRepository, 'findByEmail').mockReturnValueOnce(Promise.resolve(null));
-    const promise = sut.auth(fakeRequest);
+    const response = await sut.auth(fakeRequest);
 
-    await expect(promise).rejects.toThrow();
+    expect(response).toBe(null);
   });
 
   it('should throw if findAccountByEmailRepository throws', async () => {
