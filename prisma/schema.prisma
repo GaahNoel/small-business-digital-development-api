@@ -29,9 +29,16 @@ model Business {
   accountId String 
   account Account @relation(fields: [accountId], references: [id])
   imageUrl String
+  latitude String
+  longitude String
+  street String
+  city String
+  state String
+  zip String
+  country String
 }
 
-model Product {listProductFromBusinessRepository
+model Product {
   id String @id @default(uuid())
   name String
   listPrice Float

@@ -10,15 +10,24 @@ const makeSut = () => {
 };
 
 describe('CategoryPrismaRepository', () => {
-  beforeAll(async () => {
-    await prisma.product.deleteMany({});
-    await prisma.category.deleteMany({});
-    await prisma.business.deleteMany({});
-    await prisma.account.deleteMany({});
-  });
-
   beforeEach(async () => {
     await prisma.category.deleteMany({});
+  });
+
+  afterAll(async () => {
+    const deleteProduct = prisma.product.deleteMany();
+    const deleteCategory = prisma.category.deleteMany();
+    const deleteBusiness = prisma.business.deleteMany();
+    const deleteAccount = prisma.account.deleteMany();
+
+    await prisma.$transaction([
+      deleteProduct,
+      deleteCategory,
+      deleteBusiness,
+      deleteAccount,
+    ]);
+
+    prisma.$disconnect();
   });
   it('should add a new category', async () => {
     const { sut } = makeSut();

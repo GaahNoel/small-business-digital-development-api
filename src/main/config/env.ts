@@ -6,4 +6,5 @@ export const env = {
   port: process.env.PORT || 3333,
   emailAccount: process.env.EMAIL_ACCOUNT,
   emailPassword: process.env.EMAIL_PASSWORD,
+  jwtSecret: process.env.JWT_SECRET,
 };
