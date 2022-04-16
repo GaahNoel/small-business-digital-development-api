@@ -5,34 +5,25 @@ import { prisma } from '@/infra/db/helpers';
 
 export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccount {
   async add(data: AddBusinessRepository.Params): Promise<AddBusinessRepository.Result> {
-    const {
-      accountId, description, imageUrl, name,
-    } = data;
     const business = await prisma.business.create({
-      data: {
-        accountId,
-        description,
-        imageUrl,
-        name,
-      },
+      data,
     });
     return business;
   }
 
   async list(params: ListBusinessFromAccount.Params): Promise<ListBusinessFromAccount.Result> {
-    const { accountId } = params;
+    const { accountId: receivedAccountId } = params;
     const businesses = await prisma.business.findMany({
       where: {
-        accountId,
+        accountId: receivedAccountId,
       },
     });
 
-    const mappedBusiness = businesses.map((business: BusinessModel) => ({
-      id: business.id,
-      name: business.name,
-      description: business.description,
-      imageUrl: business.imageUrl,
-    }));
+    const mappedBusiness = businesses.map((business: BusinessModel) => {
+      const { accountId, productIds, ...rest } = business;
+
+      return rest;
+    });
 
     return mappedBusiness;
   }

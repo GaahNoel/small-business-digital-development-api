@@ -68,12 +68,13 @@ describe('BusinessPrismaRepository', () => {
       accountId: addedAccount.id,
     });
 
+    const { accountId, ...rest } = business;
+
     expect(result).toEqual([
       {
+        ...rest,
         id: addedBusiness.id,
-        name: business.name,
-        description: business.description,
-        imageUrl: business.imageUrl,
+        createdAt: expect.anything(),
       },
     ]);
   });

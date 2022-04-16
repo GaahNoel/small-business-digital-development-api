@@ -3,6 +3,13 @@ export type AddBusinessParams = {
   imageUrl: string;
   accountId: string;
   description: string;
+  latitude: string
+  longitude: string
+  street: string
+  city: string
+  state: string
+  zip: string
+  country: string
 };
 
 export interface AddBusiness {
