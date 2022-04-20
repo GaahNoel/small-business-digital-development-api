@@ -6,5 +6,7 @@ export interface EditAccountRepository {
 
 export namespace EditAccountRepository {
   export type Params = EditAccount.Params;
-  export type Result = EditAccount.Result;
+  export type Result = {
+    id: string;
+  };
 }
