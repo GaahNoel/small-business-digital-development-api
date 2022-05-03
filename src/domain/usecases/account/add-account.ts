@@ -2,12 +2,14 @@ export type AddAccountParams = {
   name: string;
   email: string;
   password?: string;
+  provider: 'facebook' | 'google' | 'credentials';
 };
 
 export namespace AddAccount {
   export type Params = AddAccountParams;
   export type Result = {
-    id: string
+    id: string,
+    created: boolean
   };
 }
 

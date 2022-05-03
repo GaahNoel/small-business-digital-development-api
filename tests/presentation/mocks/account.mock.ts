@@ -5,7 +5,10 @@ import { VerifyAccount } from '@/domain/usecases/account/verify-account';
 export const mockAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add(data: AddAccount.Params): Promise<AddAccount.Result> {
-      return Promise.resolve(mockAccountModel());
+      return Promise.resolve({
+        id: mockAccountModel().id,
+        created: true,
+      });
     }
   }
   return new AddAccountStub();

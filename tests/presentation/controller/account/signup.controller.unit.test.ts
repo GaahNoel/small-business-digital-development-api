@@ -1,3 +1,4 @@
+import { Provider } from '@prisma/client';
 import { AddAccount } from '@/domain/usecases/account/add-account';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
@@ -26,12 +27,14 @@ describe('SignUpController', () => {
       name: 'any_name',
       email: 'any_email',
       password: 'any_password',
+      provider: 'credentials' as Provider,
     };
     await sut.handle(request);
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email',
       password: 'any_password',
+      provider: 'credentials' as Provider,
     });
   });
 
@@ -41,6 +44,7 @@ describe('SignUpController', () => {
       email: 'any_email',
       name: undefined,
       password: 'any_password',
+      provider: 'credentials' as Provider,
     };
 
     const httpResponse = await sut.handle(request);
@@ -53,14 +57,13 @@ describe('SignUpController', () => {
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
+      provider: 'credentials' as Provider,
     };
 
     const httpResponse = await sut.handle(request);
     expect(httpResponse).toEqual(success({
       id: 'any_id',
-      name: 'any_name',
-      email: 'any_email',
-      password: 'any_password',
+      created: true,
     }));
   });
 
@@ -69,14 +72,13 @@ describe('SignUpController', () => {
     const request = {
       email: 'any_email',
       name: 'any_name',
+      provider: 'google' as Provider,
     };
 
     const httpResponse = await sut.handle(request);
     expect(httpResponse).toEqual(success({
       id: 'any_id',
-      name: 'any_name',
-      email: 'any_email',
-      password: expect.anything(),
+      created: expect.any(Boolean),
     }));
   });
 
@@ -87,6 +89,7 @@ describe('SignUpController', () => {
       name: 'any_name',
       email: 'any_email',
       password: 'any_password',
+      provider: 'credentials' as Provider,
     };
 
     const httpResponse = await sut.handle(request);

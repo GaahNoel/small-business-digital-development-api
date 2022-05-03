@@ -1,0 +1,60 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Small Business Digital Development",
+    "description": "API documentation",
+    "version": "1.0.0",
+    "contact": {
+      "email": "ga.noel@outlook.com"
+    }
+  },
+  "paths": {
+    "/api/signup": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Signup",
+        "description": "Signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "email": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "provider": {
+                    "type": "string",
+                    "enum": ["credentials", "facebook", "google"]
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "user 1",
+                  "email": "user@example.com",
+                  "password": "123456",
+                  "provider": "email"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}

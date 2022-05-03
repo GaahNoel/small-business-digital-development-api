@@ -9,6 +9,7 @@ namespace SignUpController {
     name: string;
     email: string;
     password?: string;
+    provider: 'facebook' | 'google' | 'credentials';
   };
 }
 export class SignUpController implements BaseController<SignUpController.Request> {
@@ -24,7 +25,10 @@ export class SignUpController implements BaseController<SignUpController.Request
 
       const accountAdded = await this.addAccount.add(data);
 
-      return success(accountAdded);
+      return success({
+        id: accountAdded.id,
+        created: accountAdded.created,
+      });
     } catch (error) {
       return internalServerError(error as Error);
     }
