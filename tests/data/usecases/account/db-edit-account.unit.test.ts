@@ -1,6 +1,7 @@
 import { DbEditAccount } from '@/data/usecases/account/db-edit-account';
 
 const fakeRequest = {
+  id: 'any-id',
   password: 'any-password',
   email: 'any-email',
   name: 'any-name',
@@ -15,14 +16,21 @@ describe('DbEditAccount UseCase', () => {
     }))),
   };
 
+  const hasher = {
+    hash: jest.fn(async () => 'hashed_password'),
+  };
+
   beforeEach(() => {
-    sut = new DbEditAccount(editAccountRepository);
+    sut = new DbEditAccount(editAccountRepository, hasher);
   });
 
   it('should call editAccountRepository with correct values', async () => {
     await sut.edit(fakeRequest);
 
-    expect(editAccountRepository.edit).toHaveBeenCalledWith(fakeRequest);
+    expect(editAccountRepository.edit).toHaveBeenCalledWith({
+      ...fakeRequest,
+      password: 'hashed_password',
+    });
   });
 
   it('should return success true and id of user if successfully edit with all params', async () => {
@@ -35,8 +43,9 @@ describe('DbEditAccount UseCase', () => {
   });
 
   it('should return success true and id of user if successfully edit with only password', async () => {
-    const { password, ...request } = fakeRequest;
+    const { password, id, ...request } = fakeRequest;
     const response = await sut.edit({
+      id,
       password,
     });
 
@@ -47,8 +56,9 @@ describe('DbEditAccount UseCase', () => {
   });
 
   it('should return success true and id of user if successfully edit with only email', async () => {
-    const { email, ...request } = fakeRequest;
+    const { email, id, ...request } = fakeRequest;
     const response = await sut.edit({
+      id,
       email,
     });
 
@@ -59,8 +69,9 @@ describe('DbEditAccount UseCase', () => {
   });
 
   it('should return success true and id of user if successfully edit with only name', async () => {
-    const { name, ...request } = fakeRequest;
+    const { name, id, ...request } = fakeRequest;
     const response = await sut.edit({
+      id,
       name,
     });
 
@@ -75,5 +86,15 @@ describe('DbEditAccount UseCase', () => {
     const promise = sut.edit(fakeRequest);
 
     await expect(promise).rejects.toThrow();
+  });
+
+  it('should hash the password if it was provided', async () => {
+    await sut.edit(fakeRequest);
+
+    expect(hasher.hash).toHaveBeenCalledWith('any-password');
+    expect(editAccountRepository.edit).toBeCalledWith({
+      ...fakeRequest,
+      password: 'hashed_password',
+    });
   });
 });

@@ -1,4 +1,5 @@
-import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
+import { exec } from 'child_process';
+import { mockAddAccountParams, mockEditAccountParams } from '@/tests/domain/mocks/account.mock';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
 import { prisma } from '@/infra/db/helpers';
 
@@ -29,8 +30,8 @@ describe('AccountPrismaRepository', () => {
   it('should return account on add success ', async () => {
     const sut = makeSut();
 
-    const httpRequest = mockAddAccountParams();
-    const account = await sut.add(httpRequest);
+    const request = mockAddAccountParams();
+    const account = await sut.add(request);
 
     expect(account).toBeTruthy();
     expect(account.id).toBeTruthy();
@@ -39,9 +40,9 @@ describe('AccountPrismaRepository', () => {
   it('should return existent account by email', async () => {
     const sut = makeSut();
 
-    const httpRequest = mockAddAccountParams();
-    const addedAccount = await sut.add(httpRequest);
-    const foundAccount = await sut.findByEmail({ email: httpRequest.email });
+    const request = mockAddAccountParams();
+    const addedAccount = await sut.add(request);
+    const foundAccount = await sut.findByEmail({ email: request.email });
 
     delete foundAccount.createdAt;
     expect(foundAccount.id).toEqual(addedAccount.id);
@@ -50,10 +51,21 @@ describe('AccountPrismaRepository', () => {
   it('should verify account by id', async () => {
     const sut = makeSut();
 
-    const httpRequest = mockAddAccountParams();
-    const { id } = await sut.add(httpRequest);
+    const request = mockAddAccountParams();
+    const { id } = await sut.add(request);
     const verified = await sut.verify(id);
 
     expect(verified).toBe(true);
+  });
+  it('should edit account if called with correct params', async () => {
+    const sut = makeSut();
+
+    const addRequest = mockAddAccountParams();
+    const { id } = await sut.add(addRequest);
+
+    const editRequest = mockEditAccountParams(id);
+    const { id: editedAccountId } = await sut.edit(editRequest);
+
+    expect(editedAccountId).toEqual(id);
   });
 });
