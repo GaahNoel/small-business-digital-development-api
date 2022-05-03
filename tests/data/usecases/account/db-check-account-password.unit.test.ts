@@ -33,4 +33,23 @@ describe('DbCheckAccountPassword UseCase', () => {
 
     expect(hashComparer.compare).toHaveBeenCalledWith(fakeData.password, mockAccountModel().password);
   });
+
+  it('should return id on result if password match', async () => {
+    const result = await sut.check(fakeData);
+
+    expect(result).toEqual({
+      id: mockAccountModel().id,
+      match: true,
+    });
+  });
+
+  it('should not return id on result if password not match', async () => {
+    (hashComparer.compare as jest.Mock).mockResolvedValue(false);
+    const result = await sut.check(fakeData);
+
+    expect(result).toEqual({
+      id: null,
+      match: false,
+    });
+  });
 });
