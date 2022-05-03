@@ -1,4 +1,3 @@
-import { exec } from 'child_process';
 import { mockAddAccountParams, mockEditAccountParams } from '@/tests/domain/mocks/account.mock';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
 import { prisma } from '@/infra/db/helpers';

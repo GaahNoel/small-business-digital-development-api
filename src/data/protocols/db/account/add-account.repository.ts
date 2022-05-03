@@ -6,5 +6,7 @@ export interface AddAccountRepository {
 
 export namespace AddAccountRepository {
   export type Params = AddAccount.Params;
-  export type Result = AddAccount.Result;
+  export type Result = {
+    id: string;
+  };
 }
