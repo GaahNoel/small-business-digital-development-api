@@ -10,6 +10,7 @@ export class DbCheckAccountPassword implements CheckAccountPassword {
     const isPasswordValid = await this.hashComparer.compare(addAccountParams.password, account.password);
 
     return {
+      id: isPasswordValid === true ? account.id : null,
       match: isPasswordValid,
     };
   }
