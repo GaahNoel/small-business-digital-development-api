@@ -1,7 +1,5 @@
-import { AddAccountRepository } from '@/data/protocols';
+import { AddAccountRepository, FindAccountByEmailRepository } from '@/data/protocols';
 import { Hasher } from '@/data/protocols/cryptography';
-import { FindAccountByEmailRepository } from '@/data/protocols/db/account';
-import { FindAccountByEmailAndProviderRepository } from '@/data/protocols/db/account/find-account-by-email-and-provider.repository';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 import { AddAccount } from '@/domain/usecases/account';
 import { makeVerifyAccountMessage } from '@/utils/email-messages/verify-account-message';
@@ -9,16 +7,15 @@ import { makeVerifyAccountMessage } from '@/utils/email-messages/verify-account-
 export class DbAddAccount implements AddAccount {
   constructor(
     private readonly addAccountRepository: AddAccountRepository,
-    private readonly findAccountByEmailAndProviderRepository: FindAccountByEmailAndProviderRepository,
+    private readonly findAccountByEmailRepository: FindAccountByEmailRepository,
     private readonly emailVerificationSender: EmailVerificationSender,
     private readonly hasher: Hasher,
   ) {}
 
   async add(data: AddAccount.Params): Promise<AddAccount.Result> {
-    const { email, password, provider } = data;
-    const accountAlreadyExists = await this.findAccountByEmailAndProviderRepository.findByEmailAndProvider({
+    const { email, password } = data;
+    const accountAlreadyExists = await this.findAccountByEmailRepository.findByEmail({
       email,
-      provider,
     });
 
     if (accountAlreadyExists) {
