@@ -7,7 +7,6 @@ import { FindAccountByEmailRepository } from '@/data/protocols/db/account';
 import { HasherSpy } from '../../mocks/cryptograph.mock';
 import { mockEmailVerificationSender } from '../../mocks/email.mock';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
-import { FindAccountByEmailAndProviderRepository } from '@/data/protocols/db/account/find-account-by-email-and-provider.repository';
 
 type Provider = 'facebook' | 'google' | 'credentials';
 
@@ -21,22 +20,22 @@ const mockAddAccountParams = () => ({
 type SutTypes = {
   sut: DbAddAccount,
   addAccountRepositoryStub: AddAccountRepository,
-  findAccountByEmailAndProviderRepository: FindAccountByEmailAndProviderRepository,
+  findAccountByEmailRepository: FindAccountByEmailRepository,
   hasherSpy: HasherSpy,
   emailVerificationSenderStub: EmailVerificationSender,
 };
 
 const makeSut = (): SutTypes => {
   const addAccountRepositoryStub = mockAddAccountRepository();
-  const findAccountByEmailAndProviderRepository = {
-    findByEmailAndProvider: jest.fn(async () => Promise.resolve(undefined)),
+  const findAccountByEmailRepository = {
+    findByEmail: jest.fn(async () => Promise.resolve(undefined)),
   };
   const hasherSpy = new HasherSpy();
   const emailVerificationSenderStub = mockEmailVerificationSender();
 
   const sut = new DbAddAccount(
     addAccountRepositoryStub,
-    findAccountByEmailAndProviderRepository,
+    findAccountByEmailRepository,
     emailVerificationSenderStub,
     hasherSpy,
   );
@@ -44,7 +43,7 @@ const makeSut = (): SutTypes => {
   return {
     sut,
     addAccountRepositoryStub,
-    findAccountByEmailAndProviderRepository,
+    findAccountByEmailRepository,
     hasherSpy,
     emailVerificationSenderStub,
   };
@@ -88,8 +87,8 @@ describe('DbAddAccount UseCase', () => {
   });
 
   it('should return account created true if account already exists', async () => {
-    const { sut, findAccountByEmailAndProviderRepository } = makeSut();
-    jest.spyOn(findAccountByEmailAndProviderRepository, 'findByEmailAndProvider').mockReturnValue(Promise.resolve(mockAccountModel()));
+    const { sut, findAccountByEmailRepository } = makeSut();
+    jest.spyOn(findAccountByEmailRepository, 'findByEmail').mockReturnValue(Promise.resolve(mockAccountModel()));
     const response = await sut.add(mockAddAccountParams());
     expect(response).toEqual({
       id: mockAccountModel().id,
