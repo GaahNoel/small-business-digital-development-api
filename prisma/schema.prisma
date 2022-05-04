@@ -17,7 +17,14 @@ model Account {
   email String @unique
   createdAt DateTime @default(now())
   verified Boolean @default(false)
+  provider Provider
   Businesses Business[] 
+}
+
+enum Provider {
+  facebook
+  google
+  credentials
 }
 
 model Business {

@@ -8,29 +8,34 @@ import { HasherSpy } from '../../mocks/cryptograph.mock';
 import { mockEmailVerificationSender } from '../../mocks/email.mock';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 
+type Provider = 'facebook' | 'google' | 'credentials';
+
 const mockAddAccountParams = () => ({
   name: 'any_name',
   email: 'any_email',
   password: 'any_password',
+  provider: 'credentials' as Provider,
 });
 
 type SutTypes = {
   sut: DbAddAccount,
   addAccountRepositoryStub: AddAccountRepository,
-  findAccountByEmailRepositoryStub: FindAccountByEmailRepository,
+  findAccountByEmailRepository: FindAccountByEmailRepository,
   hasherSpy: HasherSpy,
   emailVerificationSenderStub: EmailVerificationSender,
 };
 
 const makeSut = (): SutTypes => {
   const addAccountRepositoryStub = mockAddAccountRepository();
-  const findAccountByEmailRepositoryStub = mockFindAccountByEmailRepository();
+  const findAccountByEmailRepository = {
+    findByEmail: jest.fn(async () => Promise.resolve(undefined)),
+  };
   const hasherSpy = new HasherSpy();
   const emailVerificationSenderStub = mockEmailVerificationSender();
 
   const sut = new DbAddAccount(
     addAccountRepositoryStub,
-    findAccountByEmailRepositoryStub,
+    findAccountByEmailRepository,
     emailVerificationSenderStub,
     hasherSpy,
   );
@@ -38,7 +43,7 @@ const makeSut = (): SutTypes => {
   return {
     sut,
     addAccountRepositoryStub,
-    findAccountByEmailRepositoryStub,
+    findAccountByEmailRepository,
     hasherSpy,
     emailVerificationSenderStub,
   };
@@ -54,18 +59,23 @@ describe('DbAddAccount UseCase', () => {
       name: 'any_name',
       email: 'any_email',
       password: expect.anything(),
+      provider: 'credentials' as Provider,
     });
   });
 
   it('should call AddAccountRepository with empty password if it was not provided', async () => {
     const { sut, addAccountRepositoryStub } = makeSut();
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
-    const { password, ...mockedAccountWithoutPassword } = mockAddAccountParams();
-    await sut.add(mockedAccountWithoutPassword);
+    const { password, provider, ...mockedAccountWithoutPassword } = mockAddAccountParams();
+    await sut.add({
+      ...mockedAccountWithoutPassword,
+      provider: 'facebook' as Provider,
+    });
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email',
       password: '',
+      provider: 'facebook' as Provider,
     });
   });
 
@@ -76,11 +86,14 @@ describe('DbAddAccount UseCase', () => {
     expect(promise).rejects.toThrow();
   });
 
-  it('should return null if account already exists', async () => {
-    const { sut, findAccountByEmailRepositoryStub } = makeSut();
-    jest.spyOn(findAccountByEmailRepositoryStub, 'findByEmail').mockReturnValue(Promise.resolve(mockAccountModel()));
+  it('should return account created true if account already exists', async () => {
+    const { sut, findAccountByEmailRepository } = makeSut();
+    jest.spyOn(findAccountByEmailRepository, 'findByEmail').mockReturnValue(Promise.resolve(mockAccountModel()));
     const response = await sut.add(mockAddAccountParams());
-    expect(response).toBeFalsy();
+    expect(response).toEqual({
+      id: mockAccountModel().id,
+      created: false,
+    });
   });
 
   it('should return an account id on success', async () => {
@@ -88,6 +101,7 @@ describe('DbAddAccount UseCase', () => {
     const account = await sut.add(mockAddAccountParams());
     expect(account).toEqual({
       id: mockAccountModel().id,
+      created: true,
     });
   });
 
