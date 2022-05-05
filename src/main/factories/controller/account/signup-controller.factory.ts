@@ -1,4 +1,4 @@
-import { DbAddAccount } from '@/data/usecases/account/db-add-account';
+import { DbAddAccount } from '@/data/usecases/account';
 import { BcryptAdapter } from '@/infra/cryptography';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';

@@ -6,7 +6,7 @@ export const mockAddCategoryParams = (): AddCategory.Params => ({
   description: 'any_description',
 });
 
-export const mockAddCategoryModel = (): CategoryModel => ({
+export const mockCategoryModel = (): CategoryModel => ({
   id: 'any_id',
   description: 'any_description',
   ...mockAddCategoryParams(),
