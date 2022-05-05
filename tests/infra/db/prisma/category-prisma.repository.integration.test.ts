@@ -29,15 +29,60 @@ describe('CategoryPrismaRepository', () => {
 
     prisma.$disconnect();
   });
-  it('should add a new category', async () => {
-    const { sut } = makeSut();
+  describe('add', () => {
+    it('should add a new category', async () => {
+      const { sut } = makeSut();
 
-    const response = await sut.add(mockAddCategoryParams());
+      const response = await sut.add(mockAddCategoryParams());
 
-    expect(response).toEqual({
-      id: expect.anything(),
-      createdAt: expect.anything(),
-      ...mockAddCategoryParams(),
+      expect(response).toEqual({
+        id: expect.anything(),
+        createdAt: expect.anything(),
+        ...mockAddCategoryParams(),
+      });
+    });
+
+    it('should throw error if prisma throws', () => {
+      const { sut } = makeSut();
+
+      jest.spyOn(prisma.category, 'create').mockRejectedValueOnce(new Error());
+
+      const promise = sut.add(mockAddCategoryParams());
+
+      expect(promise).rejects.toThrow();
+    });
+  });
+
+  describe('list', () => {
+    it('should return a list of categories', async () => {
+      const { sut } = makeSut();
+
+      await prisma.category.create({
+        data: {
+          ...mockAddCategoryParams(),
+        },
+      });
+
+      await prisma.category.create({
+        data: {
+          ...mockAddCategoryParams(),
+        },
+      });
+
+      const response = await sut.list();
+
+      expect(response).toEqual([
+        {
+          id: expect.anything(),
+          createdAt: expect.anything(),
+          ...mockAddCategoryParams(),
+        },
+        {
+          id: expect.anything(),
+          createdAt: expect.anything(),
+          ...mockAddCategoryParams(),
+        },
+      ]);
     });
   });
 });
