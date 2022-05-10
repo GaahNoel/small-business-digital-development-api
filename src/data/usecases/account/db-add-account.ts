@@ -1,5 +1,5 @@
 import { AddAccountRepository, FindAccountByEmailRepository } from '@/data/protocols';
-import { Hasher } from '@/data/protocols/cryptography';
+import { Encrypter, Hasher } from '@/data/protocols/cryptography';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 import { AddAccount } from '@/domain/usecases/account';
 import { makeVerifyAccountMessage } from '@/utils/email-messages/verify-account-message';
@@ -10,6 +10,7 @@ export class DbAddAccount implements AddAccount {
     private readonly findAccountByEmailRepository: FindAccountByEmailRepository,
     private readonly emailVerificationSender: EmailVerificationSender,
     private readonly hasher: Hasher,
+    private readonly encrypter: Encrypter,
   ) {}
 
   async add(data: AddAccount.Params): Promise<AddAccount.Result> {
@@ -33,10 +34,11 @@ export class DbAddAccount implements AddAccount {
     });
 
     if (data.password) {
+      const encryptedEmail = await this.encrypter.encrypt(email);
       this.emailVerificationSender.send({
         toEmail: email,
         subject: 'Verification email',
-        message: makeVerifyAccountMessage(data.name),
+        message: makeVerifyAccountMessage(data.name, encryptedEmail),
       });
     }
 

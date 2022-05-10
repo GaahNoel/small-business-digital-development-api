@@ -24,6 +24,9 @@ type SutTypes = {
   hasherSpy: HasherSpy,
   emailVerificationSenderStub: EmailVerificationSender,
 };
+const encrypter = {
+  encrypt: jest.fn(async () => Promise.resolve('any_token')),
+};
 
 const makeSut = (): SutTypes => {
   const addAccountRepositoryStub = mockAddAccountRepository();
@@ -38,6 +41,7 @@ const makeSut = (): SutTypes => {
     findAccountByEmailRepository,
     emailVerificationSenderStub,
     hasherSpy,
+    encrypter,
   );
 
   return {
@@ -118,6 +122,13 @@ describe('DbAddAccount UseCase', () => {
     await sut.add(mockAddAccountParams());
 
     expect(sendEmailSpy).toHaveBeenCalledTimes(1);
+  });
+  it('should call encrypter with email to send email verification', async () => {
+    const { sut } = makeSut();
+
+    await sut.add(mockAddAccountParams());
+
+    expect(encrypter.encrypt).toHaveBeenCalledWith('any_email');
   });
 
   it('should not send email verification if password was not provided', async () => {
