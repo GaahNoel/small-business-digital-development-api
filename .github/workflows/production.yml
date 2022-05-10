@@ -38,11 +38,5 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           branch: "main"
-        env:
-          HD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
-          HD_EMAIL_ACCOUNT: ${{secrets.EMAIL_ACCOUNT}}
-          HD_EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
-          HD_WEB_URL: ${{secrets.WEB_URL}}
-          HD_JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 
