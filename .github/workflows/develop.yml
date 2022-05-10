@@ -14,14 +14,18 @@ env:
   DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
   EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
   EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+  WEB_URL: ${{ secrets.WEB_URL }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 jobs: 
   QualityGate:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/sbdd?schema=public"
-      EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
-      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}  
+      EMAIL_ACCOUNT: ${{ env.EMAIL_ACCOUNT }}
+      EMAIL_PASSWORD: ${{ env.EMAIL_PASSWORD }}  
+      WEB_URL: ${{ env.WEB_URL }}
+      JWT_SECRET: ${{ env.JWT_SECRET }}
 
     steps:
       - name: Checkout

@@ -1,5 +1,5 @@
 import { DbAddAccount } from '@/data/usecases/account';
-import { BcryptAdapter } from '@/infra/cryptography';
+import { BcryptAdapter, JwtAdapter } from '@/infra/cryptography';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 import { env } from '@/main/config/env';
@@ -21,11 +21,14 @@ export const makeSignUpController = (): BaseController => {
   );
   const hasher = new BcryptAdapter(salt);
 
+  const encrypter = new JwtAdapter(env.jwtSecret);
+
   const addAccount = new DbAddAccount(
     addAccountRepository,
     findAccountByEmailRepository,
     emailVerificationSender,
     hasher,
+    encrypter,
   );
 
   return new SignUpController(addAccount);

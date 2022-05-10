@@ -7,4 +7,5 @@ export const env = {
   emailAccount: process.env.EMAIL_ACCOUNT,
   emailPassword: process.env.EMAIL_PASSWORD,
   jwtSecret: process.env.JWT_SECRET,
+  webUrl: process.env.WEB_URL,
 };

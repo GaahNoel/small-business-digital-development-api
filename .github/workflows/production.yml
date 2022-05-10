@@ -9,6 +9,9 @@ env:
   DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
   EMAIL_ACCOUNT: ${{ secrets.EMAIL_ACCOUNT }}
   EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+  WEB_URL: ${{ secrets.WEB_URL }}
+  JWT_SECRET: ${{ env.JWT_SECRET }}
+  
 
 jobs: 
   Deploy:
@@ -36,6 +39,9 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           branch: "main"
         env:
-          EMAIL_ACCOUNT: ${{env.EMAIL_ACCOUNT}}
-          EMAIL_PASSWORD: ${{env.EMAIL_PASSWORD}}
+          HD_EMAIL_ACCOUNT: ${{env.EMAIL_ACCOUNT}}
+          HD_EMAIL_PASSWORD: ${{env.EMAIL_PASSWORD}}
+          HD_WEB_URL: ${{env.WEB_URL}}
+          HD_JWT_SECRET: ${{ env.JWT_SECRET }}
+
 
