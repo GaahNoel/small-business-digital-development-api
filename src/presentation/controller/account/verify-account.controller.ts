@@ -9,7 +9,7 @@ namespace VerifyAccountController {
 }
 
 export class VerifyAccountController implements BaseController {
-  constructor(private readonly verifyAccount: VerifyAccount) {}
+  constructor(private readonly verifyAccount: VerifyAccount) { }
 
   async handle(data: VerifyAccountController.Request): Promise<HttpResponse> {
     try {
@@ -17,6 +17,7 @@ export class VerifyAccountController implements BaseController {
 
       return success(result);
     } catch (error) {
+      console.log(error);
       return internalServerError(error);
     }
   }

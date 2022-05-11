@@ -11,7 +11,7 @@ export class DbAddAccount implements AddAccount {
     private readonly emailVerificationSender: EmailVerificationSender,
     private readonly hasher: Hasher,
     private readonly encrypter: Encrypter,
-  ) {}
+  ) { }
 
   async add(data: AddAccount.Params): Promise<AddAccount.Result> {
     const { email, password } = data;
@@ -34,11 +34,11 @@ export class DbAddAccount implements AddAccount {
     });
 
     if (data.password) {
-      const encryptedEmail = await this.encrypter.encrypt(email);
+      const encryptedId = await this.encrypter.encrypt(result.id);
       this.emailVerificationSender.send({
         toEmail: email,
         subject: 'Verification email',
-        message: makeVerifyAccountMessage(data.name, encryptedEmail),
+        message: makeVerifyAccountMessage(data.name, encryptedId),
       });
     }
 
