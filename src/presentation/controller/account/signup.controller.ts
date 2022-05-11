@@ -30,6 +30,7 @@ export class SignUpController implements BaseController<SignUpController.Request
         created: accountAdded.created,
       });
     } catch (error) {
+      console.error(error);
       return internalServerError(error as Error);
     }
   }
