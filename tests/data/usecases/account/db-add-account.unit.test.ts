@@ -8,7 +8,7 @@ import { HasherSpy } from '../../mocks/cryptograph.mock';
 import { mockEmailVerificationSender } from '../../mocks/email.mock';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 
-type Provider = 'facebook' | 'google' | 'credentials';
+type Provider = 'socialMedia' | 'credentials';
 
 const mockAddAccountParams = () => ({
   name: 'any_name',
@@ -74,13 +74,13 @@ describe('DbAddAccount UseCase', () => {
     const { password, provider, ...mockedAccountWithoutPassword } = mockAddAccountParams();
     await sut.add({
       ...mockedAccountWithoutPassword,
-      provider: 'facebook' as Provider,
+      provider: 'socialMedia' as Provider,
     });
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email',
       password: '',
-      provider: 'facebook' as Provider,
+      provider: 'socialMedia' as Provider,
       verified: true,
     });
   });

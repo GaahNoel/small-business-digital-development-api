@@ -9,7 +9,7 @@ namespace SignUpController {
     name: string;
     email: string;
     password?: string;
-    provider: 'facebook' | 'google' | 'credentials';
+    provider: 'socialMedia' | 'credentials';
   };
 }
 export class SignUpController implements BaseController<SignUpController.Request> {
@@ -17,12 +17,7 @@ export class SignUpController implements BaseController<SignUpController.Request
 
   async handle(data: SignUpController.Request): Promise<HttpResponse> {
     try {
-      const { name, email } = data;
-
-      if (!name || !email) {
-        return badRequest(new MissingParamsError());
-      }
-
+      this.validateParams(data);
       const accountAdded = await this.addAccount.add(data);
 
       return success({
@@ -30,7 +25,33 @@ export class SignUpController implements BaseController<SignUpController.Request
         created: accountAdded.created,
       });
     } catch (error) {
+      if (error instanceof MissingParamsError) {
+        return badRequest(error);
+      }
+
       return internalServerError(error as Error);
+    }
+  }
+
+  private validateParams(data: SignUpController.Request): void {
+    if (!data.name) {
+      throw new MissingParamsError({
+        params: ['name'],
+      });
+    }
+
+    if (!data.email) {
+      throw new MissingParamsError({
+        params: ['email'],
+      });
+    }
+
+    if (data.provider === 'credentials') {
+      if (!data.password) {
+        throw new MissingParamsError({
+          params: ['password'],
+        });
+      }
     }
   }
 }

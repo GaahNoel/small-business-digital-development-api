@@ -55,7 +55,9 @@ describe('CheckAccountPasswordController', () => {
 
     const response = await sut.handle(fakeInvalidValidRequest);
 
-    expect(response).toEqual(badRequest(new MissingParamsError()));
+    expect(response).toEqual(badRequest(new MissingParamsError({
+      params: ['password'],
+    })));
   });
 
   it('should return bad request if email was not provided', async () => {
@@ -66,7 +68,9 @@ describe('CheckAccountPasswordController', () => {
 
     const response = await sut.handle(fakeInvalidValidRequest);
 
-    expect(response).toEqual(badRequest(new MissingParamsError()));
+    expect(response).toEqual(badRequest(new MissingParamsError({
+      params: ['email'],
+    })));
   });
 
   it('should return internalServerError if CheckAccountPassword throws', async () => {

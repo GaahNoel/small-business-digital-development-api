@@ -6,5 +6,5 @@ export type AccountModel = {
   createdAt?: Date;
   businessIds?: string[]
   verified: boolean;
-  provider: 'credentials' | 'facebook' | 'google';
+  provider: 'credentials' | 'socialMedia';
 };

@@ -9,7 +9,7 @@ export namespace GetAccountByEmail {
     name: string,
     id: string,
     verified: boolean,
-    provider: 'credentials' | 'facebook' | 'google',
+    provider: 'credentials' | 'socialMedia',
   };
 }
 
