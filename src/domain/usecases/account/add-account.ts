@@ -2,7 +2,8 @@ export type AddAccountParams = {
   name: string;
   email: string;
   password?: string;
-  provider: 'facebook' | 'google' | 'credentials';
+  provider: 'socialMedia' | 'credentials';
+  verified?: boolean;
 };
 
 export namespace AddAccount {

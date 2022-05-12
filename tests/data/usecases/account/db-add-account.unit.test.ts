@@ -8,7 +8,7 @@ import { HasherSpy } from '../../mocks/cryptograph.mock';
 import { mockEmailVerificationSender } from '../../mocks/email.mock';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 
-type Provider = 'facebook' | 'google' | 'credentials';
+type Provider = 'socialMedia' | 'credentials';
 
 const mockAddAccountParams = () => ({
   name: 'any_name',
@@ -64,6 +64,7 @@ describe('DbAddAccount UseCase', () => {
       email: 'any_email',
       password: expect.anything(),
       provider: 'credentials' as Provider,
+      verified: false,
     });
   });
 
@@ -73,13 +74,14 @@ describe('DbAddAccount UseCase', () => {
     const { password, provider, ...mockedAccountWithoutPassword } = mockAddAccountParams();
     await sut.add({
       ...mockedAccountWithoutPassword,
-      provider: 'facebook' as Provider,
+      provider: 'socialMedia' as Provider,
     });
     expect(addSpy).toHaveBeenCalledWith({
       name: 'any_name',
       email: 'any_email',
       password: '',
-      provider: 'facebook' as Provider,
+      provider: 'socialMedia' as Provider,
+      verified: true,
     });
   });
 
@@ -128,7 +130,7 @@ describe('DbAddAccount UseCase', () => {
 
     await sut.add(mockAddAccountParams());
 
-    expect(encrypter.encrypt).toHaveBeenCalledWith('any_email');
+    expect(encrypter.encrypt).toHaveBeenCalledWith('any_id');
   });
 
   it('should not send email verification if password was not provided', async () => {

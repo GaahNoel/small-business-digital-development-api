@@ -38,7 +38,7 @@ describe('SignUpController', () => {
     });
   });
 
-  it('should return bad request if required params are not provided', async () => {
+  it('should return bad request if name is not provided', async () => {
     const { sut } = makeSut();
     const request = {
       email: 'any_email',
@@ -48,7 +48,39 @@ describe('SignUpController', () => {
     };
 
     const httpResponse = await sut.handle(request);
-    expect(httpResponse).toEqual(badRequest(new MissingParamsError()));
+    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+      params: ['name'],
+    })));
+  });
+
+  it('should return bad request if email is not provided', async () => {
+    const { sut } = makeSut();
+    const request = {
+      email: undefined,
+      name: 'any_name',
+      password: 'any_password',
+      provider: 'credentials' as Provider,
+    };
+
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+      params: ['email'],
+    })));
+  });
+
+  it('should return bad request if is credentials and password is not provided', async () => {
+    const { sut } = makeSut();
+    const request = {
+      email: 'any_email',
+      name: 'any_name',
+      password: undefined,
+      provider: 'credentials' as Provider,
+    };
+
+    const httpResponse = await sut.handle(request);
+    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+      params: ['password'],
+    })));
   });
 
   it('should return response status success if receive correct params', async () => {

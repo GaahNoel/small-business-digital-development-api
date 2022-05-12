@@ -36,6 +36,19 @@ describe('AccountPrismaRepository', () => {
     expect(account.id).toBeTruthy();
   });
 
+  it('should use verified true if provided ', async () => {
+    const sut = makeSut();
+
+    const params = mockAddAccountParams();
+    const account = await sut.add({
+      ...params,
+      verified: true,
+    });
+
+    expect(account).toBeTruthy();
+    expect(account.id).toBeTruthy();
+  });
+
   it('should return existent account by email', async () => {
     const sut = makeSut();
 

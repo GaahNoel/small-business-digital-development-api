@@ -7,7 +7,8 @@ export namespace CheckAccountPassword {
   export type Params = CheckAccountPasswordParams;
   export type Result = {
     id: string | null;
-    match: boolean
+    match: boolean,
+    verified: boolean,
   };
 }
 

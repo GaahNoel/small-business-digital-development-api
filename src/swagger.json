@@ -30,7 +30,7 @@
                   },
                   "provider": {
                     "type": "string",
-                    "enum": ["credentials", "facebook", "google"]
+                    "enum": ["credentials", "socialMedia"]
                   },
                   "password": {
                     "type": "string"

@@ -18,5 +18,6 @@ export const mockEditAccountParams = (id: string): EditAccountParams => ({
 
 export const mockAccountModel = (): AccountModel => ({
   id: 'any_id',
+  verified: true,
   ...mockAddAccountParams(),
 });
