@@ -8,9 +8,6 @@ namespace CheckAccountPasswordController {
     email: string;
     password: string;
   };
-  export type Response = {
-    match: boolean;
-  };
 }
 
 export class CheckAccountPasswordController implements BaseController {
@@ -18,9 +15,7 @@ export class CheckAccountPasswordController implements BaseController {
 
   async handle(data: CheckAccountPasswordController.Request): Promise<HttpResponse> {
     try {
-      if (!data.email || !data.password) {
-        return badRequest(new MissingParamsError());
-      }
+      this.validateParams(data);
 
       const result = await this.checkAccountPassword.check({
         email: data.email,
@@ -29,7 +24,25 @@ export class CheckAccountPasswordController implements BaseController {
 
       return success(result);
     } catch (error) {
+      if (error instanceof MissingParamsError) {
+        return badRequest(error);
+      }
+
       return internalServerError(error);
+    }
+  }
+
+  private validateParams(data: CheckAccountPasswordController.Request): void {
+    if (!data.email) {
+      throw new MissingParamsError({
+        params: ['email'],
+      });
+    }
+
+    if (!data.password) {
+      throw new MissingParamsError({
+        params: ['password'],
+      });
     }
   }
 }

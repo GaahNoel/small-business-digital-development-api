@@ -1,6 +1,6 @@
 import { env } from '@/main/config/env';
 
-const webUrl = `${env.webUrl}}/email-validation`;
+const webUrl = `${env.webUrl}/email-validation`;
 export const makeVerifyAccountMessage = (accountName, hashedEmail) => (
   `
     <span>Olá <strong>${accountName}</strong></span>,
