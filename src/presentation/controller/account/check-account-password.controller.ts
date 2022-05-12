@@ -8,9 +8,6 @@ namespace CheckAccountPasswordController {
     email: string;
     password: string;
   };
-  export type Response = {
-    match: boolean;
-  };
 }
 
 export class CheckAccountPasswordController implements BaseController {

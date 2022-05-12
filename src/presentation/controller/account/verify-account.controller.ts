@@ -17,7 +17,6 @@ export class VerifyAccountController implements BaseController {
 
       return success(result);
     } catch (error) {
-      console.log(error);
       return internalServerError(error);
     }
   }

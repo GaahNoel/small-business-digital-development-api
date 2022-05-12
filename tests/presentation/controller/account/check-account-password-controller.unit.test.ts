@@ -14,7 +14,7 @@ describe('CheckAccountPasswordController', () => {
 
   beforeEach(() => {
     checkAccountPassword = {
-      check: jest.fn(async () => ({ id: 'any_id', match: true })),
+      check: jest.fn(async () => ({ id: 'any_id', match: true, verified: true })),
     };
 
     sut = new CheckAccountPasswordController(checkAccountPassword);
@@ -31,17 +31,19 @@ describe('CheckAccountPasswordController', () => {
     expect(response).toEqual(success({
       match: true,
       id: 'any_id',
+      verified: true,
     }));
   });
 
   it('should sut return success with match false if called with right params', async () => {
-    jest.spyOn(checkAccountPassword, 'check').mockReturnValueOnce(Promise.resolve({ match: false, id: null }));
+    jest.spyOn(checkAccountPassword, 'check').mockReturnValueOnce(Promise.resolve({ match: false, id: null, verified: false }));
 
     const response = await sut.handle(fakeValidRequest);
 
     expect(response).toEqual(success({
       match: false,
       id: null,
+      verified: false,
     }));
   });
 

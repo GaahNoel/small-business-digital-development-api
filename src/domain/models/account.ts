@@ -5,4 +5,6 @@ export type AccountModel = {
   email: string;
   createdAt?: Date;
   businessIds?: string[]
+  verified: boolean;
+  provider: 'credentials' | 'facebook' | 'google';
 };

@@ -64,6 +64,7 @@ describe('DbAddAccount UseCase', () => {
       email: 'any_email',
       password: expect.anything(),
       provider: 'credentials' as Provider,
+      verified: false,
     });
   });
 
@@ -80,6 +81,7 @@ describe('DbAddAccount UseCase', () => {
       email: 'any_email',
       password: '',
       provider: 'facebook' as Provider,
+      verified: true,
     });
   });
 
@@ -128,7 +130,7 @@ describe('DbAddAccount UseCase', () => {
 
     await sut.add(mockAddAccountParams());
 
-    expect(encrypter.encrypt).toHaveBeenCalledWith('any_email');
+    expect(encrypter.encrypt).toHaveBeenCalledWith('any_id');
   });
 
   it('should not send email verification if password was not provided', async () => {

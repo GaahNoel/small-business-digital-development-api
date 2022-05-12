@@ -28,9 +28,12 @@ export class DbAddAccount implements AddAccount {
 
     const hashedPassword = password ? await this.hasher.hash(password) : '';
 
+    const isDefaultVerified = data.provider !== 'credentials';
+
     const result = await this.addAccountRepository.add({
       ...data,
       password: hashedPassword,
+      verified: isDefaultVerified,
     });
 
     if (data.password) {

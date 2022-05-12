@@ -11,6 +11,7 @@ export class AccountPrismaRepository implements AddAccountRepository, FindAccoun
         email: data.email,
         password: data.password,
         provider: data.provider,
+        verified: data.verified ?? false,
       },
     });
     return {

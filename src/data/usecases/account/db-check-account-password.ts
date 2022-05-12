@@ -12,6 +12,7 @@ export class DbCheckAccountPassword implements CheckAccountPassword {
     return {
       id: isPasswordValid === true ? account.id : null,
       match: isPasswordValid,
+      verified: account.verified,
     };
   }
 }

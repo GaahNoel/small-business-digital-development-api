@@ -5,6 +5,7 @@ export const adaptRoute = (controller: BaseController) => async (req: Request, r
   const httpRequest = {
     ...(req.body || {}),
     ...(req.params || {}),
+    ...(req.query || {}),
   };
 
   const successStatus = [200];

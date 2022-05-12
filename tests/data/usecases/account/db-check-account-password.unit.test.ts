@@ -40,6 +40,7 @@ describe('DbCheckAccountPassword UseCase', () => {
     expect(result).toEqual({
       id: mockAccountModel().id,
       match: true,
+      verified: true,
     });
   });
 
@@ -50,6 +51,7 @@ describe('DbCheckAccountPassword UseCase', () => {
     expect(result).toEqual({
       id: null,
       match: false,
+      verified: true,
     });
   });
 });

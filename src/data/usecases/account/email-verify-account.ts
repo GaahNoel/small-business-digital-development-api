@@ -7,7 +7,6 @@ export class EmailVerifyAccount implements VerifyAccount {
 
   async verify(params: VerifyAccount.Params): Promise<VerifyAccount.Result> {
     const decryptedParams = await this.decrypter.decrypt(params) as any;
-    console.log(decryptedParams);
     const verified = await this.verifyAccountRepository.verify(decryptedParams.id);
     return {
       verified,
