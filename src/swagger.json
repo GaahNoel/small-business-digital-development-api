@@ -9,11 +9,38 @@
     }
   },
   "paths": {
+    "/api/account/email": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "GetUserByEmail",
+        "description": "Get user information providing email",
+        "parameters": [{
+          "name": "email",
+          "in": "query",
+          "description": "Email of user",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/signup": {
       "post": {
         "tags": ["Account"],
-        "summary": "Signup",
-        "description": "Signup",
+        "summary": "SignUp",
+        "description": "Register an account with the given email and password, or not given password if was socialMedia",
         "requestBody": {
           "content": {
             "application/json": {
@@ -47,8 +74,423 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/account/check-password": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Check Password",
+        "description": "Check if password matches with the given account id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "password": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "email": "user@example.com",
+                  "password": "123456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/account/edit": {
+      "put": {
+        "tags": ["Account"],
+        "summary": "Edit Account",
+        "description": "Edit account information",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Account Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "email": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "password": {
+                    "type": "string",
+                    "required": false
+                  }
+                },
+                "example": {
+                  "email": "user@example.com",
+                  "password": "123456",
+                  "name": "user 1"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/account/verify": {
+      "put": {
+        "tags": ["Account"],
+        "summary": "Verify",
+        "description": "Make user verified with jwt including account id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "id": "jwt-with-id"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/business/list": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List",
+        "description": "List business",
+        "parameters": [{
+          "name": "accountId",
+          "in": "path",
+          "description": "Account id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/business/create": {
+      "post": {
+        "tags": ["Business"],
+        "summary": "Create",
+        "description": "Created new business for user",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "description": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "accountId": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "city": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "country": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "latitude": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "longitude": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "state": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "street": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "zip": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "name":"business 1",
+                  "description":"business for some reason",
+                  "imageUrl":"image.url.com",
+                  "accountId":"123456",
+                  "city":"city",
+                  "country":"country",  
+                  "latitude":"123123",
+                  "longitude":"-123123",
+                  "state":"state",
+                  "street":"street",
+                  "zip":"111111000"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/category/list": {
+      "get": {
+        "tags": ["Category"],
+        "summary": "List",
+        "description": "List all categories",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/category/create": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Create",
+        "description": "Create new category",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "description": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "name":"category 1",
+                  "description":"Any category of product/service"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/product/list": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "List",
+        "description": "List all products from business",
+        "parameters": [{
+          "name": "businessId",
+          "in": "path",
+          "description": "Business id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/product/create": {
+      "post": {
+        "tags": ["Product"],
+        "summary": "Create",
+        "description": "Create new product",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "product",
+                      "service"
+                    ],
+                    "required": true
+                  },
+                  "description": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "listPrice": {
+                    "type": "number",
+                    "required": true
+                  },
+                  "salePrice": {
+                    "type": "number",
+                    "required": true
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "businessId": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "categoryId": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "name":"product 1",
+                  "type":"product",
+                  "description":"a product",
+                  "listPrice":100,
+                  "salePrice":80,
+                  "imageUrl":"image.url.com",
+                  "businessId":"123",
+                  "categoryId":"123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
           },
           "500": {
             "description": "Internal server error"
