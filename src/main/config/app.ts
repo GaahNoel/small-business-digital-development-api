@@ -5,7 +5,7 @@ import { setupRoutes } from './routes';
 import swaggerFile from '@/swagger.json';
 
 const app = express();
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 setupMiddlewares(app);
 setupRoutes(app);
