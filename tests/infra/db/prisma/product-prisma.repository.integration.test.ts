@@ -52,29 +52,49 @@ describe('ProductPrismaRepository', () => {
   beforeEach(async () => {
     await prisma.product.deleteMany({});
   });
-  it('should add a new Product', async () => {
-    const { sut } = makeSut();
+  describe('add', () => {
+    it('should add a new Product', async () => {
+      const { sut } = makeSut();
 
-    const response = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
+      const response = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
 
-    expect(response).toEqual({
-      ...mockAddProductParams(),
-      id: expect.anything(),
-      createdAt: expect.anything(),
-      businessId: mockBusiness.id,
-      categoryId: mockCategory.id,
+      expect(response).toEqual({
+        ...mockAddProductParams(),
+        id: expect.anything(),
+        createdAt: expect.anything(),
+        businessId: mockBusiness.id,
+        categoryId: mockCategory.id,
+      });
     });
   });
 
-  it('should list all products from business', async () => {
-    const { sut } = makeSut();
+  describe('list', () => {
+    it('should list all products from business', async () => {
+      const { sut } = makeSut();
 
-    const addedProduct = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
+      const addedProduct = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
 
-    const response = await sut.list({
-      businessId: mockBusiness.id,
+      const response = await sut.list({
+        businessId: mockBusiness.id,
+      });
+
+      expect(response).toEqual([addedProduct]);
     });
+  });
 
-    expect(response).toEqual([addedProduct]);
+  describe('delete', () => {
+    it('should delete a product', async () => {
+      const { sut } = makeSut();
+
+      const addedProduct = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
+
+      const response = await sut.delete({
+        productId: addedProduct.id,
+      });
+
+      expect(response).toEqual({
+        id: addedProduct.id,
+      });
+    });
   });
 });

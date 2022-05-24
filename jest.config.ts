@@ -49,5 +49,6 @@ export default {
       "lines": 100,
       "statements": 100
     }
-  }
+  },
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
 };
