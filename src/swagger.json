@@ -127,7 +127,7 @@
         }
       }
     },
-    "/api/account/edit": {
+    "/api/account/edit/{id}": {
       "put": {
         "tags": ["Account"],
         "summary": "Edit Account",
@@ -224,7 +224,7 @@
         }
       }
     },
-    "/api/business/list": {
+    "/api/business/list/{accountId}": {
       "get": {
         "tags": ["Business"],
         "summary": "List",
@@ -393,7 +393,7 @@
         }
       }
     },
-    "/api/product/list": {
+    "/api/product/list/{businessId}": {
       "get": {
         "tags": ["Product"],
         "summary": "List",
@@ -488,6 +488,39 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/product/delete/{productId}": {
+      "delete": {
+        "tags": ["Product"],
+        "summary": "Create",
+        "description": "Create new product",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }, 
+        {
+          "name": "productId",
+          "in": "path",
+          "description": "Product Id for delete",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
         "responses": {
           "200": {
             "description": "Success"
