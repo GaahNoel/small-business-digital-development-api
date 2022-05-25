@@ -5,9 +5,10 @@ import { prisma } from '@/infra/db/helpers';
 import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account';
 import { ListBusinessFromAccount } from '@/domain/usecases/business';
+import { DeleteBusinessRepository } from '@/data';
 
 type SutTypes = {
-  sut: AddBusinessRepository & ListBusinessFromAccount;
+  sut: AddBusinessRepository & ListBusinessFromAccount & DeleteBusinessRepository;
   addAccountRepository: AccountPrismaRepository;
 };
 
@@ -100,5 +101,24 @@ describe('BusinessPrismaRepository', () => {
     });
 
     expect(result).toEqual([]);
+  });
+
+  it('should return business on delete success', async () => {
+    const { sut, addAccountRepository } = makeSut();
+    const account = mockAddAccountParams();
+
+    const addedAccount = await addAccountRepository.add(account);
+
+    const business = mockAddBusinessParams(addedAccount.id);
+    const addedBusiness = await sut.add(business);
+
+    const result = await sut.delete({
+      businessId: addedBusiness.id,
+    });
+
+    expect(result).toEqual({
+      id: addedBusiness.id,
+      delete: true,
+    });
   });
 });

@@ -340,6 +340,39 @@
         }
       }
     },
+    "/api/product/delete/{businessId}": {
+      "delete": {
+        "tags": ["Business"],
+        "summary": "Delete",
+        "description": "Delete business",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }, 
+        {
+          "name": "businessId",
+          "in": "path",
+          "description": "Business Id for delete",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/category/list": {
       "get": {
         "tags": ["Category"],
@@ -501,8 +534,8 @@
     "/api/product/delete/{productId}": {
       "delete": {
         "tags": ["Product"],
-        "summary": "Create",
-        "description": "Create new product",
+        "summary": "Delete",
+        "description": "Delete product",
         "parameters": [{
           "name": "token",
           "in": "header",
