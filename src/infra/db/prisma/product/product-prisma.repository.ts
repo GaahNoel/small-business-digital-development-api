@@ -14,6 +14,14 @@ export class ProductPrismaRepository implements AddProductRepository, ListProduc
       where: {
         businessId: data.businessId,
       },
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     return products;

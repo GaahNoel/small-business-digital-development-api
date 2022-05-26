@@ -18,5 +18,9 @@ export namespace ListProductFromBusiness {
     businessId: string;
     categoryId: string;
     createdAt?: Date;
+    category: {
+      id: string;
+      name: string;
+    }
   }[];
 }
