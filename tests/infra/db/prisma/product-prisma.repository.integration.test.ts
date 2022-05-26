@@ -78,7 +78,13 @@ describe('ProductPrismaRepository', () => {
         businessId: mockBusiness.id,
       });
 
-      expect(response).toEqual([addedProduct]);
+      expect(response).toEqual([{
+        ...addedProduct,
+        category: {
+          id: mockCategory.id,
+          name: 'any_name',
+        },
+      }]);
     });
   });
 

@@ -1,14 +1,22 @@
 import { ListProductFromBusinessRepository } from '@/data/protocols/db/product/list-product-from-business.repository';
 import { DbListProductFromBusiness } from '@/data/usecases/product';
+import { mockCategoryModel } from '@/tests/domain/mocks/category.mock';
 import { mockAddProductModel } from '@/tests/domain/mocks/product.mock';
 
 describe('DbListProductFromBusiness', () => {
   let sut: DbListProductFromBusiness;
   let listProductFromBusinessRepository: ListProductFromBusinessRepository;
+  const mockedCategory = mockCategoryModel();
 
   beforeEach(async () => {
     listProductFromBusinessRepository = {
-      list: jest.fn().mockReturnValue([mockAddProductModel()]),
+      list: jest.fn().mockReturnValue([{
+        ...mockAddProductModel(),
+        category: {
+          id: mockedCategory.id,
+          name: mockedCategory.name,
+        },
+      }]),
     };
 
     sut = new DbListProductFromBusiness(listProductFromBusinessRepository);
@@ -31,6 +39,10 @@ describe('DbListProductFromBusiness', () => {
     const mockedProduct = mockAddProductModel();
     expect(response).toEqual([{
       ...mockedProduct,
+      category: {
+        id: mockedCategory.id,
+        name: mockedCategory.name,
+      },
     }]);
   });
 
