@@ -1,9 +1,10 @@
 import { AddProductRepository } from '@/data/protocols/db/product';
 import { DeleteProductRepository } from '@/data/protocols/db/product/delete-product.repository';
+import { EditProductRepository } from '@/data/protocols/db/product/edit-product.repository';
 import { ListProductFromBusiness } from '@/domain/usecases/product';
 import { prisma } from '@/infra/db/helpers';
 
-export class ProductPrismaRepository implements AddProductRepository, ListProductFromBusiness, DeleteProductRepository {
+export class ProductPrismaRepository implements AddProductRepository, ListProductFromBusiness, DeleteProductRepository, EditProductRepository {
   async add(data: AddProductRepository.Params): Promise<AddProductRepository.Result> {
     const product = await prisma.product.create({ data });
     return product;
@@ -36,6 +37,25 @@ export class ProductPrismaRepository implements AddProductRepository, ListProduc
 
     return {
       id: product.id,
+    };
+  }
+
+  async edit(data: EditProductRepository.Params): Promise<EditProductRepository.Result> {
+    const product = await prisma.product.update({
+      where: {
+        id: data.productId,
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        listPrice: data.listPrice,
+        salePrice: data.salePrice,
+        imageUrl: data.imageUrl,
+      },
+    });
+
+    return {
+      productId: product.id,
     };
   }
 }
