@@ -340,7 +340,7 @@
         }
       }
     },
-    "/api/product/delete/{businessId}": {
+    "/api/business/delete/{businessId}": {
       "delete": {
         "tags": ["Business"],
         "summary": "Delete",
@@ -554,6 +554,77 @@
             "type": "string"
           }
         }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/product/edit/{productId}": {
+      "put": {
+        "tags": ["Product"],
+        "summary": "Edit",
+        "description": "Edit product",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }, 
+        {
+          "name": "productId",
+          "in": "path",
+          "description": "Product Id for delete",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "description": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "listPrice": {
+                    "type": "number",
+                    "required": false
+                  },
+                  "salePrice": {
+                    "type": "number",
+                    "required": false
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "required": false
+                  }
+                },
+                "example": {
+                  "name":"product 1",
+                  "description":"a product",
+                  "listPrice":100,
+                  "salePrice":80,
+                  "imageUrl":"image.url.com"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success"

@@ -103,4 +103,24 @@ describe('ProductPrismaRepository', () => {
       });
     });
   });
+  describe('edit', () => {
+    it('should edit a product', async () => {
+      const { sut } = makeSut();
+
+      const addedProduct = await sut.add(mockAddProductParams(mockBusiness.id, mockCategory.id));
+
+      const response = await sut.edit({
+        productId: addedProduct.id,
+        name: 'any_name',
+        description: 'any_description',
+        listPrice: 10,
+        salePrice: 20,
+        imageUrl: 'any_image_url',
+      });
+
+      expect(response).toEqual({
+        productId: addedProduct.id,
+      });
+    });
+  });
 });
