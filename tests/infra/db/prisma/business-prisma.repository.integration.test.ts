@@ -5,10 +5,10 @@ import { prisma } from '@/infra/db/helpers';
 import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account';
 import { ListBusinessFromAccount } from '@/domain/usecases/business';
-import { DeleteBusinessRepository } from '@/data';
+import { DeleteBusinessRepository, EditBusinessRepository } from '@/data';
 
 type SutTypes = {
-  sut: AddBusinessRepository & ListBusinessFromAccount & DeleteBusinessRepository;
+  sut: AddBusinessRepository & ListBusinessFromAccount & DeleteBusinessRepository & EditBusinessRepository;
   addAccountRepository: AccountPrismaRepository;
 };
 
@@ -22,6 +22,20 @@ const makeSut = (): SutTypes => {
 };
 
 describe('BusinessPrismaRepository', () => {
+  const editBusinessParams = {
+    businessId: 'any_id',
+    name: 'any_name',
+    imageUrl: 'any_image_url',
+    accountId: 'any_account_id',
+    description: 'any_description',
+    latitude: 'any_latitude',
+    longitude: 'any_longitude',
+    street: 'any_street',
+    city: 'any_city',
+    state: 'any_state',
+    zip: 'any_zip',
+    country: 'any_country',
+  };
   beforeEach(async () => {
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
@@ -119,6 +133,25 @@ describe('BusinessPrismaRepository', () => {
     expect(result).toEqual({
       id: addedBusiness.id,
       delete: true,
+    });
+  });
+
+  it('should return business id on edit success', async () => {
+    const { sut, addAccountRepository } = makeSut();
+    const account = mockAddAccountParams();
+
+    const addedAccount = await addAccountRepository.add(account);
+
+    const business = mockAddBusinessParams(addedAccount.id);
+    const addedBusiness = await sut.add(business);
+
+    const result = await sut.edit({
+      ...editBusinessParams,
+      businessId: addedBusiness.id,
+    });
+
+    expect(result).toEqual({
+      id: addedBusiness.id,
     });
   });
 });

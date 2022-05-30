@@ -1,10 +1,12 @@
-import { DeleteBusinessRepository } from '@/data';
+import { DeleteBusinessRepository, EditBusinessRepository } from '@/data';
 import { AddBusinessRepository } from '@/data/protocols/db/business/add-business.repository';
 import { BusinessModel } from '@/domain/models/business';
-import { DeleteBusiness, DeleteBusinessParams, ListBusinessFromAccount } from '@/domain/usecases/business';
+import {
+  DeleteBusiness, DeleteBusinessParams, EditBusiness, EditBusinessParams, ListBusinessFromAccount,
+} from '@/domain/usecases/business';
 import { prisma } from '@/infra/db/helpers';
 
-export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccount, DeleteBusinessRepository {
+export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccount, DeleteBusinessRepository, EditBusinessRepository {
   async add(data: AddBusinessRepository.Params): Promise<AddBusinessRepository.Result> {
     const business = await prisma.business.create({
       data,
@@ -38,6 +40,30 @@ export class BusinessPrismaRepository implements AddBusinessRepository, ListBusi
 
     return {
       delete: true,
+      id: business.id,
+    };
+  }
+
+  async edit(data: EditBusinessParams): Promise<EditBusiness.Result> {
+    const business = await prisma.business.update({
+      where: {
+        id: data.businessId,
+      },
+      data: {
+        name: data.name,
+        imageUrl: data.imageUrl,
+        description: data.description,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        street: data.street,
+        city: data.city,
+        state: data.state,
+        zip: data.zip,
+        country: data.country,
+      },
+    });
+
+    return {
       id: business.id,
     };
   }
