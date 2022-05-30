@@ -50,5 +50,4 @@ export default {
       "statements": 100
     }
   },
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
 };
