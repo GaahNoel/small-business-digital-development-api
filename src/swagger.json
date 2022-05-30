@@ -340,6 +340,107 @@
         }
       }
     },
+    "/api/business/{businessId}": {
+      "put": {
+        "tags": ["Business"],
+        "summary": "Create",
+        "description": "Created new business for user",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "businessId",
+          "in": "params",
+          "description": "Business Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "description": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "accountId": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "city": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "country": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "latitude": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "longitude": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "state": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "street": {
+                    "type": "string",
+                    "required": false
+                  },
+                  "zip": {
+                    "type": "string",
+                    "required": false
+                  }
+                },
+                "example": {
+                  "name":"business 1",
+                  "description":"business for some reason",
+                  "imageUrl":"image.url.com",
+                  "accountId":"123456",
+                  "city":"city",
+                  "country":"country",  
+                  "latitude":"123123",
+                  "longitude":"-123123",
+                  "state":"state",
+                  "street":"street",
+                  "zip":"111111000"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/business/delete/{businessId}": {
       "delete": {
         "tags": ["Business"],
@@ -531,39 +632,6 @@
         }
       }
     },
-    "/api/product/delete/{productId}": {
-      "delete": {
-        "tags": ["Product"],
-        "summary": "Delete",
-        "description": "Delete product",
-        "parameters": [{
-          "name": "token",
-          "in": "header",
-          "description": "Jwt token",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }, 
-        {
-          "name": "productId",
-          "in": "path",
-          "description": "Product Id for delete",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }],
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
     "/api/product/edit/{productId}": {
       "put": {
         "tags": ["Product"],
@@ -625,6 +693,39 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/product/delete/{productId}": {
+      "delete": {
+        "tags": ["Product"],
+        "summary": "Delete",
+        "description": "Delete product",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }, 
+        {
+          "name": "productId",
+          "in": "path",
+          "description": "Product Id for delete",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
         "responses": {
           "200": {
             "description": "Success"
