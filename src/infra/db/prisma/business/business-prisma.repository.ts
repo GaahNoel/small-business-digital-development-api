@@ -1,12 +1,14 @@
 import { DeleteBusinessRepository, EditBusinessRepository } from '@/data';
 import { AddBusinessRepository } from '@/data/protocols/db/business/add-business.repository';
+import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 import { BusinessModel } from '@/domain/models/business';
 import {
   DeleteBusiness, DeleteBusinessParams, EditBusiness, EditBusinessParams, ListBusinessFromAccount,
 } from '@/domain/usecases/business';
+import { ListBusinessByIdParams, ListBusinessById } from '@/domain/usecases/business/list-business-by-id';
 import { prisma } from '@/infra/db/helpers';
 
-export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccount, DeleteBusinessRepository, EditBusinessRepository {
+export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccount, DeleteBusinessRepository, EditBusinessRepository, ListBusinessByIdRepository {
   async add(data: AddBusinessRepository.Params): Promise<AddBusinessRepository.Result> {
     const business = await prisma.business.create({
       data,
@@ -65,6 +67,29 @@ export class BusinessPrismaRepository implements AddBusinessRepository, ListBusi
 
     return {
       id: business.id,
+    };
+  }
+
+  async listById(data: ListBusinessById.Params): Promise<ListBusinessById.Result> {
+    const result = await prisma.business.findFirst({
+      where: {
+        id: data.businessId,
+      },
+    });
+
+    return {
+      id: result.id,
+      name: result.name,
+      imageUrl: result.imageUrl,
+      description: result.description,
+      latitude: result.latitude,
+      longitude: result.longitude,
+      street: result.street,
+      city: result.city,
+      state: result.state,
+      zip: result.zip,
+      country: result.country,
+      accountId: result.accountId,
     };
   }
 }

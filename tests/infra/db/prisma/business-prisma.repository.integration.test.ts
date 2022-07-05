@@ -6,9 +6,10 @@ import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account';
 import { ListBusinessFromAccount } from '@/domain/usecases/business';
 import { DeleteBusinessRepository, EditBusinessRepository } from '@/data';
+import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 
 type SutTypes = {
-  sut: AddBusinessRepository & ListBusinessFromAccount & DeleteBusinessRepository & EditBusinessRepository;
+  sut: AddBusinessRepository & ListBusinessFromAccount & DeleteBusinessRepository & EditBusinessRepository & ListBusinessByIdRepository;
   addAccountRepository: AccountPrismaRepository;
 };
 
@@ -56,102 +57,132 @@ describe('BusinessPrismaRepository', () => {
 
     prisma.$disconnect();
   });
-  it('should return business on add success ', async () => {
-    const { sut, addAccountRepository } = makeSut();
-    const account = mockAddAccountParams();
-    const addedAccount = await addAccountRepository.add(account);
 
-    const business = mockAddBusinessParams(addedAccount.id);
-    const result = await sut.add(business);
-    expect(result).toEqual({
-      id: expect.anything(),
-      createdAt: expect.anything(),
-      ...business,
-    });
-  });
+  describe('add', () => {
+    it('should return business on add success ', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+      const addedAccount = await addAccountRepository.add(account);
 
-  it('should list all business from accountId', async () => {
-    const { sut, addAccountRepository } = makeSut();
-    const account = mockAddAccountParams();
-
-    const addedAccount = await addAccountRepository.add(account);
-
-    const business = mockAddBusinessParams(addedAccount.id);
-    const addedBusiness = await sut.add(business);
-
-    const result = await sut.list({
-      accountId: addedAccount.id,
-    });
-
-    const { accountId, ...rest } = business;
-
-    expect(result).toEqual([
-      {
-        ...rest,
-        id: addedBusiness.id,
+      const business = mockAddBusinessParams(addedAccount.id);
+      const result = await sut.add(business);
+      expect(result).toEqual({
+        id: expect.anything(),
         createdAt: expect.anything(),
-      },
-    ]);
-  });
-
-  it('should return empty list accountId not have business', async () => {
-    const { sut, addAccountRepository } = makeSut();
-    const account = mockAddAccountParams();
-
-    const addedAccount = await addAccountRepository.add(account);
-
-    const result = await sut.list({
-      accountId: addedAccount.id,
-    });
-
-    expect(result).toEqual([]);
-  });
-
-  it('should return empty list if accountId not exists', async () => {
-    const { sut } = makeSut();
-
-    const result = await sut.list({
-      accountId: 'invalid-id',
-    });
-
-    expect(result).toEqual([]);
-  });
-
-  it('should return business on delete success', async () => {
-    const { sut, addAccountRepository } = makeSut();
-    const account = mockAddAccountParams();
-
-    const addedAccount = await addAccountRepository.add(account);
-
-    const business = mockAddBusinessParams(addedAccount.id);
-    const addedBusiness = await sut.add(business);
-
-    const result = await sut.delete({
-      businessId: addedBusiness.id,
-    });
-
-    expect(result).toEqual({
-      id: addedBusiness.id,
-      delete: true,
+        ...business,
+      });
     });
   });
 
-  it('should return business id on edit success', async () => {
-    const { sut, addAccountRepository } = makeSut();
-    const account = mockAddAccountParams();
+  describe('list from account', () => {
+    it('should list all business from accountId', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
 
-    const addedAccount = await addAccountRepository.add(account);
+      const addedAccount = await addAccountRepository.add(account);
 
-    const business = mockAddBusinessParams(addedAccount.id);
-    const addedBusiness = await sut.add(business);
+      const business = mockAddBusinessParams(addedAccount.id);
+      const addedBusiness = await sut.add(business);
 
-    const result = await sut.edit({
-      ...editBusinessParams,
-      businessId: addedBusiness.id,
+      const result = await sut.list({
+        accountId: addedAccount.id,
+      });
+
+      const { accountId, ...rest } = business;
+
+      expect(result).toEqual([
+        {
+          ...rest,
+          id: addedBusiness.id,
+          createdAt: expect.anything(),
+        },
+      ]);
     });
 
-    expect(result).toEqual({
-      id: addedBusiness.id,
+    it('should return empty list accountId not have business', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+
+      const addedAccount = await addAccountRepository.add(account);
+
+      const result = await sut.list({
+        accountId: addedAccount.id,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty list if accountId not exists', async () => {
+      const { sut } = makeSut();
+
+      const result = await sut.list({
+        accountId: 'invalid-id',
+      });
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('delete', () => {
+    it('should return business on delete success', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+
+      const addedAccount = await addAccountRepository.add(account);
+
+      const business = mockAddBusinessParams(addedAccount.id);
+      const addedBusiness = await sut.add(business);
+
+      const result = await sut.delete({
+        businessId: addedBusiness.id,
+      });
+
+      expect(result).toEqual({
+        id: addedBusiness.id,
+        delete: true,
+      });
+    });
+  });
+
+  describe('edit', () => {
+    it('should return business id on edit success', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+
+      const addedAccount = await addAccountRepository.add(account);
+
+      const business = mockAddBusinessParams(addedAccount.id);
+      const addedBusiness = await sut.add(business);
+
+      const result = await sut.edit({
+        ...editBusinessParams,
+        businessId: addedBusiness.id,
+      });
+
+      expect(result).toEqual({
+        id: addedBusiness.id,
+      });
+    });
+  });
+
+  describe('listById', () => {
+    it('should return business on listById success', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+
+      const addedAccount = await addAccountRepository.add(account);
+
+      const business = mockAddBusinessParams(addedAccount.id);
+      const addedBusiness = await sut.add(business);
+
+      const result = await sut.listById({
+        businessId: addedBusiness.id,
+      });
+
+      expect(result).toEqual({
+        id: addedBusiness.id,
+        ...business,
+      });
     });
   });
 });

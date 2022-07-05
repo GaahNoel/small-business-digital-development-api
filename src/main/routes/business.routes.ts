@@ -10,4 +10,5 @@ export default (router: Router): void => {
   router.get('/business/list/:accountId', adaptRoute(makeListBusinessFromAccountController()));
   router.delete('/business/delete/:businessId', auth(), adaptRoute(makeDeleteBusinessController()));
   router.put('/business/edit/:businessId', auth(), adaptRoute(makeEditBusinessController()));
+  router.get('/business/:businessId', adaptRoute(makeListBusinessFromAccountController()));
 };

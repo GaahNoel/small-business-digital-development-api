@@ -248,6 +248,49 @@
         }
       }
     },
+    "/api/business/{businessId}": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List By Id",
+        "description": "List business by id",
+        "parameters": [
+        {
+          "name": "businessId",
+          "in": "params",
+          "description": "Business Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "businessId": {
+                    "type": "string",
+                    "required": false
+                  }
+                },
+                "example": {
+                  "businessId":"any-business-id"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description":"Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/business/create": {
       "post": {
         "tags": ["Business"],
@@ -340,11 +383,11 @@
         }
       }
     },
-    "/api/business/{businessId}": {
+    "/api/business/edit/{businessId}": {
       "put": {
         "tags": ["Business"],
-        "summary": "Create",
-        "description": "Created new business for user",
+        "summary": "Edit",
+        "description": "Edit business for user",
         "parameters": [{
           "name": "token",
           "in": "header",
@@ -371,47 +414,47 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "description": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "imageUrl": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "accountId": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "city": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "country": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "latitude": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "longitude": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "state": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "street": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "zip": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   }
                 },
                 "example": {
