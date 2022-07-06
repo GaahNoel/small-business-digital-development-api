@@ -594,6 +594,36 @@
         }
       }
     },
+    "/api/product/{businessId}": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "Get",
+        "description": "Get product infos by id",
+        "parameters": [{
+          "name": "productId",
+          "in": "path",
+          "description": "Product id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest - Missing Required Params"
+          },
+          "404": {
+            "description": "NotFound"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/product/create": {
       "post": {
         "tags": ["Product"],
