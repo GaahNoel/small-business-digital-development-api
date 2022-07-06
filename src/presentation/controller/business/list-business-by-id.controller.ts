@@ -1,6 +1,8 @@
 import { ListBusinessById } from '@/domain/usecases/business/list-business-by-id';
-import { MissingParamsError } from '@/presentation/errors';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { MissingParamsError, NotFound } from '@/presentation/errors';
+import {
+  badRequest, internalServerError, notFound, success,
+} from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
 namespace ListBusinessByIdController {
@@ -38,6 +40,10 @@ export class ListBusinessByIdController implements BaseController {
     } catch (error) {
       if (error instanceof MissingParamsError) {
         return badRequest(error);
+      }
+
+      if (error instanceof NotFound) {
+        return notFound(error);
       }
 
       return internalServerError(error);

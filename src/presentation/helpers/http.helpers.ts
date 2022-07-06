@@ -1,4 +1,5 @@
 import { HttpResponse } from '@/presentation/protocols/http';
+import { NotFound } from '../errors';
 import { InternalServerError } from '../errors/internal-server.error';
 
 export const badRequest = (error: Error): HttpResponse => ({
@@ -14,6 +15,11 @@ export const success = <T>(data: T): HttpResponse => ({
 export const internalServerError = (error: Error): HttpResponse => ({
   statusCode: 500,
   body: new InternalServerError(error.stack),
+});
+
+export const notFound = (error: Error): HttpResponse => ({
+  statusCode: 404,
+  body: error,
 });
 
 export const forbidden = (error: Error): HttpResponse => ({

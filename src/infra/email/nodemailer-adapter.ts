@@ -18,12 +18,12 @@ export class NodeMailerAdapter implements EmailVerificationSender {
 
   async send(data: EmailVerificationSender.Params): Promise<EmailVerificationSender.Result> {
     const { message, subject, toEmail } = data;
-    const response = await this.transporter.sendMail({
+    await this.transporter.sendMail({
       from: this.fromEmail,
       to: toEmail,
       subject,
       html: message,
-    });
+    }).finally(() => true);
 
     return true;
   }

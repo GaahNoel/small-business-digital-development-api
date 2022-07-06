@@ -1,6 +1,6 @@
 import { ListBusinessById } from '@/domain/usecases/business/list-business-by-id';
 import { ListBusinessByIdController } from '@/presentation/controller/business/list-business-by-id.controller';
-import { InternalServerError, MissingParamsError } from '@/presentation/errors';
+import { InternalServerError, MissingParamsError, NotFound } from '@/presentation/errors';
 
 describe('ListBusinessByIdController', () => {
   let sut: ListBusinessByIdController;
@@ -57,7 +57,7 @@ describe('ListBusinessByIdController', () => {
     });
   });
 
-  it('should return 500 if listBusinessById throws', async () => {
+  it('should return 500 if listBusinessById throws unhandled error', async () => {
     (listBusinessById.list as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
@@ -74,6 +74,21 @@ describe('ListBusinessByIdController', () => {
       statusCode: 400,
       body: new MissingParamsError({
         params: ['businessId'],
+      }),
+    });
+  });
+
+  it('should return not found if business not found', async () => {
+    (listBusinessById.list as jest.Mock).mockImplementationOnce(() => {
+      throw new NotFound({
+        entity: 'Business',
+      });
+    });
+    const httpResponse = await sut.handle({ businessId: 'any_business_id' });
+    expect(httpResponse).toEqual({
+      statusCode: 404,
+      body: new NotFound({
+        entity: 'Business',
       }),
     });
   });

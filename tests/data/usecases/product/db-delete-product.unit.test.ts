@@ -1,4 +1,4 @@
-import { DeleteProductRepository } from '@/data/protocols/db/product/delete-product.repository';
+import { DeleteProductRepository } from '@/data/protocols/db/product/';
 import { DbDeleteProduct } from '@/data/usecases/product/db-delete-product';
 
 describe('DbDeleteProduct', () => {

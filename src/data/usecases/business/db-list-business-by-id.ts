@@ -1,5 +1,6 @@
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 import { ListBusinessById, ListBusinessByIdParams } from '@/domain/usecases/business/list-business-by-id';
+import { NotFound } from '@/presentation/errors/not-found.error';
 
 export class DbListBusinessById implements ListBusinessById {
   constructor(private readonly listBusinessByIdRepository: ListBusinessByIdRepository) {}
@@ -8,6 +9,11 @@ export class DbListBusinessById implements ListBusinessById {
     const result = await this.listBusinessByIdRepository.listById({
       businessId: listBusinessParams.businessId,
     });
+    if (!result) {
+      throw new NotFound({
+        entity: 'Business',
+      });
+    }
 
     return {
       id: result.id,

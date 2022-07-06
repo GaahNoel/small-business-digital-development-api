@@ -6,5 +6,7 @@ export interface AddProductRepository {
 
 export namespace AddProductRepository {
   export type Params = AddProduct.Params;
-  export type Result = AddProduct.Result;
+  export type Result = {
+    productId: string
+  };
 }

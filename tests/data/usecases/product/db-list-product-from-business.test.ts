@@ -1,4 +1,4 @@
-import { ListProductFromBusinessRepository } from '@/data/protocols/db/product/list-product-from-business.repository';
+import { ListProductFromBusinessRepository } from '@/data/protocols/db/product';
 import { DbListProductFromBusiness } from '@/data/usecases/product';
 import { mockCategoryModel } from '@/tests/domain/mocks/category.mock';
 import { mockAddProductModel } from '@/tests/domain/mocks/product.mock';
