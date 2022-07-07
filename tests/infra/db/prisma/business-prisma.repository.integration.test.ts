@@ -4,12 +4,13 @@ import { BusinessPrismaRepository } from '@/infra/db/prisma/business';
 import { prisma } from '@/infra/db/helpers';
 import { mockAddAccountParams } from '@/tests/domain/mocks/account.mock';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account';
-import { ListBusinessFromAccount } from '@/domain/usecases/business';
-import { DeleteBusinessRepository, EditBusinessRepository } from '@/data';
+import {
+  DeleteBusinessRepository, EditBusinessRepository, ListBusinessFromAccountRepository, ListBusinessRepository,
+} from '@/data';
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 
 type SutTypes = {
-  sut: AddBusinessRepository & ListBusinessFromAccount & DeleteBusinessRepository & EditBusinessRepository & ListBusinessByIdRepository;
+  sut: AddBusinessRepository & ListBusinessFromAccountRepository & DeleteBusinessRepository & EditBusinessRepository & ListBusinessByIdRepository & ListBusinessRepository;
   addAccountRepository: AccountPrismaRepository;
 };
 
@@ -84,7 +85,7 @@ describe('BusinessPrismaRepository', () => {
       const business = mockAddBusinessParams(addedAccount.id);
       const addedBusiness = await sut.add(business);
 
-      const result = await sut.list({
+      const result = await sut.listFromAccount({
         accountId: addedAccount.id,
       });
 
@@ -105,7 +106,7 @@ describe('BusinessPrismaRepository', () => {
 
       const addedAccount = await addAccountRepository.add(account);
 
-      const result = await sut.list({
+      const result = await sut.listFromAccount({
         accountId: addedAccount.id,
       });
 
@@ -115,7 +116,7 @@ describe('BusinessPrismaRepository', () => {
     it('should return empty list if accountId not exists', async () => {
       const { sut } = makeSut();
 
-      const result = await sut.list({
+      const result = await sut.listFromAccount({
         accountId: 'invalid-id',
       });
 
@@ -183,6 +184,50 @@ describe('BusinessPrismaRepository', () => {
         id: addedBusiness.id,
         ...business,
       });
+    });
+  });
+
+  describe('list', () => {
+    it('should return business on list success', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+
+      const addedAccount = await addAccountRepository.add(account);
+
+      const business = mockAddBusinessParams(addedAccount.id);
+      const addedBusiness = await sut.add(business);
+
+      const result = await sut.list({});
+
+      expect(result).toEqual([
+        {
+          id: addedBusiness.id,
+          ...business,
+        },
+      ]);
+    });
+
+    it('should return businesses of specific city', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const account = mockAddAccountParams();
+
+      const addedAccount = await addAccountRepository.add(account);
+
+      const business = mockAddBusinessParams(addedAccount.id);
+      const otherCityBusiness = mockAddBusinessParams(addedAccount.id);
+      otherCityBusiness.city = 'other_city';
+
+      await sut.add(business);
+      const otherCityAddedBusiness = await sut.add(otherCityBusiness);
+
+      const result = await sut.list({ city: { name: 'other_city', state: 'any_state' } });
+
+      expect(result).toEqual([
+        {
+          id: otherCityAddedBusiness.id,
+          ...otherCityBusiness,
+        },
+      ]);
     });
   });
 });

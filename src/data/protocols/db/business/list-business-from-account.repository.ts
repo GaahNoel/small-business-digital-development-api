@@ -1,7 +1,7 @@
 import { ListBusinessFromAccount } from '@/domain/usecases/business/list-business-from-account';
 
 export interface ListBusinessFromAccountRepository {
-  list(data:ListBusinessFromAccountRepository.Params): Promise<ListBusinessFromAccountRepository.Result>;
+  listFromAccount(data:ListBusinessFromAccountRepository.Params): Promise<ListBusinessFromAccountRepository.Result>;
 }
 
 export namespace ListBusinessFromAccountRepository {
