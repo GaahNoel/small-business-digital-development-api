@@ -23,7 +23,7 @@ export class NodeMailerAdapter implements EmailVerificationSender {
       to: toEmail,
       subject,
       html: message,
-    }).finally(() => true);
+    }).finally(() => this.transporter.close());
 
     return true;
   }
