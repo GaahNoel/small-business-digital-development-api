@@ -248,6 +248,81 @@
         }
       }
     },
+    "/api/business/list/": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List Business",
+        "description": "List Business",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "object",
+                    "required": false,
+                    "properties": {
+                      "latitude": {
+                        "type": "number",
+                        "required": true
+                      },
+                      "longitude": {
+                        "type": "number",
+                        "required": true
+                      },
+                      "radius": {
+                        "type": "number",
+                        "required": true
+                      }
+                    }
+                  },
+                  "city": {
+                    "type": "object",
+                    "required": false,
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "state": {
+                        "type": "string",
+                        "required": true
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "location": {
+                    "latitude": -23.5489,
+                    "longitude": -46.6388,
+                    "radius": 5000
+                  },
+                  "city": {
+                    "name": "São Paulo",
+                    "state": "SP"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest - Missing Required Params"
+          },
+          "404": {
+            "description": "Business not found for the location provided"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/business/{businessId}": {
       "get": {
         "tags": ["Business"],
@@ -623,6 +698,84 @@
           }
         }
       }
+    },
+    "/api/product/list/nearby": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "List Nearby Products",
+        "description": "List Nearby Products",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "object",
+                    "required": false,
+                    "properties": {
+                        "latitude": {
+                          "type": "number",
+                          "required": true
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "required": true
+                        },
+                        "radius": {
+                          "type": "number",
+                          "required": true
+                        }
+                      }
+                    }
+                  },
+                  "city": {
+                    "type": "object",
+                    "required": false,
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "required": true
+                      },
+                      "state": {
+                        "type": "string",
+                        "required": true
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "location": {
+                    "latitude": -23.5489,
+                    "longitude": -46.6388,
+                    "radius": 5000
+                  },
+                  "city": {
+                    "name": "São Paulo",
+                    "state": "SP"
+                  },
+                  "type": "product"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest - Missing Required Params"
+          },
+          "404": {
+            "description": "Business not found for the location provided"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+      
     },
     "/api/product/create": {
       "post": {

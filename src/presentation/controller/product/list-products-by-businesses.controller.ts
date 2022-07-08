@@ -42,7 +42,7 @@ export class ListProductsByBusinessesController implements BaseController {
 
       const products = await this.listProductsByBusinesses.listProductsByBusinesses({
         businessesIds: mappedBusinessesIds,
-        type: data.type,
+        type: data.type.toLocaleLowerCase() as 'product' | 'service',
         location: data.location,
       });
 
