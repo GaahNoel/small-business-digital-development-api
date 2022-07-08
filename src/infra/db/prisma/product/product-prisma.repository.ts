@@ -100,7 +100,7 @@ export class ProductPrismaRepository implements AddProductRepository, ListProduc
     };
   }
 
-  async listProductByBusinesses(params: { businessesIds: string[]; type: 'service' | 'product'; location?: { latitude: string; longitude: string; }; }): Promise<ListProductsByBusinessesRepository.Result> {
+  async listProductsByBusinesses(params:ListProductsByBusinessesRepository.Params): Promise<ListProductsByBusinessesRepository.Result> {
     return prisma.product.findMany({
       where: {
         businessId: {

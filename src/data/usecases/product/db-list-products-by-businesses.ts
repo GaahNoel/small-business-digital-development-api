@@ -5,8 +5,8 @@ import { NotFound } from '@/presentation/errors';
 export class DbListProductsByBusinesses implements ListProductsByBusinesses {
   constructor(private readonly listProductsByBusinessesRepository: ListProductsByBusinessesRepository) {}
 
-  async listProductByBusinesses(data: ListProductsByBusinesses.Params): Promise<ListProductsByBusinesses.Result> {
-    const products = await this.listProductsByBusinessesRepository.listProductByBusinesses({
+  async listProductsByBusinesses(data: ListProductsByBusinesses.Params): Promise<ListProductsByBusinesses.Result> {
+    const products = await this.listProductsByBusinessesRepository.listProductsByBusinesses({
       businessesIds: data.businessesIds,
       type: data.type,
     });

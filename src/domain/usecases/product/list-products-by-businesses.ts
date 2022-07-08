@@ -2,8 +2,9 @@ type ListProductsByBusinessesParams = {
   businessesIds: string[];
   type: 'product' | 'service';
   location?: {
-    latitude: string;
-    longitude: string;
+    latitude: number;
+    longitude: number;
+    radius: number;
   }
 };
 
@@ -31,5 +32,5 @@ export namespace ListProductsByBusinesses {
 }
 
 export interface ListProductsByBusinesses {
-  listProductByBusinesses(data: ListProductsByBusinesses.Params): Promise<ListProductsByBusinesses.Result>;
+  listProductsByBusinesses(data: ListProductsByBusinesses.Params): Promise<ListProductsByBusinesses.Result>;
 }

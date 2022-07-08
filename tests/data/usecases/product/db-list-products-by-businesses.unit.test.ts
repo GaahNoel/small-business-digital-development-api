@@ -50,7 +50,7 @@ describe('DbListProductsByBusinesses', () => {
 
   beforeAll(() => {
     listProductsByBusinessesRepository = {
-      listProductByBusinesses: jest.fn(async () => Promise.resolve([mockedProduct])),
+      listProductsByBusinesses: jest.fn(async () => Promise.resolve([mockedProduct])),
     };
   });
 
@@ -59,7 +59,7 @@ describe('DbListProductsByBusinesses', () => {
   });
 
   it('should return a list of products type product', async () => {
-    const result = await sut.listProductByBusinesses({
+    const result = await sut.listProductsByBusinesses({
       businessesIds: ['any_business_id'],
       type: 'product',
     });
@@ -67,8 +67,8 @@ describe('DbListProductsByBusinesses', () => {
   });
 
   it('should return a list of products type service', async () => {
-    (listProductsByBusinessesRepository.listProductByBusinesses as jest.Mock).mockResolvedValueOnce([mockedService]);
-    const result = await sut.listProductByBusinesses({
+    (listProductsByBusinessesRepository.listProductsByBusinesses as jest.Mock).mockResolvedValueOnce([mockedService]);
+    const result = await sut.listProductsByBusinesses({
       businessesIds: ['any_business_id'],
       type: 'service',
     });
@@ -76,12 +76,13 @@ describe('DbListProductsByBusinesses', () => {
   });
 
   it('should return a list of products type product with distance', async () => {
-    const result = await sut.listProductByBusinesses({
+    const result = await sut.listProductsByBusinesses({
       businessesIds: ['any_business_id'],
       type: 'product',
       location: {
-        latitude: '0',
-        longitude: '0',
+        latitude: 0,
+        longitude: 0,
+        radius: 0,
       },
     });
     expect(result).toEqual([{
@@ -94,8 +95,8 @@ describe('DbListProductsByBusinesses', () => {
   });
 
   it('should throw not found if no products was found on db', async () => {
-    (listProductsByBusinessesRepository.listProductByBusinesses as jest.Mock).mockResolvedValue([]);
-    await expect(sut.listProductByBusinesses({
+    (listProductsByBusinessesRepository.listProductsByBusinesses as jest.Mock).mockResolvedValue([]);
+    await expect(sut.listProductsByBusinesses({
       businessesIds: ['any_business_id'],
       type: 'product',
     })).rejects.toThrow(new NotFound({

@@ -25,5 +25,5 @@ export namespace ListProductsByBusinessesRepository {
 }
 
 export interface ListProductsByBusinessesRepository {
-  listProductByBusinesses(params: ListProductsByBusinessesRepository.Params): Promise<ListProductsByBusinessesRepository.Result>;
+  listProductsByBusinesses(params: ListProductsByBusinessesRepository.Params): Promise<ListProductsByBusinessesRepository.Result>;
 }

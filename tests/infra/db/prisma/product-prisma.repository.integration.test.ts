@@ -157,14 +157,14 @@ describe('ProductPrismaRepository', () => {
     expect(response).toBeNull();
   });
 
-  describe('listProductByBusinesses', () => {
+  describe('listProductsByBusinesses', () => {
     it('should list all products from businesses', async () => {
       const { sut } = makeSut();
       const mockedProduct = mockAddProductParams(mockBusiness.id, mockCategory.id);
 
       await sut.add(mockedProduct);
 
-      const response = await sut.listProductByBusinesses({
+      const response = await sut.listProductsByBusinesses({
         businessesIds: [mockBusiness.id],
         type: 'product' as 'product' | 'service',
       });
