@@ -1,5 +1,5 @@
 type ListProductsByBusinessesParams = {
-  businessesId: string[];
+  businessesIds: string[];
   type: 'product' | 'service';
   location?: {
     latitude: string;
@@ -26,7 +26,7 @@ export namespace ListProductsByBusinesses {
       id: string;
       name: string;
     };
-    createdAt?: string;
+    createdAt?: Date;
   }[];
 }
 

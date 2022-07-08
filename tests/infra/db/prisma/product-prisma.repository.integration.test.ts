@@ -156,4 +156,37 @@ describe('ProductPrismaRepository', () => {
 
     expect(response).toBeNull();
   });
+
+  describe('listProductByBusinesses', () => {
+    it('should list all products from businesses', async () => {
+      const { sut } = makeSut();
+      const mockedProduct = mockAddProductParams(mockBusiness.id, mockCategory.id);
+
+      await sut.add(mockedProduct);
+
+      const response = await sut.listProductByBusinesses({
+        businessesIds: [mockBusiness.id],
+        type: 'product' as 'product' | 'service',
+      });
+
+      delete mockedProduct.categoryId;
+      delete mockedProduct.businessId;
+
+      expect(response).toEqual([{
+        id: expect.any(String),
+        ...mockedProduct,
+        business: {
+          id: mockBusiness.id,
+          name: 'any_name',
+          latitude: 'any_latitude',
+          longitude: 'any_longitude',
+        },
+        category: {
+          id: mockCategory.id,
+          name: 'any_name',
+        },
+        createdAt: expect.any(Date),
+      }]);
+    });
+  });
 });

@@ -60,7 +60,7 @@ describe('DbListProductsByBusinesses', () => {
 
   it('should return a list of products type product', async () => {
     const result = await sut.listProductByBusinesses({
-      businessesId: ['any_business_id'],
+      businessesIds: ['any_business_id'],
       type: 'product',
     });
     expect(result).toEqual([mockedProduct]);
@@ -69,7 +69,7 @@ describe('DbListProductsByBusinesses', () => {
   it('should return a list of products type service', async () => {
     (listProductsByBusinessesRepository.listProductByBusinesses as jest.Mock).mockResolvedValueOnce([mockedService]);
     const result = await sut.listProductByBusinesses({
-      businessesId: ['any_business_id'],
+      businessesIds: ['any_business_id'],
       type: 'service',
     });
     expect(result).toEqual([mockedService]);
@@ -77,7 +77,7 @@ describe('DbListProductsByBusinesses', () => {
 
   it('should return a list of products type product with distance', async () => {
     const result = await sut.listProductByBusinesses({
-      businessesId: ['any_business_id'],
+      businessesIds: ['any_business_id'],
       type: 'product',
       location: {
         latitude: '0',
@@ -96,7 +96,7 @@ describe('DbListProductsByBusinesses', () => {
   it('should throw not found if no products was found on db', async () => {
     (listProductsByBusinessesRepository.listProductByBusinesses as jest.Mock).mockResolvedValue([]);
     await expect(sut.listProductByBusinesses({
-      businessesId: ['any_business_id'],
+      businessesIds: ['any_business_id'],
       type: 'product',
     })).rejects.toThrow(new NotFound({
       entity: 'Business',

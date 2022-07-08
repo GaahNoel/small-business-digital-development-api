@@ -20,7 +20,7 @@ export namespace ListProductsByBusinessesRepository {
       id: string;
       name: string;
     };
-    createdAt?: string;
+    createdAt?: Date;
   }[];
 }
 

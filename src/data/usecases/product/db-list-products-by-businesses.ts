@@ -7,7 +7,7 @@ export class DbListProductsByBusinesses implements ListProductsByBusinesses {
 
   async listProductByBusinesses(data: ListProductsByBusinesses.Params): Promise<ListProductsByBusinesses.Result> {
     const products = await this.listProductsByBusinessesRepository.listProductByBusinesses({
-      businessesId: data.businessesId,
+      businessesIds: data.businessesIds,
       type: data.type,
     });
 
