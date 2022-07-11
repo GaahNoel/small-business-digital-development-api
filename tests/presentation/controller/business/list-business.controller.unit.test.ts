@@ -1,6 +1,6 @@
 import { ListBusiness } from '@/domain/usecases/business';
 import { MissingParamsError } from '@/presentation/errors';
-import { badRequest } from '@/presentation/helpers/http.helpers';
+import { badRequest, internalServerError } from '@/presentation/helpers/http.helpers';
 import { ListBusinessController } from '@/presentation/controller/business/';
 
 describe('ListBusinessController', () => {
@@ -37,44 +37,41 @@ describe('ListBusinessController', () => {
         location: {
           longitude: 123, radius: 2, latitude: undefined,
         },
-        missing: ['location.latitude'],
+        missing: ['latitude'],
       },
       {
         location: {
           latitude: 123, radius: 2, longitude: undefined,
         },
-        missing: ['location.longitude'],
+        missing: ['longitude'],
       },
       {
         location: {
           latitude: 123, longitude: 2, radius: undefined,
         },
-        missing: ['location.radius'],
+        missing: ['radius'],
       },
       {
         location: {
           radius: 2, latitude: undefined, longitude: undefined,
         },
-        missing: ['location.latitude,location.longitude'],
+        missing: ['latitude,longitude'],
       },
       {
         location: {
           latitude: 123, longitude: undefined, radius: undefined,
         },
-        missing: ['location.longitude,location.radius'],
+        missing: ['longitude,radius'],
       },
       {
         location: {
           longitude: 123,
         },
-        missing: ['location.latitude', 'location.radius'],
+        missing: ['latitude', 'radius'],
       },
-      {
-        location: {},
-        missing: ['location.latitude,location.longitude,location.radius'],
-      }])('should return MissingParamsError if location is missing', async (params: { location: { latitude: number, longitude:number, radius: number }, missing: string[] }) => {
+    ])('should return MissingParamsError if location is missing', async (params: { location: { latitude: number, longitude:number, radius: number }, missing: string[] }) => {
       const result = await sut.handle({
-        location: params.location,
+        ...params.location,
       });
 
       expect(result).toEqual(badRequest(new MissingParamsError({
@@ -88,18 +85,19 @@ describe('ListBusinessController', () => {
           name: 'any-name',
           state: undefined,
         },
-        missing: ['city.state'],
+        missing: ['state'],
       },
       {
         city: {
           name: undefined,
           state: 'any-state',
         },
-        missing: ['city.name'],
+        missing: ['city'],
       },
     ])('should return MissingParamsError if city is missing', async (params: { city: { name: string, state: string }, missing: string[] }) => {
       const result = await sut.handle({
-        city: params.city,
+        city: params.city.name,
+        state: params.city.state,
       });
 
       expect(result).toEqual(badRequest(new MissingParamsError({
@@ -109,35 +107,37 @@ describe('ListBusinessController', () => {
   });
 
   describe('handle', () => {
-    it('should call ListBusiness.list with correct values', async () => {
+    it('should call ListBusiness with correct values', async () => {
       const params = {
-        location: {
-          latitude: 123,
-          longitude: 456,
-          radius: 2,
-        },
-        city: {
-          name: 'any-name',
-          state: 'any-state',
-        },
+        latitude: 123,
+        longitude: 456,
+        radius: 2,
+        city: 'any-name',
+        state: 'any-state',
       };
 
       await sut.handle(params);
 
-      expect(listBusiness.list).toHaveBeenCalledWith(params);
+      expect(listBusiness.list).toHaveBeenCalledWith({
+        location: {
+          latitude: params.latitude,
+          longitude: params.longitude,
+          radius: params.radius,
+        },
+        city: {
+          name: params.city,
+          state: params.state,
+        },
+      });
     });
 
     it('should return a list of businesses', async () => {
       const result = await sut.handle({
-        location: {
-          latitude: 123,
-          longitude: 456,
-          radius: 2,
-        },
-        city: {
-          name: 'any-name',
-          state: 'any-state',
-        },
+        latitude: 123,
+        longitude: 456,
+        radius: 2,
+        city: 'any-name',
+        state: 'any-state',
       });
 
       expect(result).toEqual({
@@ -158,6 +158,20 @@ describe('ListBusinessController', () => {
           },
         ],
       });
+    });
+
+    it('should throw internalServerError if ListBusiness throws unhandled error', async () => {
+      listBusiness.list = jest.fn(() => Promise.reject(new Error()));
+
+      const result = await sut.handle({
+        latitude: 123,
+        longitude: 456,
+        radius: 2,
+        city: 'any-name',
+        state: 'any-state',
+      });
+
+      expect(result).toEqual(internalServerError(new Error()));
     });
   });
 });
