@@ -253,60 +253,53 @@
         "tags": ["Business"],
         "summary": "List Business",
         "description": "List Business",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "location": {
-                    "type": "object",
-                    "required": false,
-                    "properties": {
-                      "latitude": {
-                        "type": "number",
-                        "required": true
-                      },
-                      "longitude": {
-                        "type": "number",
-                        "required": true
-                      },
-                      "radius": {
-                        "type": "number",
-                        "required": true
-                      }
-                    }
-                  },
-                  "city": {
-                    "type": "object",
-                    "required": false,
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "required": true
-                      },
-                      "state": {
-                        "type": "string",
-                        "required": true
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "location": {
-                    "latitude": -23.5489,
-                    "longitude": -46.6388,
-                    "radius": 5000
-                  },
-                  "city": {
-                    "name": "São Paulo",
-                    "state": "SP"
-                  }
-                }
-              }
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "params",
+            "description": "latitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "params",
+            "description": "longitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "radius",
+            "in": "params",
+            "description": "radius",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "params",
+            "description": "city name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "params",
+            "description": "state",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -704,61 +697,62 @@
         "tags": ["Product"],
         "summary": "List Nearby Products",
         "description": "List Nearby Products",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "location": {
-                    "type": "object",
-                    "required": false,
-                    "properties": {
-                        "latitude": {
-                          "type": "number",
-                          "required": true
-                        },
-                        "longitude": {
-                          "type": "number",
-                          "required": true
-                        },
-                        "radius": {
-                          "type": "number",
-                          "required": true
-                        }
-                      }
-                    }
-                  },
-                  "city": {
-                    "type": "object",
-                    "required": false,
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "required": true
-                      },
-                      "state": {
-                        "type": "string",
-                        "required": true
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "location": {
-                    "latitude": -23.5489,
-                    "longitude": -46.6388,
-                    "radius": 5000
-                  },
-                  "city": {
-                    "name": "São Paulo",
-                    "state": "SP"
-                  },
-                  "type": "product"
-                }
-              }
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "params",
+            "description": "latitude",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
+          },
+          {
+            "name": "longitude",
+            "in": "params",
+            "description": "longitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "radius",
+            "in": "params",
+            "description": "radius",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "params",
+            "description": "city name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "params",
+            "description": "state",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "params",
+            "description": "product | service",
+            "required": true,
+            "schema": {
+              "type": "string"
+            } 
           }
+        ]
         },
         "responses": {
           "200": {
