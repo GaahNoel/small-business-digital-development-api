@@ -1,5 +1,4 @@
 import { HttpResponse } from '@/presentation/protocols/http';
-import { NotFound } from '../errors';
 import { InternalServerError } from '../errors/internal-server.error';
 
 export const badRequest = (error: Error): HttpResponse => ({

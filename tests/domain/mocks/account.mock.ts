@@ -2,9 +2,9 @@ import { AccountModel } from '@/domain/models/account';
 import { AddAccountParams } from '@/domain/usecases/account/add-account';
 import { EditAccountParams } from '../usecases/account';
 
-export const mockAddAccountParams = (): AddAccountParams => ({
+export const mockAddAccountParams = (email = 'any_email'): AddAccountParams => ({
   name: 'any_name',
-  email: 'any_email',
+  email,
   password: 'any_password',
   provider: 'credentials',
 });

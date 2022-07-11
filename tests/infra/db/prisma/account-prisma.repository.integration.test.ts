@@ -10,13 +10,17 @@ describe('AccountPrismaRepository', () => {
     await prisma.account.deleteMany({});
   });
 
-  afterAll(async () => {
+  beforeAll(async () => {
+    const deleteOrderItems = prisma.orderItem.deleteMany();
+    const deleteOrders = prisma.order.deleteMany();
     const deleteProduct = prisma.product.deleteMany();
     const deleteCategory = prisma.category.deleteMany();
     const deleteBusiness = prisma.business.deleteMany();
     const deleteAccount = prisma.account.deleteMany();
 
     await prisma.$transaction([
+      deleteOrderItems,
+      deleteOrders,
       deleteProduct,
       deleteCategory,
       deleteBusiness,

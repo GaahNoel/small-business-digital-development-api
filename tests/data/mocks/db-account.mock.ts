@@ -1,7 +1,5 @@
-import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository';
+import { AddAccountRepository, FindAccountByEmailRepository, VerifyAccountRepository } from '@/data/protocols/db/account/';
 import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
-import { FindAccountByEmailRepository } from '../protocols/db/account/find-account-by-email-repository';
-import { VerifyAccountRepository } from '../protocols/db/account/verify-account-repository';
 
 export const mockAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {

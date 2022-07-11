@@ -14,7 +14,6 @@ export class GetBusinessCitiesAndStatesController implements BaseController {
   async handle(): Promise<GetBusinessCitiesAndStatesController.Result> {
     try {
       const result = await this.getBusinessCitiesAndStates.getCitiesAndStates({});
-      console.log(result);
 
       if (result.length <= 0) {
         throw new NotFound({
@@ -28,7 +27,6 @@ export class GetBusinessCitiesAndStatesController implements BaseController {
       if (error instanceof NotFound) {
         return badRequest(error);
       }
-      console.log(error);
       return internalServerError(error);
     }
   }

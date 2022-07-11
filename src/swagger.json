@@ -973,6 +973,77 @@
           }
         }
       }
+    },
+    "/api/order/create": {
+      "post": {
+        "tags": ["Order"],
+        "summary": "Create",
+        "description": "Create new order",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                    "businessId": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "buyerId": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "total": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productId": {
+                          "type": "string",
+                          "required": true
+                        },
+                        "quantity": {
+                          "type": "number",
+                          "required": true
+                        }
+                      }	
+                    }
+                  }
+                },
+                "example": {
+                  "businessId":"123",
+                  "buyerId":"1223",
+                  "total":100,
+                  "items": {
+                    "quantity": 1,
+                    "productId": "123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
     }
   }
 }

@@ -40,17 +40,23 @@ describe('BusinessPrismaRepository', () => {
     country: 'any_country',
   };
   beforeEach(async () => {
+    await prisma.orderItem.deleteMany();
+    await prisma.order.deleteMany();
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
   });
 
-  afterAll(async () => {
+  beforeAll(async () => {
+    const deleteOrderItems = prisma.orderItem.deleteMany();
+    const deleteOrders = prisma.order.deleteMany();
     const deleteProduct = prisma.product.deleteMany();
     const deleteCategory = prisma.category.deleteMany();
     const deleteBusiness = prisma.business.deleteMany();
     const deleteAccount = prisma.account.deleteMany();
 
     await prisma.$transaction([
+      deleteOrderItems,
+      deleteOrders,
       deleteProduct,
       deleteCategory,
       deleteBusiness,

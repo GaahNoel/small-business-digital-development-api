@@ -51,7 +51,6 @@ export class AccountPrismaRepository implements AddAccountRepository, FindAccoun
         password: data.password,
       },
     });
-
     return {
       id: result.id,
     };
