@@ -248,6 +248,24 @@
         }
       }
     },
+    "/api/business/cities/": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List Cities of Business",
+        "description": "List Cities of Business",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "No business found on db"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/business/list/": {
       "get": {
         "tags": ["Business"],
