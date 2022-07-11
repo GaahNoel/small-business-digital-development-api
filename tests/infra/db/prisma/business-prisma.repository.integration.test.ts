@@ -8,9 +8,10 @@ import {
   DeleteBusinessRepository, EditBusinessRepository, ListBusinessFromAccountRepository, ListBusinessRepository,
 } from '@/data';
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
+import { GetBusinessCitiesAndStatesRepository } from '@/data/protocols/db/business/get-business-cities-and-states.repository';
 
 type SutTypes = {
-  sut: AddBusinessRepository & ListBusinessFromAccountRepository & DeleteBusinessRepository & EditBusinessRepository & ListBusinessByIdRepository & ListBusinessRepository;
+  sut: AddBusinessRepository & ListBusinessFromAccountRepository & DeleteBusinessRepository & EditBusinessRepository & ListBusinessByIdRepository & ListBusinessRepository & GetBusinessCitiesAndStatesRepository;
   addAccountRepository: AccountPrismaRepository;
 };
 
@@ -226,6 +227,23 @@ describe('BusinessPrismaRepository', () => {
         {
           id: otherCityAddedBusiness.id,
           ...otherCityBusiness,
+        },
+      ]);
+    });
+  });
+
+  describe('getBusinessCitiesAndStates', () => {
+    it('should return state and cities ', async () => {
+      const { sut, addAccountRepository } = makeSut();
+      const addedAccount = await addAccountRepository.add(mockAddAccountParams());
+      await sut.add(mockAddBusinessParams(addedAccount.id));
+
+      const result = await sut.getCitiesAndStates({});
+
+      expect(result).toEqual([
+        {
+          state: 'any_state',
+          city: 'any_city',
         },
       ]);
     });

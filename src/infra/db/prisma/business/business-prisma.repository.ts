@@ -2,6 +2,7 @@ import {
   DeleteBusinessRepository, EditBusinessRepository, ListBusinessFromAccountRepository, ListBusinessRepository,
 } from '@/data';
 import { AddBusinessRepository } from '@/data/protocols/db/business/add-business.repository';
+import { GetBusinessCitiesAndStatesRepository } from '@/data/protocols/db/business/get-business-cities-and-states.repository';
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 import { BusinessModel } from '@/domain/models/business';
 import {
@@ -9,7 +10,14 @@ import {
 } from '@/domain/usecases/business';
 import { prisma } from '@/infra/db/helpers';
 
-export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccountRepository, DeleteBusinessRepository, EditBusinessRepository, ListBusinessByIdRepository, ListBusinessRepository {
+export class BusinessPrismaRepository implements
+  AddBusinessRepository,
+  ListBusinessFromAccountRepository,
+  DeleteBusinessRepository,
+  EditBusinessRepository,
+  ListBusinessByIdRepository,
+  ListBusinessRepository,
+  GetBusinessCitiesAndStatesRepository {
   async add(data: AddBusinessRepository.Params): Promise<AddBusinessRepository.Result> {
     const business = await prisma.business.create({
       data,
@@ -127,5 +135,16 @@ export class BusinessPrismaRepository implements AddBusinessRepository, ListBusi
         accountId: true,
       },
     });
+  }
+
+  async getCitiesAndStates(): Promise<GetBusinessCitiesAndStatesRepository.Result> {
+    const result = await prisma.business.groupBy({
+      by: ['city', 'state'],
+    });
+
+    return result.map((item) => ({
+      state: item.state,
+      city: item.city,
+    }));
   }
 }

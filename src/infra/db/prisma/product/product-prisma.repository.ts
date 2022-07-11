@@ -1,10 +1,17 @@
+import { GetBusinessCitiesAndStatesRepository } from '@/data/protocols/db/business/get-business-cities-and-states.repository';
 import { AddProductRepository, GetProductByIdRepository, ListProductFromBusinessRepository } from '@/data/protocols/db/product';
 import { DeleteProductRepository } from '@/data/protocols/db/product/delete-product.repository';
 import { EditProductRepository } from '@/data/protocols/db/product/edit-product.repository';
 import { ListProductsByBusinessesRepository } from '@/data/protocols/db/product/list-products-by-businesses.repository';
 import { prisma } from '@/infra/db/helpers';
 
-export class ProductPrismaRepository implements AddProductRepository, ListProductFromBusinessRepository, DeleteProductRepository, EditProductRepository, GetProductByIdRepository, ListProductsByBusinessesRepository {
+export class ProductPrismaRepository implements
+  AddProductRepository,
+  ListProductFromBusinessRepository,
+  DeleteProductRepository,
+  EditProductRepository,
+  GetProductByIdRepository,
+  ListProductsByBusinessesRepository {
   async add(data: AddProductRepository.Params): Promise<AddProductRepository.Result> {
     const product = await prisma.product.create({ data });
     return {
