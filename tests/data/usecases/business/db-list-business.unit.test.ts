@@ -37,8 +37,8 @@ describe('DbListBusiness', () => {
     sut = new DbListBusiness(listBusinessRepository);
   });
 
-  it('should return all business if nothing', async () => {
-    const result = await sut.list({});
+  it('should return all business if nothing was provided', async () => {
+    const result = await sut.list({ location: { latitude: undefined, longitude: undefined, radius: undefined }, city: { name: undefined, state: undefined } });
     expect(result).toEqual([makeBusiness('3', '4', 'any_city', 'any_state'),
       makeBusiness('4', '3', 'any_city', 'any_state'),
       makeBusiness('2', '2', 'any_city', 'any_state'),

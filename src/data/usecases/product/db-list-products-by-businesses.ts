@@ -13,11 +13,11 @@ export class DbListProductsByBusinesses implements ListProductsByBusinesses {
 
     if (products.length <= 0) {
       throw new NotFound({
-        entity: 'Business',
+        entity: 'Product',
       });
     }
 
-    if (data.location) {
+    if (this.isPropDefined(data.location)) {
       const productsWithDistance = products.map((product) => ({
         ...product,
         business: {
@@ -50,4 +50,11 @@ export class DbListProductsByBusinesses implements ListProductsByBusinesses {
     const euclideanDistance = Math.sqrt((destinationLatitude - originLatitude) ** 2 + (destinationLongitude - originLongitude) ** 2);
     return euclideanDistance;
   };
+
+  private isPropDefined(data: object) : boolean {
+    if (!data) {
+      return false;
+    }
+    return !Object.keys(data).some((prop) => data[prop] === undefined);
+  }
 }

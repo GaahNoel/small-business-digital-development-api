@@ -5,7 +5,7 @@ export class DbListBusiness implements ListBusiness {
   constructor(private readonly listBusinessRepository: ListBusinessRepository) {}
 
   async list(params: ListBusinessParams): Promise<ListBusiness.Result> {
-    if (params.location) {
+    if (this.isPropDefined(params.location)) {
       const businesses = await this.listBusinessRepository.list({});
 
       const nearbyBusinesses = businesses.filter((business) => {
@@ -23,11 +23,11 @@ export class DbListBusiness implements ListBusiness {
       return nearbyBusinesses;
     }
 
-    if (params.city) {
+    if (this.isPropDefined(params.city)) {
       const businesses = await this.listBusinessRepository.list({
         city: {
-          name: params.city.name,
-          state: params.city.state,
+          name: params.city.name.toLocaleLowerCase(),
+          state: params.city.state.toLocaleLowerCase(),
         },
       });
 
@@ -51,4 +51,11 @@ export class DbListBusiness implements ListBusiness {
     const euclideanDistance = Math.sqrt((destinationLatitude - originLatitude) ** 2 + (destinationLongitude - originLongitude) ** 2);
     return euclideanDistance;
   };
+
+  private isPropDefined(data: object) : boolean {
+    if (!data) {
+      return false;
+    }
+    return !Object.keys(data).some((prop) => data[prop] === undefined);
+  }
 }

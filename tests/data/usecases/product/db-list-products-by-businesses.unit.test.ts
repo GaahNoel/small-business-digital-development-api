@@ -100,7 +100,7 @@ describe('DbListProductsByBusinesses', () => {
       businessesIds: ['any_business_id'],
       type: 'product',
     })).rejects.toThrow(new NotFound({
-      entity: 'Business',
+      entity: 'Product',
     }));
   });
 });

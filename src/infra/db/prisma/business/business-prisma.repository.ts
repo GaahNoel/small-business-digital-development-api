@@ -94,14 +94,20 @@ export class BusinessPrismaRepository implements AddBusinessRepository, ListBusi
     };
   }
 
-  list(params: ListBusinessRepository.Params): Promise<ListBusiness.Result> {
+  async list(params: ListBusinessRepository.Params): Promise<ListBusiness.Result> {
     const { city } = params;
 
-    const where = {} as { city?: string, state?: string };
+    const where = {} as { city?: { equals: string, mode: 'insensitive' }, state?: { equals: string, mode: 'insensitive' } };
 
     if (city) {
-      where.city = city.name;
-      where.state = city.state;
+      where.city = {
+        equals: city.name,
+        mode: 'insensitive',
+      };
+      where.state = {
+        equals: city.state,
+        mode: 'insensitive',
+      };
     }
 
     return prisma.business.findMany({
