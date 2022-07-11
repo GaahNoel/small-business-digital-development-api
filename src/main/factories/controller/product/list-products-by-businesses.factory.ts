@@ -10,7 +10,6 @@ export const makeListProductsByBusinessesController = (): BaseController => {
   const listProductsByBusinessesRepository = new ProductPrismaRepository();
 
   const listBusiness = new DbListBusiness(listBusinessRepository);
-
   const listProductsByBusinesses = new DbListProductsByBusinesses(listProductsByBusinessesRepository);
 
   return new ListProductsByBusinessesController(listBusiness, listProductsByBusinesses);

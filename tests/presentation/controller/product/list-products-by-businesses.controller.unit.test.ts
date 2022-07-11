@@ -57,15 +57,11 @@ describe('ListProductsByBusinessesController', () => {
   it('should call ListBusiness and listProductsByBusinesses with correct values', async () => {
     const httpRequest = {
       type: 'product' as 'product' | 'service',
-      location: {
-        latitude: 1,
-        longitude: 2,
-        radius: 3,
-      },
-      city: {
-        name: 'any_city_name',
-        state: 'any_city_state',
-      },
+      latitude: 1,
+      longitude: 2,
+      radius: 3,
+      city: 'any_city_name',
+      state: 'any_city_state',
     };
     await sut.handle(httpRequest);
     expect(listBusiness.list).toHaveBeenCalledWith({
@@ -96,44 +92,41 @@ describe('ListProductsByBusinessesController', () => {
       location: {
         longitude: 123, radius: 2, latitude: undefined,
       },
-      missing: ['location.latitude'],
+      missing: ['latitude'],
     },
     {
       location: {
         latitude: 123, radius: 2, longitude: undefined,
       },
-      missing: ['location.longitude'],
+      missing: ['longitude'],
     },
     {
       location: {
         latitude: 123, longitude: 2, radius: undefined,
       },
-      missing: ['location.radius'],
+      missing: ['radius'],
     },
     {
       location: {
         radius: 2, latitude: undefined, longitude: undefined,
       },
-      missing: ['location.latitude,location.longitude'],
+      missing: ['latitude', 'longitude'],
     },
     {
       location: {
         latitude: 123, longitude: undefined, radius: undefined,
       },
-      missing: ['location.longitude,location.radius'],
+      missing: ['longitude', 'radius'],
     },
     {
       location: {
         longitude: 123,
       },
-      missing: ['location.latitude', 'location.radius'],
+      missing: ['latitude', 'radius'],
     },
-    {
-      location: {},
-      missing: ['location.latitude,location.longitude,location.radius'],
-    }])('should return MissingParamsError if location is missing', async (params: { location: { latitude: number, longitude:number, radius: number }, missing: string[] }) => {
+  ])('should return MissingParamsError if location is missing', async (params: { location: { latitude: number, longitude:number, radius: number }, missing: string[] }) => {
     const result = await sut.handle({
-      location: params.location,
+      ...params.location,
       type: 'product',
     });
 
@@ -148,18 +141,19 @@ describe('ListProductsByBusinessesController', () => {
         name: 'any-name',
         state: undefined,
       },
-      missing: ['city.state'],
+      missing: ['state'],
     },
     {
       city: {
         name: undefined,
         state: 'any-state',
       },
-      missing: ['city.name'],
+      missing: ['city'],
     },
   ])('should return MissingParamsError if city is missing', async (params: { city: { name: string, state: string }, missing: string[] }) => {
     const result = await sut.handle({
-      city: params.city,
+      city: params.city.name,
+      state: params.city.state,
       type: 'product',
     });
 
@@ -182,15 +176,11 @@ describe('ListProductsByBusinessesController', () => {
     (listBusiness.list as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
     const result = await sut.handle({
       type: 'product',
-      location: {
-        latitude: 1,
-        longitude: 2,
-        radius: 3,
-      },
-      city: {
-        name: 'any_city_name',
-        state: 'any_city_state',
-      },
+      latitude: 1,
+      longitude: 2,
+      radius: 3,
+      city: 'any_city_name',
+      state: 'any_city_state',
     });
 
     expect(result).toEqual(internalServerError(new Error()));
@@ -200,15 +190,11 @@ describe('ListProductsByBusinessesController', () => {
     (listProductsByBusinesses.listProductsByBusinesses as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
     const result = await sut.handle({
       type: 'product',
-      location: {
-        latitude: 1,
-        longitude: 2,
-        radius: 3,
-      },
-      city: {
-        name: 'any_city_name',
-        state: 'any_city_state',
-      },
+      latitude: 1,
+      longitude: 2,
+      radius: 3,
+      city: 'any_city_name',
+      state: 'any_city_state',
     });
 
     expect(result).toEqual(internalServerError(new Error()));
@@ -217,15 +203,11 @@ describe('ListProductsByBusinessesController', () => {
   it('should return a list of products', async () => {
     const result = await sut.handle({
       type: 'product',
-      location: {
-        latitude: 1,
-        longitude: 2,
-        radius: 3,
-      },
-      city: {
-        name: 'any_city_name',
-        state: 'any_city_state',
-      },
+      latitude: 1,
+      longitude: 2,
+      radius: 3,
+      city: 'any_city_name',
+      state: 'any_city_state',
     });
 
     expect(result).toEqual(success([{
@@ -245,7 +227,7 @@ describe('ListProductsByBusinessesController', () => {
         id: 'any_product_category_id',
         name: 'any_product_category_name',
       },
-      createdAt: new Date(),
+      createdAt: expect.any(Date),
     }]));
   });
 
@@ -253,15 +235,11 @@ describe('ListProductsByBusinessesController', () => {
     (listBusiness.list as jest.Mock).mockImplementationOnce(async () => Promise.resolve([]));
     const result = await sut.handle({
       type: 'product',
-      location: {
-        latitude: 1,
-        longitude: 2,
-        radius: 3,
-      },
-      city: {
-        name: 'any_city_name',
-        state: 'any_city_state',
-      },
+      latitude: 1,
+      longitude: 2,
+      radius: 3,
+      city: 'any_city_name',
+      state: 'any_city_state',
     });
 
     expect(result).toEqual(notFound(new NotFound({

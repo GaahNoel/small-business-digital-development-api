@@ -10,9 +10,9 @@ import { makeListProductsByBusinessesController } from '../factories/controller/
 
 export default (router: Router): void => {
   router.post('/product/create', auth(), adaptRoute(makeAddProductController()));
+  router.get('/product/list/nearby', adaptRoute(makeListProductsByBusinessesController()));
   router.get('/product/list/:businessId', adaptRoute(makeListProductFromBusinessController()));
   router.delete('/product/delete/:productId', auth(), adaptRoute(makeDeleteProductController()));
   router.put('/product/edit/:productId', auth(), adaptRoute(makeEditProductController()));
   router.get('/product/:productId', adaptRoute(makeGetProductByIdController()));
-  router.get('/product/list/nearby', adaptRoute(makeListProductsByBusinessesController()));
 };

@@ -9,15 +9,11 @@ import { BaseController, HttpResponse } from '@/presentation/protocols';
 namespace ListProductsByBusinessesController {
   export type Params = {
     type: 'product' | 'service';
-    location?: {
-      latitude: number;
-      longitude: number;
-      radius: number;
-    }
-    city?: {
-      name: string;
-      state: string;
-    }
+    latitude?: number;
+    longitude?: number;
+    radius?: number;
+    city?: string;
+    state?: string;
   };
   export type Result = HttpResponse;
 }
@@ -29,8 +25,15 @@ export class ListProductsByBusinessesController implements BaseController {
     try {
       this.validate(data);
       const businesses = await this.listBusiness.list({
-        location: data.location,
-        city: data.city,
+        location: {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          radius: data.radius,
+        },
+        city: {
+          name: data.city,
+          state: data.state,
+        },
       });
 
       if (businesses.length <= 0) {
@@ -43,7 +46,11 @@ export class ListProductsByBusinessesController implements BaseController {
       const products = await this.listProductsByBusinesses.listProductsByBusinesses({
         businessesIds: mappedBusinessesIds,
         type: data.type.toLocaleLowerCase() as 'product' | 'service',
-        location: data.location,
+        location: {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          radius: data.radius,
+        },
       });
 
       return success(products);
@@ -63,24 +70,24 @@ export class ListProductsByBusinessesController implements BaseController {
   private validate(data: ListProductsByBusinessesController.Params): void {
     const invalidParams = [];
 
-    if (data.location) {
-      if (data.location.latitude === undefined) {
-        invalidParams.push('location.latitude');
+    if (data.latitude || data.longitude || data.radius) {
+      if (data.latitude === undefined) {
+        invalidParams.push('latitude');
       }
-      if (data.location.longitude === undefined) {
-        invalidParams.push('location.longitude');
+      if (data.longitude === undefined) {
+        invalidParams.push('longitude');
       }
-      if (data.location.radius === undefined) {
-        invalidParams.push('location.radius');
+      if (data.radius === undefined) {
+        invalidParams.push('radius');
       }
     }
 
-    if (data.city) {
-      if (!data.city.name) {
-        invalidParams.push('city.name');
+    if (data.city || data.state) {
+      if (!data.city) {
+        invalidParams.push('city');
       }
-      if (!data.city.state) {
-        invalidParams.push('city.state');
+      if (!data.state) {
+        invalidParams.push('state');
       }
     }
 
