@@ -10,6 +10,19 @@ export class DbListProductFromBusiness implements ListProductFromBusiness {
       businessId,
     });
 
-    return response;
+    return response.map((product) => ({
+      id: product.id,
+      name: product.name,
+      type: product.type,
+      description: product.description,
+      listPrice: product.listPrice,
+      salePrice: product.salePrice,
+      imageUrl: product.imageUrl,
+      businessId: product.businessId,
+      category: {
+        id: product.category.id,
+        name: product.category.name,
+      },
+    }));
   }
 }

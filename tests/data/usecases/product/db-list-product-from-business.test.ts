@@ -37,6 +37,7 @@ describe('DbListProductFromBusiness', () => {
     });
 
     const mockedProduct = mockAddProductModel();
+    delete mockedProduct.categoryId;
     expect(response).toEqual([{
       ...mockedProduct,
       category: {

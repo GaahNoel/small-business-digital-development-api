@@ -16,7 +16,6 @@ export namespace ListProductFromBusiness {
     salePrice: number;
     imageUrl: string;
     businessId: string;
-    categoryId: string;
     createdAt?: Date;
     category: {
       id: string;
