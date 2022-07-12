@@ -10,6 +10,8 @@ export class DbListProductFromBusiness implements ListProductFromBusiness {
       businessId,
     });
 
-    return response;
+    return {
+      ...response,
+    };
   }
 }
