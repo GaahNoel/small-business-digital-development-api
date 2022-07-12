@@ -248,6 +248,135 @@
         }
       }
     },
+    "/api/business/cities/": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List Cities of Business",
+        "description": "List Cities of Business",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "No business found on db"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/business/list/": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List Business",
+        "description": "List Business",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "params",
+            "description": "latitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "params",
+            "description": "longitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "radius",
+            "in": "params",
+            "description": "radius",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "params",
+            "description": "city name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "params",
+            "description": "state",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest - Missing Required Params"
+          },
+          "404": {
+            "description": "Business not found for the location provided"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/business/{businessId}": {
+      "get": {
+        "tags": ["Business"],
+        "summary": "List By Id",
+        "description": "List business by id",
+        "parameters": [
+        {
+          "name": "businessId",
+          "in": "params",
+          "description": "Business Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "businessId": {
+                    "type": "string",
+                    "required": false
+                  }
+                },
+                "example": {
+                  "businessId":"any-business-id"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description":"Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/business/create": {
       "post": {
         "tags": ["Business"],
@@ -340,11 +469,11 @@
         }
       }
     },
-    "/api/business/{businessId}": {
+    "/api/business/edit/{businessId}": {
       "put": {
         "tags": ["Business"],
-        "summary": "Create",
-        "description": "Created new business for user",
+        "summary": "Edit",
+        "description": "Edit business for user",
         "parameters": [{
           "name": "token",
           "in": "header",
@@ -371,47 +500,47 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "description": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "imageUrl": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "accountId": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "city": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "country": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "latitude": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "longitude": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "state": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "street": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   },
                   "zip": {
                     "type": "string",
-                    "required": false
+                    "required": true
                   }
                 },
                 "example": {
@@ -550,6 +679,115 @@
           }
         }
       }
+    },
+    "/api/product/{businessId}": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "Get",
+        "description": "Get product infos by id",
+        "parameters": [{
+          "name": "productId",
+          "in": "path",
+          "description": "Product id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest - Missing Required Params"
+          },
+          "404": {
+            "description": "NotFound"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/product/list/nearby": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "List Nearby Products",
+        "description": "List Nearby Products",
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "params",
+            "description": "latitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "params",
+            "description": "longitude",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "radius",
+            "in": "params",
+            "description": "radius",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "params",
+            "description": "city name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "params",
+            "description": "state",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "params",
+            "description": "product | service",
+            "required": true,
+            "schema": {
+              "type": "string"
+            } 
+          }
+        ]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "BadRequest - Missing Required Params"
+          },
+          "404": {
+            "description": "Business not found for the location provided"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+      
     },
     "/api/product/create": {
       "post": {
@@ -735,6 +973,77 @@
           }
         }
       }
+    },
+    "/api/order/create": {
+      "post": {
+        "tags": ["Order"],
+        "summary": "Create",
+        "description": "Create new order",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                    "businessId": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "buyerId": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "total": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productId": {
+                          "type": "string",
+                          "required": true
+                        },
+                        "quantity": {
+                          "type": "number",
+                          "required": true
+                        }
+                      }	
+                    }
+                  }
+                },
+                "example": {
+                  "businessId":"123",
+                  "buyerId":"1223",
+                  "total":100,
+                  "items": {
+                    "quantity": 1,
+                    "productId": "123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
     }
   }
 }

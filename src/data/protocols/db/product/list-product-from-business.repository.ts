@@ -6,5 +6,18 @@ export interface ListProductFromBusinessRepository {
 
 export namespace ListProductFromBusinessRepository {
   export type Params = ListProductFromBusiness.Params;
-  export type Result = ListProductFromBusiness.Result;
+  export type Result = {
+    id: string;
+    name: string;
+    type: 'product' | 'service';
+    description: string;
+    listPrice: number;
+    salePrice: number;
+    imageUrl: string;
+    businessId: string;
+    category: {
+      id: string;
+      name: string;
+    }
+  }[];
 }

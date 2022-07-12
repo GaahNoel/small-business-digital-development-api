@@ -8,7 +8,7 @@ export class DbAddProduct implements AddProduct {
     const product = await this.addProductRepository.add(data);
 
     return {
-      id: product.id,
+      id: product.productId,
     };
   }
 }

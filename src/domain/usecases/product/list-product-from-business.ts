@@ -3,7 +3,7 @@ export type ListProductFromBusinessParams = {
 };
 
 export interface ListProductFromBusiness {
-  list(AddProductParams: ListProductFromBusiness.Params): Promise<ListProductFromBusiness.Result>;
+  list(listProductFromBusiness: ListProductFromBusiness.Params): Promise<ListProductFromBusiness.Result>;
 }
 export namespace ListProductFromBusiness {
   export type Params = ListProductFromBusinessParams;

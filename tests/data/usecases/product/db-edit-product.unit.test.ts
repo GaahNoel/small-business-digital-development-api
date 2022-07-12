@@ -1,4 +1,4 @@
-import { EditProductRepository } from '@/data/protocols/db/product/edit-product.repository';
+import { EditProductRepository } from '@/data/protocols/db/product/';
 import { DbEditProduct } from '@/data/usecases/product/db-edit-product';
 
 describe('DbEditProduct', () => {

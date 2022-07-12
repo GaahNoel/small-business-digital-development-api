@@ -6,7 +6,7 @@ export const mockAddProductRepository = (): AddProductRepository => {
     async add(data: AddProductRepository.Params): Promise<AddProductRepository.Result> {
       const mockedProductModel = mockAddProductModel();
       return Promise.resolve({
-        id: mockedProductModel.id,
+        productId: mockedProductModel.id,
       });
     }
   }

@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Account {
-  id String @id @default(uuid())
-  name String
-  password String?
-  email String @unique
-  createdAt DateTime @default(now())
-  verified Boolean @default(false)
-  provider Provider
-  Businesses Business[] 
+  id         String     @id @default(uuid())
+  name       String
+  password   String?
+  email      String     @unique
+  createdAt  DateTime   @default(now())
+  verified   Boolean    @default(false)
+  provider   Provider
+  Businesses Business[]
+  BuyOrders  Order[]    @relation(name: "BuyOrders")
 }
 
 enum Provider {
@@ -27,44 +28,46 @@ enum Provider {
 }
 
 model Business {
-  id String @id @default(uuid())
-  name String
+  id          String    @id @default(uuid())
+  name        String
   description String
-  createdAt DateTime @default(now())
-  products Product[]
-  accountId String 
-  account Account @relation(fields: [accountId], references: [id])
-  imageUrl String
-  latitude String
-  longitude String
-  street String
-  city String
-  state String
-  zip String
-  country String
+  createdAt   DateTime  @default(now())
+  products    Product[]
+  accountId   String
+  account     Account   @relation(fields: [accountId], references: [id])
+  imageUrl    String
+  latitude    String
+  longitude   String
+  street      String
+  city        String
+  state       String
+  zip         String
+  country     String
+  Order       Order[]
 }
 
 model Product {
-  id String @id @default(uuid())
-  name String
-  listPrice Float
-  salePrice Float
+  id          String      @id @default(uuid())
+  name        String
+  listPrice   Float
+  salePrice   Float
   description String
-  createdAt DateTime @default(now())
-  businessId String 
-  business Business @relation(fields: [businessId], references: [id])
-  imageUrl String
-  type ProductType 
-  categoryId String 
-  category Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime    @default(now())
+  businessId  String
+  business    Business    @relation(fields: [businessId], references: [id])
+  imageUrl    String
+  type        ProductType
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
 }
 
 model Category {
-  id String @id @default(uuid())
-  name String
+  id          String    @id @default(uuid())
+  name        String
   description String
-  products Product[]
-  createdAt DateTime @default(now())
+  products    Product[]
+  createdAt   DateTime  @default(now())
 }
 
 enum ProductType {
@@ -72,6 +75,34 @@ enum ProductType {
   product
 }
 
+model Order {
+  id      String      @id @default(uuid())
+  total   Float       @default(0)
+  status  OrderStatus @default(PENDING)
+  items   OrderItem[]
+  Buyer   Account     @relation(name: "BuyOrders", fields: [buyerId], references: [id])
+  buyerId String
 
+  Business   Business @relation(fields: [businessId], references: [id])
+  businessId String
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   String?
+}

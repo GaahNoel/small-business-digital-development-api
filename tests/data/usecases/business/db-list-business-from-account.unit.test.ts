@@ -8,7 +8,7 @@ describe('DbListBusinessFromAccount UseCase', () => {
 
   beforeEach(() => {
     listBusinessFromAccountRepository = {
-      list: jest.fn(async () => Promise.resolve([
+      listFromAccount: jest.fn(async () => Promise.resolve([
         {
           id: 'any_id',
           name: 'any_name',
@@ -25,7 +25,7 @@ describe('DbListBusinessFromAccount UseCase', () => {
       accountId: 'any_accountId',
     });
 
-    expect(listBusinessFromAccountRepository.list).toHaveBeenCalledWith({
+    expect(listBusinessFromAccountRepository.listFromAccount).toHaveBeenCalledWith({
       accountId: 'any_accountId',
     });
   });
@@ -39,7 +39,7 @@ describe('DbListBusinessFromAccount UseCase', () => {
   });
 
   it('should throw error if repository throws', async () => {
-    listBusinessFromAccountRepository.list = jest.fn(async () => Promise.reject(new Error()));
+    listBusinessFromAccountRepository.listFromAccount = jest.fn(async () => Promise.reject(new Error()));
 
     const promise = sut.list({
       accountId: 'any_accountId',

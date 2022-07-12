@@ -1,12 +1,23 @@
-import { DeleteBusinessRepository, EditBusinessRepository } from '@/data';
+import {
+  DeleteBusinessRepository, EditBusinessRepository, ListBusinessFromAccountRepository, ListBusinessRepository,
+} from '@/data';
 import { AddBusinessRepository } from '@/data/protocols/db/business/add-business.repository';
+import { GetBusinessCitiesAndStatesRepository } from '@/data/protocols/db/business/get-business-cities-and-states.repository';
+import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 import { BusinessModel } from '@/domain/models/business';
 import {
-  DeleteBusiness, DeleteBusinessParams, EditBusiness, EditBusinessParams, ListBusinessFromAccount,
+  DeleteBusiness, DeleteBusinessParams, EditBusiness, EditBusinessParams, ListBusiness, ListBusinessFromAccount,
 } from '@/domain/usecases/business';
 import { prisma } from '@/infra/db/helpers';
 
-export class BusinessPrismaRepository implements AddBusinessRepository, ListBusinessFromAccount, DeleteBusinessRepository, EditBusinessRepository {
+export class BusinessPrismaRepository implements
+  AddBusinessRepository,
+  ListBusinessFromAccountRepository,
+  DeleteBusinessRepository,
+  EditBusinessRepository,
+  ListBusinessByIdRepository,
+  ListBusinessRepository,
+  GetBusinessCitiesAndStatesRepository {
   async add(data: AddBusinessRepository.Params): Promise<AddBusinessRepository.Result> {
     const business = await prisma.business.create({
       data,
@@ -14,7 +25,7 @@ export class BusinessPrismaRepository implements AddBusinessRepository, ListBusi
     return business;
   }
 
-  async list(params: ListBusinessFromAccount.Params): Promise<ListBusinessFromAccount.Result> {
+  async listFromAccount(params: ListBusinessFromAccount.Params): Promise<ListBusinessFromAccount.Result> {
     const { accountId: receivedAccountId } = params;
     const businesses = await prisma.business.findMany({
       where: {
@@ -66,5 +77,74 @@ export class BusinessPrismaRepository implements AddBusinessRepository, ListBusi
     return {
       id: business.id,
     };
+  }
+
+  async listById(data: ListBusinessByIdRepository.Params): Promise<ListBusinessByIdRepository.Result> {
+    const result = await prisma.business.findFirst({
+      where: {
+        id: data.businessId,
+      },
+    });
+
+    return {
+      id: result.id,
+      name: result.name,
+      imageUrl: result.imageUrl,
+      description: result.description,
+      latitude: result.latitude,
+      longitude: result.longitude,
+      street: result.street,
+      city: result.city,
+      state: result.state,
+      zip: result.zip,
+      country: result.country,
+      accountId: result.accountId,
+    };
+  }
+
+  async list(params: ListBusinessRepository.Params): Promise<ListBusiness.Result> {
+    const { city } = params;
+
+    const where = {} as { city?: { equals: string, mode: 'insensitive' }, state?: { equals: string, mode: 'insensitive' } };
+
+    if (city) {
+      where.city = {
+        equals: city.name,
+        mode: 'insensitive',
+      };
+      where.state = {
+        equals: city.state,
+        mode: 'insensitive',
+      };
+    }
+
+    return prisma.business.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        description: true,
+        latitude: true,
+        longitude: true,
+        street: true,
+        city: true,
+        state: true,
+        zip: true,
+        country: true,
+        accountId: true,
+      },
+    });
+  }
+
+  async getCitiesAndStates(): Promise<GetBusinessCitiesAndStatesRepository.Result> {
+    const result = await prisma.business.groupBy({
+      by: ['city', 'state'],
+    });
+
+    return result.map((item) => ({
+      state: item.state,
+      city: item.city,
+    }));
   }
 }

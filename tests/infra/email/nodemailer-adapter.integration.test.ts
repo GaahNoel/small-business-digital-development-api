@@ -16,6 +16,7 @@ describe('NodeMailer Adapter', () => {
       subject: 'any_subject',
       message: 'any_message',
     });
+
     expect(result).toBe(true);
   });
 });

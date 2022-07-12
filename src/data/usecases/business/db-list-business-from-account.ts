@@ -5,6 +5,6 @@ export class DbListBusinessFromAccount implements ListBusinessFromAccount {
   constructor(private readonly listBusinessFromAccountRepository : ListBusinessFromAccountRepository) {}
 
   list(ListBusinessParams: ListBusinessFromAccount.Params): Promise<ListBusinessFromAccount.Result> {
-    return this.listBusinessFromAccountRepository.list(ListBusinessParams);
+    return this.listBusinessFromAccountRepository.listFromAccount(ListBusinessParams);
   }
 }
