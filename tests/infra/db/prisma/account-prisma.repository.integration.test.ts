@@ -29,59 +29,80 @@ describe('AccountPrismaRepository', () => {
 
     prisma.$disconnect();
   });
+  describe('add', () => {
+    it('should return account on add success ', async () => {
+      const sut = makeSut();
 
-  it('should return account on add success ', async () => {
-    const sut = makeSut();
+      const request = mockAddAccountParams();
+      const account = await sut.add(request);
 
-    const request = mockAddAccountParams();
-    const account = await sut.add(request);
-
-    expect(account).toBeTruthy();
-    expect(account.id).toBeTruthy();
-  });
-
-  it('should use verified true if provided ', async () => {
-    const sut = makeSut();
-
-    const params = mockAddAccountParams();
-    const account = await sut.add({
-      ...params,
-      verified: true,
+      expect(account).toBeTruthy();
+      expect(account.id).toBeTruthy();
     });
 
-    expect(account).toBeTruthy();
-    expect(account.id).toBeTruthy();
+    it('should use verified true if provided ', async () => {
+      const sut = makeSut();
+
+      const params = mockAddAccountParams();
+      const account = await sut.add({
+        ...params,
+        verified: true,
+      });
+
+      expect(account).toBeTruthy();
+      expect(account.id).toBeTruthy();
+    });
   });
 
-  it('should return existent account by email', async () => {
-    const sut = makeSut();
+  describe('findByEmail', () => {
+    it('should return existent account by email', async () => {
+      const sut = makeSut();
 
-    const request = mockAddAccountParams();
-    const addedAccount = await sut.add(request);
-    const foundAccount = await sut.findByEmail({ email: request.email });
+      const request = mockAddAccountParams();
+      const addedAccount = await sut.add(request);
+      const foundAccount = await sut.findByEmail({ email: request.email });
 
-    delete foundAccount.createdAt;
-    expect(foundAccount.id).toEqual(addedAccount.id);
+      delete foundAccount.createdAt;
+      expect(foundAccount.id).toEqual(addedAccount.id);
+    });
   });
 
-  it('should verify account by id', async () => {
-    const sut = makeSut();
+  describe('verify', () => {
+    it('should verify account by id', async () => {
+      const sut = makeSut();
 
-    const request = mockAddAccountParams();
-    const { id } = await sut.add(request);
-    const verified = await sut.verify(id);
+      const request = mockAddAccountParams();
+      const { id } = await sut.add(request);
+      const verified = await sut.verify(id);
 
-    expect(verified).toBe(true);
+      expect(verified).toBe(true);
+    });
   });
-  it('should edit account if called with correct params', async () => {
-    const sut = makeSut();
 
-    const addRequest = mockAddAccountParams();
-    const { id } = await sut.add(addRequest);
+  describe('edit', () => {
+    it('should edit account if called with correct params', async () => {
+      const sut = makeSut();
 
-    const editRequest = mockEditAccountParams(id);
-    const { id: editedAccountId } = await sut.edit(editRequest);
+      const addRequest = mockAddAccountParams();
+      const { id } = await sut.add(addRequest);
 
-    expect(editedAccountId).toEqual(id);
+      const editRequest = mockEditAccountParams(id);
+      const { id: editedAccountId } = await sut.edit(editRequest);
+
+      expect(editedAccountId).toEqual(id);
+    });
+  });
+
+  describe('getById', () => {
+    it('should return account infos', async () => {
+      const sut = makeSut();
+
+      const request = mockAddAccountParams();
+      const { id } = await sut.add(request);
+
+      const account = await sut.getById({ accountId: id });
+
+      expect(account.id).toEqual(id);
+    });
   });
 });
