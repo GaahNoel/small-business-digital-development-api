@@ -12,6 +12,7 @@ import { mockAddProductParams } from '@/tests/domain/mocks/product.mock';
 import { CategoryPrismaRepository } from '@/infra/db/prisma/category';
 import { mockAddCategoryParams } from '@/tests/domain/mocks/category.mock';
 
+jest.setTimeout(30000);
 describe('OrderPrismaRepository', () => {
   let sut: OrderPrismaRepository;
   let addedSellerAccount: AddAccountRepository.Result;
@@ -69,6 +70,66 @@ describe('OrderPrismaRepository', () => {
 
       expect(order).toEqual({
         orderId: expect.any(String),
+      });
+    });
+  });
+
+  describe('getOrderById', () => {
+    it('should get order by id successfully', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        total: 0,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+      });
+
+      const result = await sut.getOrderById({ orderId: order.orderId });
+
+      expect(result).toEqual({
+        id: order.orderId,
+        status: 'PENDING',
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+            id: expect.any(String),
+          },
+        ],
+        total: 0,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+      });
+    });
+  });
+
+  describe('updateOrderById', () => {
+    it('should update order by id successfully', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        total: 0,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+      });
+
+      const result = await sut.updateOrderById({
+        orderId: order.orderId,
+        status: 'COMPLETED',
+      });
+
+      expect(result).toEqual({
+        orderId: order.orderId,
+        status: 'COMPLETED',
+        total: 0,
       });
     });
   });
