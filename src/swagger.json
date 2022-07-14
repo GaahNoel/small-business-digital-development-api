@@ -1010,6 +1010,31 @@
         }
       }
     },
+    "/api/order/{orderId}": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get order by id",
+        "description": "Get order by id",
+        "parameters": [{
+          "name": "orderId",
+          "in": "path",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
     "/api/order/create": {
       "post": {
         "tags": ["Order"],
@@ -1081,7 +1106,7 @@
         }
       
     },
-    "/api/order/{orderId}": {
+    "/api/order/edit/status/{orderId}": {
       "put": {
         "tags": ["Order"],
         "summary": "Create",
