@@ -2,8 +2,9 @@ import { prisma } from '@/infra/db/helpers';
 import { CreateOrderRepository } from '@/data/protocols/db/order/create-order.repository';
 import { OrderItem } from '@/domain/models/order';
 import { GetOrderByIdRepository, UpdateOrderByIdRepository } from '@/data/protocols/db/order';
+import { ListAccountOrders } from '@/domain/usecases/order';
 
-export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByIdRepository, UpdateOrderByIdRepository {
+export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByIdRepository, UpdateOrderByIdRepository, ListAccountOrders {
   async create(order: CreateOrderRepository.Params): Promise<CreateOrderRepository.Result> {
     const result = await prisma.order.create({
       data: {
@@ -32,6 +33,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         total: true,
         businessId: true,
         buyerId: true,
+        sellerId: true,
         items: {
           select: {
             id: true,
@@ -60,5 +62,30 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
       status: updatedOrder.status,
       total: updatedOrder.total,
     };
+  }
+
+  listAccountOrders(params: { accountId: string; type: 'buy' | 'sell'; }): Promise<ListAccountOrders.Result> {
+    const where = params.type === 'buy' ? { buyerId: params.accountId } : { sellerId: params.accountId };
+
+    const select = {
+      id: true,
+      status: true,
+      total: true,
+      businessId: true,
+      buyerId: true,
+      sellerId: true,
+      items: {
+        select: {
+          id: true,
+          quantity: true,
+          productId: true,
+        },
+      },
+    };
+
+    return prisma.order.findMany({
+      where,
+      select,
+    });
   }
 }

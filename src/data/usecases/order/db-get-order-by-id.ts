@@ -22,6 +22,7 @@ export class DbGetOrderById implements GetOrderById {
       total: result.total,
       businessId: result.businessId,
       buyerId: result.buyerId,
+      sellerId: result.sellerId,
       items: result.items,
     };
   }

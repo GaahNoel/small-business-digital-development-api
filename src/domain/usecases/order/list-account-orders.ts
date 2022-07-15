@@ -1,16 +1,16 @@
 import { OrderItem } from '@/domain/models/order';
 
-type ListAccountBuyOrdersParams = {
+type ListAccountOrdersParams = {
   accountId: string;
   type: 'buy' | 'sell';
 };
 
-namespace ListAccountBuyOrders {
-  export type Params = ListAccountBuyOrdersParams;
+export namespace ListAccountOrders {
+  export type Params = ListAccountOrdersParams;
   export type Result = {
     id: string;
     businessId: string;
-    buyerId: string;
+    sellerId: string;
     status: 'PENDING' | 'COMPLETED' | 'CANCELED';
     total: number;
     createdAt?: Date;
@@ -19,6 +19,6 @@ namespace ListAccountBuyOrders {
   } [];
 }
 
-export interface ListAccountBuyOrders {
-  (params: ListAccountBuyOrders.Params): Promise<ListAccountBuyOrders.Result>;
+export interface ListAccountOrders {
+  listAccountOrders(params: ListAccountOrders.Params): Promise<ListAccountOrders.Result>;
 }

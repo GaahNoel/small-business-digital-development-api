@@ -37,7 +37,7 @@ export class ChangeOrderStatusController implements BaseController {
     }
   }
 
-  validate(data: ChangeOrderStatusController.Params): void {
+  private validate(data: ChangeOrderStatusController.Params): void {
     const { orderId, status } = data;
     const missingParams = [];
     if (!orderId) {

@@ -8,5 +8,6 @@ import { auth } from '../middlewares/auth';
 export default (router: Router): void => {
   router.post('/order/create', auth(), adaptRoute(makeCreateOrderController()));
   router.put('/order/edit/status/:orderId', auth(), adaptRoute(makeChangeOrderStatusControllerFactory()));
+  router.get('/order/account/:accountId', auth(), adaptRoute(makeGetOrderByIdController()));
   router.get('/order/:orderId', auth(), adaptRoute(makeGetOrderByIdController()));
 };

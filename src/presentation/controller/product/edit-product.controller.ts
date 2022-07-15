@@ -34,7 +34,7 @@ export class EditProductController implements BaseController {
     }
   }
 
-  validate(params: EditProductController.Params): void {
+  private validate(params: EditProductController.Params): void {
     const { productId } = params;
     if (!productId) {
       throw new MissingParamsError({

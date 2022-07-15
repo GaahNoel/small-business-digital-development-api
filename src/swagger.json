@@ -1018,7 +1018,41 @@
         "parameters": [{
           "name": "orderId",
           "in": "path",
-          "description": "Jwt token",
+          "description": "order id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
+    "/api/order/account/{accountId}": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get order by id",
+        "description": "Get order by id",
+        "parameters": [{
+          "name": "accountId",
+          "in": "path",
+          "description": "accountId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "description": "type of order - buy or sell",
           "required": true,
           "schema": {
             "type": "string"

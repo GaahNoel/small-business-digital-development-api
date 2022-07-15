@@ -10,6 +10,7 @@ export type Order = {
   id: string;
   businessId: string;
   buyerId: string;
+  sellerId: string;
   status: 'PENDING' | 'COMPLETED' | 'CANCELED';
   total: number;
   createdAt?: Date;

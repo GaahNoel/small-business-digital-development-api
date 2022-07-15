@@ -14,6 +14,7 @@ describe('GetOrderById', () => {
         total: 100,
         businessId: 'any_business_id',
         buyerId: 'any_buyer_id',
+        sellerId: 'any_seller_id',
         items: [],
       })),
     };
@@ -40,6 +41,7 @@ describe('GetOrderById', () => {
       total: 100,
       businessId: 'any_business_id',
       buyerId: 'any_buyer_id',
+      sellerId: 'any_seller_id',
       items: [],
     });
   });

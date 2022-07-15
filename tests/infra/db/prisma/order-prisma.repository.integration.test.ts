@@ -103,6 +103,7 @@ describe('OrderPrismaRepository', () => {
           },
         ],
         total: 0,
+        sellerId: addedSellerAccount.id,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
       });
@@ -134,6 +135,96 @@ describe('OrderPrismaRepository', () => {
         status: 'COMPLETED',
         total: 0,
       });
+    });
+  });
+
+  describe('ListAccountOrders', () => {
+    it('should get buy orders by account id successfully', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        sellerId: addedSellerAccount.id,
+        total: 0,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+      });
+
+      const result = await sut.listAccountOrders({ accountId: addedBuyerAccount.id, type: 'buy' });
+
+      expect(result).toEqual([
+        {
+          id: order.orderId,
+          status: 'PENDING',
+          items: [
+            {
+              quantity: 1,
+              productId: addedProduct.productId,
+              id: expect.any(String),
+            },
+          ],
+          total: 0,
+          sellerId: addedSellerAccount.id,
+          businessId: addedBusiness.id,
+          buyerId: addedBuyerAccount.id,
+        },
+      ]);
+    });
+    it('should get sell orders by account id successfully', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        sellerId: addedSellerAccount.id,
+        total: 0,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+      });
+
+      const result = await sut.listAccountOrders({ accountId: addedSellerAccount.id, type: 'sell' });
+
+      expect(result).toEqual([
+        {
+          id: order.orderId,
+          status: 'PENDING',
+          items: [
+            {
+              quantity: 1,
+              productId: addedProduct.productId,
+              id: expect.any(String),
+            },
+          ],
+          total: 0,
+          sellerId: addedSellerAccount.id,
+          businessId: addedBusiness.id,
+          buyerId: addedBuyerAccount.id,
+        },
+      ]);
+    });
+
+    it('should return empty array if no order was found', async () => {
+      await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        sellerId: addedSellerAccount.id,
+        total: 0,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+      });
+
+      const result = await sut.listAccountOrders({ accountId: addedBuyerAccount.id, type: 'sell' });
+
+      expect(result).toEqual([]);
     });
   });
 });

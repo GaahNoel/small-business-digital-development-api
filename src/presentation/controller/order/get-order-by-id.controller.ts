@@ -33,7 +33,7 @@ export class GetOrderByIdController implements BaseController {
     }
   }
 
-  validate(data: GetOrderByIdController.Params): void {
+  private validate(data: GetOrderByIdController.Params): void {
     const { orderId } = data;
     if (!orderId) {
       throw new MissingParamsError({
