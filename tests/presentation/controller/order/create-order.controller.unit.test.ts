@@ -10,6 +10,9 @@ import { ListBusinessById } from '@/domain/usecases/business';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 
 describe('CreateOrderController', () => {
+  const order = makeCreateOrderParams();
+  delete order.sellerId;
+
   let sut: CreateOrderController;
   let createOrder: CreateOrder;
   let getAccountById: GetAccountById;
@@ -56,15 +59,12 @@ describe('CreateOrderController', () => {
   });
 
   it('should call CreateOrder with correct values', async () => {
-    const order = makeCreateOrderParams();
-
     await sut.handle(order);
 
     expect(createOrder.create).toHaveBeenCalledWith(order);
   });
 
   it('should return order id if order created successfully', async () => {
-    const order = makeCreateOrderParams();
     const response = await sut.handle(order);
 
     expect(response).toEqual(success({ orderId: 'any_id' }));
@@ -72,7 +72,6 @@ describe('CreateOrderController', () => {
 
   it('should return internal server error if CreateOrder throws unhandled error', async () => {
     (createOrder.create as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
-    const order = makeCreateOrderParams();
     const response = await sut.handle(order);
 
     expect(response).toEqual(internalServerError(new Error()));
@@ -132,7 +131,6 @@ describe('CreateOrderController', () => {
   });
 
   it('should call emailVerificationSender two times', async () => {
-    const order = makeCreateOrderParams();
     await sut.handle(order);
 
     expect(emailVerificationSender.send).toHaveBeenCalledWith({
@@ -150,7 +148,6 @@ describe('CreateOrderController', () => {
   });
 
   it('should call getAccountById with correct params two times', async () => {
-    const order = makeCreateOrderParams();
     await sut.handle(order);
 
     expect(getAccountById.getById).toHaveBeenCalledWith({
@@ -160,7 +157,6 @@ describe('CreateOrderController', () => {
   });
 
   it('should call listBusinessById with correct params', async () => {
-    const order = makeCreateOrderParams();
     await sut.handle(order);
 
     expect(listBusinessById.list).toHaveBeenCalledWith({
@@ -170,7 +166,6 @@ describe('CreateOrderController', () => {
 
   it('should return notFound if any entity was not found', async () => {
     (getAccountById.getById as jest.Mock).mockImplementationOnce(async () => Promise.reject(new NotFound({ entity: 'Account' })));
-    const order = makeCreateOrderParams();
     const response = await sut.handle(order);
 
     expect(response).toEqual(notFound(new NotFound({ entity: 'Account' })));

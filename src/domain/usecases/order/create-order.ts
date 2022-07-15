@@ -3,6 +3,7 @@ import { OrderItem } from '@/domain/models/order';
 type CreateOrderParams = {
   businessId: string;
   buyerId: string;
+  sellerId?: string;
   total: number;
   items: OrderItem[];
 };
