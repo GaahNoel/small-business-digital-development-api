@@ -25,7 +25,7 @@ export const makeCreateOrderController = (): BaseController => {
     true,
   );
 
-  const createOrder = new DbCreateOrder(createOrderRepository);
+  const createOrder = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository);
 
   const controller = new CreateOrderController(createOrder, getAccountById, listBusinessById, emailVerificationSender);
   return controller;
