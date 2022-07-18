@@ -1,3 +1,4 @@
+import { OrderItem } from '@/domain/models/order';
 import { CreateOrder } from '@/domain/usecases/order';
 
 export interface CreateOrderRepository {
@@ -5,6 +6,12 @@ export interface CreateOrderRepository {
 }
 
 export namespace CreateOrderRepository {
-  export type Params = CreateOrder.Params;
+  export type Params = {
+    businessId: string;
+    buyerId: string;
+    sellerId: string;
+    total: number;
+    items: OrderItem[];
+  };
   export type Result = CreateOrder.Result;
 }

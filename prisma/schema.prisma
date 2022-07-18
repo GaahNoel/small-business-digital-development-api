@@ -20,6 +20,7 @@ model Account {
   provider   Provider
   Businesses Business[]
   BuyOrders  Order[]    @relation(name: "BuyOrders")
+  SellerOrders  Order[]    @relation(name: "SellerOrders")
 }
 
 enum Provider {
@@ -82,6 +83,8 @@ model Order {
   items   OrderItem[]
   Buyer   Account     @relation(name: "BuyOrders", fields: [buyerId], references: [id])
   buyerId String
+  sellerId String
+  Seller Account     @relation(name: "SellerOrders", fields: [sellerId], references: [id])
 
   Business   Business @relation(fields: [businessId], references: [id])
   businessId String

@@ -140,6 +140,7 @@ export class BusinessPrismaRepository implements
   async getCitiesAndStates(): Promise<GetBusinessCitiesAndStatesRepository.Result> {
     const result = await prisma.business.groupBy({
       by: ['city', 'state'],
+      orderBy: [{ state: 'asc' }, { city: 'asc' }],
     });
 
     return result.map((item) => ({

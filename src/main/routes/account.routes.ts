@@ -13,5 +13,5 @@ export default (router: Router): void => {
   router.post('/account/check-password', adaptRoute(makeCheckAccountPasswordController()));
   router.put('/account/edit/:id', auth(), adaptRoute(makeEditAccountController()));
   router.get('/account/email', adaptRoute(makeGetAccountByEmailController()));
-  router.get('/account/:accountId', adaptRoute(makeGetAccountByIdController()));
+  router.get('/account/:accountId', auth(), adaptRoute(makeGetAccountByIdController()));
 };

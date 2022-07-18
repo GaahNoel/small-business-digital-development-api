@@ -9,6 +9,42 @@
     }
   },
   "paths": {
+    "/api/account/{id}": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Get Account by Id",
+        "description": "Get Account by Id",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "description": "Account Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/account/email": {
       "get": {
         "tags": ["Account"],
@@ -974,6 +1010,65 @@
         }
       }
     },
+    "/api/order/{orderId}": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get order by id",
+        "description": "Get order by id",
+        "parameters": [{
+          "name": "orderId",
+          "in": "path",
+          "description": "order id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
+    "/api/order/account/{accountId}": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get order by id",
+        "description": "Get order by id",
+        "parameters": [{
+          "name": "accountId",
+          "in": "path",
+          "description": "accountId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "description": "type of order - buy or sell",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
     "/api/order/create": {
       "post": {
         "tags": ["Order"],
@@ -1030,6 +1125,50 @@
                     "quantity": 1,
                     "productId": "123"
                   }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
+    "/api/order/edit/status/{orderId}": {
+      "put": {
+        "tags": ["Order"],
+        "summary": "Create",
+        "description": "Create new order",
+        "parameters": [{
+          "name": "orderId",
+          "in": "path",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                    "status": {
+                      "type": "string",
+                      "required": true
+                    }
+                  }
+                },
+                "example": {
+                  "status":"CANCELED | CONFIRMED"
                 }
               }
             }

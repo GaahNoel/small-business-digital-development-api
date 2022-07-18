@@ -27,7 +27,7 @@ export class EditBusinessController implements BaseController {
     }
   }
 
-  validate(data: EditBusinessController.Props): void {
+  private validate(data: EditBusinessController.Props): void {
     if (!data.businessId) {
       throw new MissingParamsError({
         params: ['businessId'],

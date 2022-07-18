@@ -6,19 +6,14 @@ export type OrderItem = {
   updatedAt?: Date;
 };
 
-export enum OrderStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  CANCELED = 'CANCELED',
-}
-
 export type Order = {
   id: string;
   businessId: string;
   buyerId: string;
-  status: OrderStatus;
+  sellerId: string;
+  status: 'PENDING' | 'COMPLETED' | 'CANCELED';
   total: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   items: OrderItem[];
 };

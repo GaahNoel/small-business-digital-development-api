@@ -36,7 +36,7 @@ export class DeleteBusinessController implements BaseController {
     }
   }
 
-  validate(params: DeleteBusinessController.Params): void {
+  private validate(params: DeleteBusinessController.Params): void {
     if (!params.businessId) {
       throw new MissingParamsError({
         params: ['businessId'],
