@@ -8,6 +8,7 @@ import { MissingParamsError, NotFound } from '@/presentation/errors';
 import { GetAccountById } from '@/domain/usecases/account';
 import { ListBusinessById } from '@/domain/usecases/business';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
+import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 
 describe('CreateOrderController', () => {
   const order = makeCreateOrderParams();
@@ -127,6 +128,17 @@ describe('CreateOrderController', () => {
 
     expect(response).toEqual(badRequest(new MissingParamsError({
       params: params.missing,
+    })));
+  });
+
+  it('should return bad request if invalid params was provided', async () => {
+    (createOrder.create as jest.Mock).mockImplementationOnce(async () => Promise.reject(new InvalidParamsError({
+      params: ['total'],
+    })));
+    const response = await sut.handle(order);
+
+    expect(response).toEqual(badRequest(new InvalidParamsError({
+      params: ['total'],
     })));
   });
 
