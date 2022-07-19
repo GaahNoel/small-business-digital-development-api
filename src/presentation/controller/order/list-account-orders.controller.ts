@@ -3,6 +3,23 @@ import { MissingParamsError } from '@/presentation/errors';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
+type MappedOrderType = {
+  businessId: string,
+  orders: Array<{
+    id: string;
+    status: 'PENDING' | 'COMPLETED' | 'CANCELED';
+    total: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    items: {
+      id?: string;
+      quantity: number;
+      productId: string;
+      createdAt?: Date;
+      updatedAt?: Date;
+    }[]
+  }>,
+};
 namespace ListAccountOrdersController {
   export type Params = {
     accountId: string;
@@ -17,8 +34,35 @@ export class ListAccountOrdersController implements BaseController {
     try {
       this.validate(params);
       const result = await this.listAccountOrders.listAccountOrders(params);
+      const mappedOrder: MappedOrderType[] = [];
 
-      return success(result);
+      result.forEach((order) => {
+        const foundBusiness = mappedOrder.find((o) => o.businessId === order.businessId);
+        if (foundBusiness) {
+          foundBusiness.orders.push({
+            id: order.id,
+            status: order.status,
+            total: order.total,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt,
+            items: order.items,
+          });
+        } else {
+          mappedOrder.push({
+            businessId: order.businessId,
+            orders: [{
+              id: order.id,
+              status: order.status,
+              total: order.total,
+              createdAt: order.createdAt,
+              updatedAt: order.updatedAt,
+              items: order.items,
+            }],
+          });
+        }
+      });
+
+      return success(mappedOrder);
     } catch (error) {
       if (error instanceof MissingParamsError) {
         return badRequest(error);

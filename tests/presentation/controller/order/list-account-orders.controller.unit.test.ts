@@ -21,6 +21,8 @@ describe('ListAccountOrdersController', () => {
         businessId: 'any_business_id',
         buyerId: 'any_buyer_id',
         sellerId: 'any_seller_id',
+        createdAt: new Date('2020-01-01'),
+        updatedAt: new Date('2020-01-01'),
         items: [],
       }])),
     };
@@ -40,14 +42,17 @@ describe('ListAccountOrdersController', () => {
 
   it('should return a list of orders on success', async () => {
     const response = await sut.handle(request);
+
     expect(response).toEqual(success([{
-      id: 'any_id',
-      status: 'PENDING',
-      total: 100,
       businessId: 'any_business_id',
-      buyerId: 'any_buyer_id',
-      sellerId: 'any_seller_id',
-      items: [],
+      orders: [{
+        id: 'any_id',
+        status: 'PENDING',
+        total: 100,
+        createdAt: new Date('2020-01-01'),
+        updatedAt: new Date('2020-01-01'),
+        items: [],
+      }],
     }]));
   });
 
