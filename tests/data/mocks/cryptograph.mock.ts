@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import {faker} from '@faker-js/faker';
 import { Hasher } from '../protocols/cryptography';
 
 export class HasherSpy implements Hasher {
