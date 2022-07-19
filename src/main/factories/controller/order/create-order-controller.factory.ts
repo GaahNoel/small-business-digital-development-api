@@ -4,6 +4,7 @@ import { DbCreateOrder } from '@/data/usecases/order';
 import { AccountPrismaRepository } from '@/infra';
 import { BusinessPrismaRepository } from '@/infra/db/prisma/business';
 import { OrderPrismaRepository } from '@/infra/db/prisma/order';
+import { ProductPrismaRepository } from '@/infra/db/prisma/product';
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 import { env } from '@/main/config/env';
 import { CreateOrderController } from '@/presentation/controller/order';
@@ -13,6 +14,7 @@ export const makeCreateOrderController = (): BaseController => {
   const createOrderRepository = new OrderPrismaRepository();
   const getAccountByIdRepository = new AccountPrismaRepository();
   const listBusinessByIdRepository = new BusinessPrismaRepository();
+  const getProductByIdRepository = new ProductPrismaRepository();
 
   const getAccountById = new DBGetAccountById(getAccountByIdRepository);
   const listBusinessById = new DbListBusinessById(listBusinessByIdRepository);
@@ -25,7 +27,7 @@ export const makeCreateOrderController = (): BaseController => {
     true,
   );
 
-  const createOrder = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository);
+  const createOrder = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository, getProductByIdRepository);
 
   const controller = new CreateOrderController(createOrder, getAccountById, listBusinessById, emailVerificationSender);
   return controller;
