@@ -23,9 +23,8 @@ describe('DbListBusiness', () => {
   beforeAll(() => {
     listBusinessRepository = {
       list: jest.fn(async () => [
-        makeBusiness('3', '4', 'any_city', 'any_state'),
-        makeBusiness('4', '3', 'any_city', 'any_state'),
-        makeBusiness('2', '2', 'any_city', 'any_state'),
+        makeBusiness('-47.7332018', '-23.4689853', 'any_city', 'any_state'),
+        makeBusiness('-47.7332019', '-23.4689854', 'any_city', 'any_state'),
         makeBusiness('6', '8', 'any_city', 'any_state'),
         makeBusiness('9', '20', 'any_other_city', 'any_state'),
         makeBusiness('-10', '8', 'any_city', 'any_other_state'),
@@ -39,9 +38,9 @@ describe('DbListBusiness', () => {
 
   it('should return all business if nothing was provided', async () => {
     const result = await sut.list({ location: { latitude: undefined, longitude: undefined, radius: undefined }, city: { name: undefined, state: undefined } });
-    expect(result).toEqual([makeBusiness('3', '4', 'any_city', 'any_state'),
-      makeBusiness('4', '3', 'any_city', 'any_state'),
-      makeBusiness('2', '2', 'any_city', 'any_state'),
+    expect(result).toEqual([
+      makeBusiness('-47.7332018', '-23.4689853', 'any_city', 'any_state'),
+      makeBusiness('-47.7332019', '-23.4689854', 'any_city', 'any_state'),
       makeBusiness('6', '8', 'any_city', 'any_state'),
       makeBusiness('9', '20', 'any_other_city', 'any_state'),
       makeBusiness('-10', '8', 'any_city', 'any_other_state'),
@@ -50,28 +49,38 @@ describe('DbListBusiness', () => {
 
   it('should return all business from a city if it and state was provided', async () => {
     (listBusinessRepository.list as jest.Mock).mockImplementationOnce(async () => Promise.resolve([
-      makeBusiness('3', '4', 'any_city', 'any_state'),
-      makeBusiness('4', '3', 'any_city', 'any_state'),
+      makeBusiness('-47.7332018', '-23.4689853', 'any_city', 'any_state'),
+      makeBusiness('-47.7332019', '-23.4689854', 'any_city', 'any_state'),
       makeBusiness('2', '2', 'any_city', 'any_state'),
       makeBusiness('6', '8', 'any_city', 'any_state'),
     ]));
 
     const result = await sut.list({ city: { name: 'any_city', state: 'any_state' } });
     expect(result).toEqual([
-      makeBusiness('3', '4', 'any_city', 'any_state'),
-      makeBusiness('4', '3', 'any_city', 'any_state'),
+      makeBusiness('-47.7332018', '-23.4689853', 'any_city', 'any_state'),
+      makeBusiness('-47.7332019', '-23.4689854', 'any_city', 'any_state'),
       makeBusiness('2', '2', 'any_city', 'any_state'),
       makeBusiness('6', '8', 'any_city', 'any_state'),
     ]);
   });
 
   it('should return nearby business if latitude and longitude was provided', async () => {
-    const result = await sut.list({ location: { latitude: 3, longitude: 4, radius: 5 } });
+    const result = await sut.list({ location: { latitude: -47.7332018, longitude: -23.4689853, radius: 85 } });
+
     expect(result).toEqual([
-      makeBusiness('3', '4', 'any_city', 'any_state'),
-      makeBusiness('4', '3', 'any_city', 'any_state'),
-      makeBusiness('2', '2', 'any_city', 'any_state'),
-      makeBusiness('6', '8', 'any_city', 'any_state'),
+      makeBusiness('-47.7332018', '-23.4689853', 'any_city', 'any_state'),
+      makeBusiness('-47.7332019', '-23.4689854', 'any_city', 'any_state'),
+    ]);
+  });
+  it('should return capela business if user is in ibiuna', async () => {
+    (listBusinessRepository.list as jest.Mock).mockImplementationOnce(async () => Promise.resolve([
+      makeBusiness('-23.4727186', '-47.7642403', 'any_city', 'any_state'),
+    ]));
+
+    const result = await sut.list({ location: { latitude: -23.6703196, longitude: -47.2068247, radius: 85 }, city: { name: 'Ibiuna', state: 'SC' } });
+
+    expect(result).toEqual([
+      makeBusiness('-23.4727186', '-47.7642403', 'any_city', 'any_state'),
     ]);
   });
 

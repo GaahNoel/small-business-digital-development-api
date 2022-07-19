@@ -48,8 +48,20 @@ export class DbListBusiness implements ListBusiness {
     destinationLatitude: number,
     destinationLongitude: number
   }): number => {
-    const euclideanDistance = Math.sqrt((destinationLatitude - originLatitude) ** 2 + (destinationLongitude - originLongitude) ** 2);
-    return euclideanDistance;
+    function deg2rad(deg) {
+      return deg * (Math.PI / 180);
+    }
+
+    const R = 6371;
+    const dLat = deg2rad(destinationLatitude - originLatitude);
+    const dLon = deg2rad(destinationLongitude - originLongitude);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+        + Math.cos(deg2rad(destinationLatitude)) * Math.cos(deg2rad(originLatitude))
+        * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    return Number(distance.toFixed(2));
   };
 
   private isPropDefined(data: object) : boolean {
