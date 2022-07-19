@@ -64,7 +64,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
     };
   }
 
-  listAccountOrders(params: { accountId: string; type: 'buy' | 'sell'; }): Promise<ListAccountOrders.Result> {
+  async listAccountOrders(params: { accountId: string; type: 'buy' | 'sell'; }): Promise<ListAccountOrders.Result> {
     const where = params.type === 'buy' ? { buyerId: params.accountId } : { sellerId: params.accountId };
 
     const select = {
@@ -86,6 +86,9 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
     return prisma.order.findMany({
       where,
       select,
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 }

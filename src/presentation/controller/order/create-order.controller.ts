@@ -4,6 +4,7 @@ import { GetAccountById } from '@/domain/usecases/account';
 import { ListBusinessById } from '@/domain/usecases/business';
 import { CreateOrder } from '@/domain/usecases/order';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
+import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 import {
   badRequest, internalServerError, notFound, success,
 } from '@/presentation/helpers/http.helpers';
@@ -71,7 +72,7 @@ export class CreateOrderController implements BaseController {
         return notFound(error);
       }
 
-      if (error instanceof MissingParamsError) {
+      if (error instanceof MissingParamsError || error instanceof InvalidParamsError) {
         return badRequest(error);
       }
 
