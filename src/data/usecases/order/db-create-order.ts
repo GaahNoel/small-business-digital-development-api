@@ -23,7 +23,6 @@ export class DbCreateOrder implements CreateOrder {
     if (totalProductSum !== order.total) {
       throw new InvalidParamsError({
         params: ['total'],
-        message: 'Invalid total provided',
       });
     }
 
