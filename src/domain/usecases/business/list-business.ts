@@ -10,7 +10,7 @@ export type ListBusinessParams = {
   }
 };
 
-export interface ListBusiness{
+export interface ListBusiness {
   list(params: ListBusiness.Params): Promise<ListBusiness.Result>;
 }
 

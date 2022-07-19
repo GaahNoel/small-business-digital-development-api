@@ -5,6 +5,6 @@ export namespace VerifyAccount {
   };
 }
 
-export interface VerifyAccount{
+export interface VerifyAccount {
   verify(params: VerifyAccount.Params): Promise<VerifyAccount.Result>;
 }
