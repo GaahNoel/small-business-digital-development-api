@@ -18,5 +18,6 @@ describe('NodeMailer Adapter', () => {
     });
 
     expect(result).toBe(true);
+    await sut.transporter.close();
   });
 });
