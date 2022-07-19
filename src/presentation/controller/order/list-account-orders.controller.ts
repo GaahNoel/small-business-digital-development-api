@@ -1,3 +1,4 @@
+import { ListBusinessById } from '@/domain/usecases/business';
 import { ListAccountOrders } from '@/domain/usecases/order';
 import { MissingParamsError } from '@/presentation/errors';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
@@ -28,16 +29,18 @@ namespace ListAccountOrdersController {
   export type Result = HttpResponse;
 }
 export class ListAccountOrdersController implements BaseController {
-  constructor(private readonly listAccountOrders: ListAccountOrders) {}
+  constructor(private readonly listAccountOrders: ListAccountOrders, private readonly listBusinessById: ListBusinessById) {}
 
   async handle(params: ListAccountOrdersController.Params): Promise<ListAccountOrdersController.Result> {
     try {
       this.validate(params);
       const result = await this.listAccountOrders.listAccountOrders(params);
-      const mappedOrder: MappedOrderType[] = [];
 
-      result.forEach((order) => {
-        const foundBusiness = mappedOrder.find((o) => o.businessId === order.businessId);
+      const mappedOrderWithoutBusinessName: MappedOrderType[] = [];
+
+      result.forEach(async (order) => {
+        const foundBusiness = mappedOrderWithoutBusinessName.find((o) => o.businessId === order.businessId);
+
         if (foundBusiness) {
           foundBusiness.orders.push({
             id: order.id,
@@ -48,7 +51,7 @@ export class ListAccountOrdersController implements BaseController {
             items: order.items,
           });
         } else {
-          mappedOrder.push({
+          mappedOrderWithoutBusinessName.push({
             businessId: order.businessId,
             orders: [{
               id: order.id,
@@ -62,7 +65,20 @@ export class ListAccountOrdersController implements BaseController {
         }
       });
 
-      return success(mappedOrder);
+      const mappedOrderWithBusinessNamePromises = mappedOrderWithoutBusinessName.map(async (order) => {
+        const business = await this.listBusinessById.list({
+          businessId: order.businessId,
+        });
+
+        return {
+          ...order,
+          businessName: business.name,
+        };
+      });
+
+      const mappedOrderWithBusinessName = await Promise.all(mappedOrderWithBusinessNamePromises);
+
+      return success(mappedOrderWithBusinessName);
     } catch (error) {
       if (error instanceof MissingParamsError) {
         return badRequest(error);
