@@ -1,4 +1,6 @@
-import faker from '@faker-js/faker';
+import {
+  faker
+} from '@faker-js/faker';
 import bcrypt from 'bcrypt';
 import { BcryptAdapter } from '@/infra/cryptography';
 

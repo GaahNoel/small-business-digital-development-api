@@ -2,11 +2,14 @@ import { CreateOrderRepository } from '@/data/protocols/db/order/create-order.re
 import { makeCreateOrderParams } from '@/tests/domain/mocks/order.mock';
 import { DbCreateOrder } from '@/data/usecases/order';
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
+import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
+import { GetProductByIdRepository } from '@/data';
 
 describe('DbCreateOrder', () => {
   let sut: DbCreateOrder;
   let createOrderRepository: CreateOrderRepository;
   let listBusinessByIdRepository: ListBusinessByIdRepository;
+  let getProductByIdRepository: GetProductByIdRepository;
 
   beforeAll(() => {
     createOrderRepository = {
@@ -32,10 +35,28 @@ describe('DbCreateOrder', () => {
         country: 'any_country',
       })),
     };
+
+    getProductByIdRepository = {
+      get: jest.fn(async () => Promise.resolve({
+        id: 'any_id',
+        name: 'any_name',
+        type: 'product' as 'product' | 'service',
+        description: 'any_description',
+        listPrice: 1,
+        salePrice: 2,
+        imageUrl: 'any_image_url',
+        businessId: 'any-id',
+        category: {
+          id: 'any_category_id',
+          name: 'any_category_name',
+        },
+        createdAt: expect.any(Date),
+      })),
+    };
   });
 
   beforeEach(() => {
-    sut = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository);
+    sut = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository, getProductByIdRepository);
   });
 
   it('should call createOrderRepository with correct params', async () => {
@@ -70,5 +91,14 @@ describe('DbCreateOrder', () => {
     const promise = sut.create(order);
 
     await expect(promise).rejects.toThrow();
+  });
+
+  it('should throw InvalidParamsError if total provided is not equal total of sum of products', async () => {
+    const order = makeCreateOrderParams();
+    order.total = 3;
+
+    const promise = sut.create(order);
+
+    await expect(promise).rejects.toThrow(InvalidParamsError);
   });
 });

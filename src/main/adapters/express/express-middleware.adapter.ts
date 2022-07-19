@@ -3,7 +3,8 @@ import { Middleware } from '@/presentation/protocols';
 
 export const adaptMiddleware = (middleware: Middleware) => async (
   req: Request,
-  res: Response, next: NextFunction,
+  res: Response,
+  next: NextFunction,
 ) => {
   const httpRequest = {
     ...(req.headers || {}),

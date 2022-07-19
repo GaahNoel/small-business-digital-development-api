@@ -17,8 +17,8 @@ describe('DbListProductsByBusinesses', () => {
     business: {
       id: 'any_product_business_id',
       name: 'any_product_business_name',
-      latitude: '3',
-      longitude: '4',
+      latitude: '-23.4727186',
+      longitude: '-47.7642403',
     },
     category: {
       id: 'any_product_category_id',
@@ -38,8 +38,8 @@ describe('DbListProductsByBusinesses', () => {
     business: {
       id: 'any_service_business_id',
       name: 'any_service_business_name',
-      latitude: '3',
-      longitude: '4',
+      latitude: '-23.4727186',
+      longitude: '-47.7642403',
     },
     category: {
       id: 'any_service_category_id',
@@ -80,16 +80,16 @@ describe('DbListProductsByBusinesses', () => {
       businessesIds: ['any_business_id'],
       type: 'product',
       location: {
-        latitude: 0,
-        longitude: 0,
-        radius: 0,
+        latitude: -23.6703196,
+        longitude: -47.2068247,
+        radius: 80,
       },
     });
     expect(result).toEqual([{
       ...mockedProduct,
       business: {
         ...mockedProduct.business,
-        distance: 5,
+        distance: 60.91,
       },
     }]);
   });

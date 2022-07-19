@@ -8,9 +8,9 @@ export const makeCreateOrderParams = (
   businessId,
   buyerId,
   sellerId,
-  total: 1,
+  total: 20,
   items: [{
-    quantity: 1,
+    quantity: 10,
     productId: 'any_product_id',
   }],
 });
