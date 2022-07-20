@@ -1114,6 +1114,18 @@
                           "required": true
                         }
                       }	
+                    },
+                    "description": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "paymentMethod": {
+                      "type": "CreditCard | Cash",
+                      "required": true
+                    },
+                    "change": {
+                      "type": "number",
+                      "required": true
                     }
                   }
                 },

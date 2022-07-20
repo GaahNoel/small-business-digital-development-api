@@ -16,6 +16,9 @@ namespace CreateOrderController {
     buyerId: string;
     total: number;
     items: OrderItem[];
+    description?: string;
+    paymentMethod: 'CreditCard' | 'Cash'
+    change?: number;
   };
   export type Result = HttpResponse;
 
@@ -50,6 +53,9 @@ export class CreateOrderController implements BaseController {
         buyerId: data.buyerId,
         total: data.total,
         items: data.items,
+        description: data.description,
+        paymentMethod: data.paymentMethod,
+        change: data.change,
       });
 
       await this.emailVerificationSender.send({
@@ -68,6 +74,10 @@ export class CreateOrderController implements BaseController {
         orderId: order.orderId,
       });
     } catch (error) {
+      if (error instanceof InvalidParamsError) {
+        return badRequest(error);
+      }
+
       if (error instanceof NotFound) {
         return notFound(error);
       }
@@ -102,6 +112,12 @@ export class CreateOrderController implements BaseController {
     if (missingParams.length > 0) {
       throw new MissingParamsError({
         params: missingParams,
+      });
+    }
+
+    if (data.paymentMethod !== 'CreditCard' && data.paymentMethod !== 'Cash') {
+      throw new InvalidParamsError({
+        params: ['paymentMethod'],
       });
     }
   }

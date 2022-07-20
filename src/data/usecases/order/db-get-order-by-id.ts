@@ -24,6 +24,11 @@ export class DbGetOrderById implements GetOrderById {
       buyerId: result.buyerId,
       sellerId: result.sellerId,
       items: result.items,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+      description: result.description,
+      paymentMethod: result.paymentMethod,
+      change: result.change,
     };
   }
 }

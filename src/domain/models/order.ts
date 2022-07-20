@@ -15,5 +15,8 @@ export type Order = {
   total: number;
   createdAt?: Date;
   updatedAt?: Date;
+  description?: string;
+  paymentMethod: 'CreditCard' | 'Cash'
+  change?: number;
   items: OrderItem[];
 };

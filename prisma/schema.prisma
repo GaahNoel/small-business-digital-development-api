@@ -11,16 +11,16 @@ datasource db {
 }
 
 model Account {
-  id         String     @id @default(uuid())
-  name       String
-  password   String?
-  email      String     @unique
-  createdAt  DateTime   @default(now())
-  verified   Boolean    @default(false)
-  provider   Provider
-  Businesses Business[]
-  BuyOrders  Order[]    @relation(name: "BuyOrders")
-  SellerOrders  Order[]    @relation(name: "SellerOrders")
+  id           String     @id @default(uuid())
+  name         String
+  password     String?
+  email        String     @unique
+  createdAt    DateTime   @default(now())
+  verified     Boolean    @default(false)
+  provider     Provider
+  Businesses   Business[]
+  BuyOrders    Order[]    @relation(name: "BuyOrders")
+  SellerOrders Order[]    @relation(name: "SellerOrders")
 }
 
 enum Provider {
@@ -77,20 +77,28 @@ enum ProductType {
 }
 
 model Order {
-  id      String      @id @default(uuid())
-  total   Float       @default(0)
-  status  OrderStatus @default(PENDING)
-  items   OrderItem[]
-  Buyer   Account     @relation(name: "BuyOrders", fields: [buyerId], references: [id])
-  buyerId String
-  sellerId String
-  Seller Account     @relation(name: "SellerOrders", fields: [sellerId], references: [id])
+  id            String        @id @default(uuid())
+  total         Float         @default(0)
+  status        OrderStatus   @default(PENDING)
+  items         OrderItem[]
+  Buyer         Account       @relation(name: "BuyOrders", fields: [buyerId], references: [id])
+  buyerId       String
+  sellerId      String
+  Seller        Account       @relation(name: "SellerOrders", fields: [sellerId], references: [id])
+  description   String        @default("")
+  paymentMethod PaymentMethod
+  change        Float         @default(0)
 
   Business   Business @relation(fields: [businessId], references: [id])
   businessId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum PaymentMethod {
+  CreditCard
+  Cash
 }
 
 enum OrderStatus {

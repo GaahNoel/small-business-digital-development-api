@@ -2,7 +2,6 @@ import { prisma } from '@/infra/db/helpers';
 import { CreateOrderRepository } from '@/data/protocols/db/order/create-order.repository';
 import { OrderItem } from '@/domain/models/order';
 import { GetOrderByIdRepository, UpdateOrderByIdRepository } from '@/data/protocols/db/order';
-import { ListAccountOrders } from '@/domain/usecases/order';
 import { ListAccountOrdersRepository } from '@/data/protocols/db/order/list-account-orders.repository';
 
 export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByIdRepository, UpdateOrderByIdRepository, ListAccountOrdersRepository {
@@ -35,6 +34,11 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         businessId: true,
         buyerId: true,
         sellerId: true,
+        description: true,
+        paymentMethod: true,
+        change: true,
+        createdAt: true,
+        updatedAt: true,
         items: {
           select: {
             id: true,

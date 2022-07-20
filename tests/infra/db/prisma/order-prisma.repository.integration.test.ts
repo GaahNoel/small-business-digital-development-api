@@ -25,6 +25,13 @@ describe('OrderPrismaRepository', () => {
   let productPrismaRepository : ProductPrismaRepository;
   let categoryPrismaRepository: CategoryPrismaRepository;
 
+  const baseCreatePayload = {
+    description: 'test',
+    paymentMethod: 'CreditCard' as 'CreditCard',
+    change: 0,
+    total: 0,
+  };
+
   beforeAll(async () => {
     await prisma.orderItem.deleteMany({});
     await prisma.order.deleteMany({});
@@ -64,9 +71,9 @@ describe('OrderPrismaRepository', () => {
           },
         ],
         sellerId: addedSellerAccount.id,
-        total: 0,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
       });
 
       expect(order).toEqual({
@@ -85,9 +92,9 @@ describe('OrderPrismaRepository', () => {
           },
         ],
         sellerId: addedSellerAccount.id,
-        total: 0,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
       });
 
       const result = await sut.getOrderById({ orderId: order.orderId });
@@ -102,10 +109,12 @@ describe('OrderPrismaRepository', () => {
             id: expect.any(String),
           },
         ],
-        total: 0,
+        ...baseCreatePayload,
         sellerId: addedSellerAccount.id,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       });
     });
   });
@@ -120,9 +129,9 @@ describe('OrderPrismaRepository', () => {
           },
         ],
         sellerId: addedSellerAccount.id,
-        total: 0,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
       });
 
       const result = await sut.updateOrderById({
@@ -154,6 +163,7 @@ describe('OrderPrismaRepository', () => {
         total: 0,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
       });
 
       const result = await sut.listAccountOrders({ accountId: addedBuyerAccount.id, type: 'buy' });
@@ -203,6 +213,7 @@ describe('OrderPrismaRepository', () => {
         total: 0,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
       });
 
       const result = await sut.listAccountOrders({ accountId: addedSellerAccount.id, type: 'sell' });
@@ -250,6 +261,7 @@ describe('OrderPrismaRepository', () => {
         total: 0,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
       });
 
       const result = await sut.listAccountOrders({ accountId: addedBuyerAccount.id, type: 'sell' });
