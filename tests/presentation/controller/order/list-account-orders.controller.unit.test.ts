@@ -12,41 +12,88 @@ describe('ListAccountOrdersController', () => {
 
   let sut: ListAccountOrdersController;
   let listAccountOrders: ListAccountOrders;
-  let getBusinessByid: ListBusinessById;
 
   const mockedOrders = [
     {
       id: 'any_id',
       status: 'PENDING' as 'PENDING',
-      total: 100,
-      businessId: 'any_business_id',
-      buyerId: 'any_buyer_id',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
       sellerId: 'any_seller_id',
-      createdAt: new Date('2020-01-01'),
-      updatedAt: new Date('2020-01-01'),
-      items: [],
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: 'any_business_id',
+        name: 'any_business_name',
+      },
     },
     {
       id: 'any_id',
       status: 'PENDING' as 'PENDING',
-      total: 100,
-      businessId: 'any_business_id',
-      buyerId: 'any_buyer_id',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
       sellerId: 'any_seller_id',
-      createdAt: new Date('2020-01-01'),
-      updatedAt: new Date('2020-01-01'),
-      items: [],
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: 'any_business_id',
+        name: 'any_business_name',
+      },
     },
     {
       id: 'any_id',
       status: 'PENDING' as 'PENDING',
-      total: 100,
-      businessId: 'any_other_business_id',
-      buyerId: 'any_buyer_id',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
       sellerId: 'any_seller_id',
-      createdAt: new Date('2020-01-01'),
-      updatedAt: new Date('2020-01-01'),
-      items: [],
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: 'any_other_business_id',
+        name: 'any_other_business_name',
+      },
     },
   ];
 
@@ -54,26 +101,10 @@ describe('ListAccountOrdersController', () => {
     listAccountOrders = {
       listAccountOrders: jest.fn(async () => Promise.resolve(mockedOrders)),
     };
-    getBusinessByid = {
-      list: jest.fn(async () => Promise.resolve({
-        id: 'any_id',
-        name: 'any_name',
-        description: 'any_description',
-        accountId: 'any_account_id',
-        imageUrl: 'any_image_url',
-        latitude: 'any_latitude',
-        longitude: 'any_longitude',
-        street: 'any_street',
-        city: 'any_city',
-        state: 'any_state',
-        zip: 'any_zip',
-        country: 'any_country',
-      })),
-    };
   });
 
   beforeEach(() => {
-    sut = new ListAccountOrdersController(listAccountOrders, getBusinessByid);
+    sut = new ListAccountOrdersController(listAccountOrders);
   });
 
   it('should call listAccountOrders with correct params', async () => {
@@ -88,34 +119,83 @@ describe('ListAccountOrdersController', () => {
     const response = await sut.handle(request);
 
     expect(response).toEqual(success([{
-      businessId: 'any_business_id',
-      businessName: 'any_name',
+      business: {
+        id: 'any_business_id',
+        name: 'any_business_name',
+      },
       orders: [{
         id: 'any_id',
-        status: 'PENDING',
-        total: 100,
-        createdAt: new Date('2020-01-01'),
-        updatedAt: new Date('2020-01-01'),
-        items: [],
+        status: 'PENDING' as 'PENDING',
+        items: [
+          {
+            id: expect.any(String),
+            quantity: 1,
+            product: {
+              id: 'any_product_id',
+              name: 'any_product_name',
+              description: 'any_product_description',
+              salePrice: 11111,
+              listPrice: 11111,
+              imageUrl: 'any_image_url',
+            },
+          },
+        ],
+        total: 0,
+        sellerId: 'any_seller_id',
+        buyerId: 'any_buyer_id',
+        updatedAt: expect.any(Date),
+        createdAt: expect.any(Date),
       },
       {
         id: 'any_id',
-        status: 'PENDING',
-        total: 100,
-        createdAt: new Date('2020-01-01'),
-        updatedAt: new Date('2020-01-01'),
-        items: [],
+        status: 'PENDING' as 'PENDING',
+        items: [
+          {
+            id: expect.any(String),
+            quantity: 1,
+            product: {
+              id: 'any_product_id',
+              name: 'any_product_name',
+              description: 'any_product_description',
+              salePrice: 11111,
+              listPrice: 11111,
+              imageUrl: 'any_image_url',
+            },
+          },
+        ],
+        total: 0,
+        sellerId: 'any_seller_id',
+        buyerId: 'any_buyer_id',
+        updatedAt: expect.any(Date),
+        createdAt: expect.any(Date),
       }],
     }, {
-      businessId: 'any_other_business_id',
-      businessName: 'any_name',
+      business: {
+        id: 'any_other_business_id',
+        name: 'any_other_business_name',
+      },
       orders: [{
         id: 'any_id',
-        status: 'PENDING',
-        total: 100,
-        createdAt: new Date('2020-01-01'),
-        updatedAt: new Date('2020-01-01'),
-        items: [],
+        status: 'PENDING' as 'PENDING',
+        items: [
+          {
+            id: expect.any(String),
+            quantity: 1,
+            product: {
+              id: 'any_product_id',
+              name: 'any_product_name',
+              description: 'any_product_description',
+              salePrice: 11111,
+              listPrice: 11111,
+              imageUrl: 'any_image_url',
+            },
+          },
+        ],
+        total: 0,
+        sellerId: 'any_seller_id',
+        buyerId: 'any_buyer_id',
+        updatedAt: expect.any(Date),
+        createdAt: expect.any(Date),
       }],
     },
     ]));

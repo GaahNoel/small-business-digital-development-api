@@ -140,6 +140,9 @@ describe('OrderPrismaRepository', () => {
 
   describe('ListAccountOrders', () => {
     it('should get buy orders by account id successfully', async () => {
+      const mockedAddProductParams = mockAddProductParams(addedBusiness.id, addedCategory.id);
+      const mockedAddBusinessParams = mockAddBusinessParams(addedSellerAccount.id);
+
       const order = await sut.create({
         items: [
           {
@@ -161,19 +164,34 @@ describe('OrderPrismaRepository', () => {
           status: 'PENDING',
           items: [
             {
-              quantity: 1,
-              productId: addedProduct.productId,
               id: expect.any(String),
+              quantity: 1,
+              product: {
+                id: addedProduct.productId,
+                name: mockedAddProductParams.name,
+                description: mockedAddProductParams.description,
+                salePrice: mockedAddProductParams.salePrice,
+                listPrice: mockedAddProductParams.listPrice,
+                imageUrl: mockedAddProductParams.imageUrl,
+              },
             },
           ],
           total: 0,
           sellerId: addedSellerAccount.id,
-          businessId: addedBusiness.id,
+          Business: {
+            id: addedBusiness.id,
+            name: mockedAddBusinessParams.name,
+          },
           buyerId: addedBuyerAccount.id,
+          updatedAt: expect.any(Date),
+          createdAt: expect.any(Date),
         },
       ]);
     });
     it('should get sell orders by account id successfully', async () => {
+      const mockedAddProductParams = mockAddProductParams(addedBusiness.id, addedCategory.id);
+      const mockedAddBusinessParams = mockAddBusinessParams(addedSellerAccount.id);
+
       const order = await sut.create({
         items: [
           {
@@ -195,15 +213,27 @@ describe('OrderPrismaRepository', () => {
           status: 'PENDING',
           items: [
             {
-              quantity: 1,
-              productId: addedProduct.productId,
               id: expect.any(String),
+              quantity: 1,
+              product: {
+                id: addedProduct.productId,
+                name: mockedAddProductParams.name,
+                description: mockedAddProductParams.description,
+                salePrice: mockedAddProductParams.salePrice,
+                listPrice: mockedAddProductParams.listPrice,
+                imageUrl: mockedAddProductParams.imageUrl,
+              },
             },
           ],
           total: 0,
           sellerId: addedSellerAccount.id,
-          businessId: addedBusiness.id,
+          Business: {
+            id: addedBusiness.id,
+            name: mockedAddBusinessParams.name,
+          },
           buyerId: addedBuyerAccount.id,
+          updatedAt: expect.any(Date),
+          createdAt: expect.any(Date),
         },
       ]);
     });
