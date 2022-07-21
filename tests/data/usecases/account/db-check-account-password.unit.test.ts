@@ -2,6 +2,7 @@ import { FindAccountByEmailRepository } from '@/data';
 import { HashComparer } from '@/data/protocols/cryptography';
 import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { DbCheckAccountPassword } from '@/data/usecases/account/db-check-account-password';
+import { NotFound } from '@/presentation/errors';
 
 const fakeData = {
   email: 'any-email',
@@ -53,5 +54,14 @@ describe('DbCheckAccountPassword UseCase', () => {
       match: false,
       verified: true,
     });
+  });
+
+  it('should throw NotFound error if account was not found with provided email', async () => {
+    (findAccountByEmailRepository.findByEmail as jest.Mock).mockResolvedValue(null);
+    const promise = sut.check(fakeData);
+
+    await expect(promise).rejects.toThrow(new NotFound({
+      entity: 'Account',
+    }));
   });
 });

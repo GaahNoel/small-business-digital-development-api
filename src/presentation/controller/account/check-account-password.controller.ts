@@ -1,6 +1,9 @@
 import { CheckAccountPassword } from '@/domain/usecases/account/check-account-password';
+import { NotFound } from '@/presentation/errors';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import {
+  badRequest, internalServerError, notFound, success,
+} from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
 namespace CheckAccountPasswordController {
@@ -24,6 +27,10 @@ export class CheckAccountPasswordController implements BaseController {
 
       return success(result);
     } catch (error) {
+      if (error instanceof NotFound) {
+        return notFound(error);
+      }
+
       if (error instanceof MissingParamsError) {
         return badRequest(error);
       }
