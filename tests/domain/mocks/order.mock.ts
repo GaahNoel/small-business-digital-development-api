@@ -9,6 +9,9 @@ export const makeCreateOrderParams = (
   buyerId,
   sellerId,
   total: 20,
+  description: 'any_description',
+  paymentMethod: 'CreditCard',
+  change: 10,
   items: [{
     quantity: 10,
     productId: 'any_product_id',

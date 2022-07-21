@@ -5,6 +5,9 @@ type CreateOrderParams = {
   buyerId: string;
   sellerId?: string;
   total: number;
+  description?: string;
+  paymentMethod: 'CreditCard' | 'Cash'
+  change?: number;
   items: OrderItem[];
 };
 

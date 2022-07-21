@@ -1,3 +1,4 @@
+import { ListBusinessById } from '@/domain/usecases/business';
 import { ListAccountOrders } from '@/domain/usecases/order';
 import { ListAccountOrdersController } from '@/presentation/controller/order';
 import { MissingParamsError } from '@/presentation/errors';
@@ -12,17 +13,93 @@ describe('ListAccountOrdersController', () => {
   let sut: ListAccountOrdersController;
   let listAccountOrders: ListAccountOrders;
 
+  const mockedOrders = [
+    {
+      id: 'any_id',
+      status: 'PENDING' as 'PENDING',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
+      sellerId: 'any_seller_id',
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: 'any_business_id',
+        name: 'any_business_name',
+      },
+    },
+    {
+      id: 'any_id',
+      status: 'PENDING' as 'PENDING',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
+      sellerId: 'any_seller_id',
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: 'any_business_id',
+        name: 'any_business_name',
+      },
+    },
+    {
+      id: 'any_id',
+      status: 'PENDING' as 'PENDING',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
+      sellerId: 'any_seller_id',
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: 'any_other_business_id',
+        name: 'any_other_business_name',
+      },
+    },
+  ];
+
   beforeAll(() => {
     listAccountOrders = {
-      listAccountOrders: jest.fn(async () => Promise.resolve([{
-        id: 'any_id',
-        status: 'PENDING' as 'PENDING',
-        total: 100,
-        businessId: 'any_business_id',
-        buyerId: 'any_buyer_id',
-        sellerId: 'any_seller_id',
-        items: [],
-      }])),
+      listAccountOrders: jest.fn(async () => Promise.resolve(mockedOrders)),
     };
   });
 
@@ -40,15 +117,88 @@ describe('ListAccountOrdersController', () => {
 
   it('should return a list of orders on success', async () => {
     const response = await sut.handle(request);
+
     expect(response).toEqual(success([{
-      id: 'any_id',
-      status: 'PENDING',
-      total: 100,
-      businessId: 'any_business_id',
-      buyerId: 'any_buyer_id',
-      sellerId: 'any_seller_id',
-      items: [],
-    }]));
+      business: {
+        id: 'any_business_id',
+        name: 'any_business_name',
+      },
+      orders: [{
+        id: 'any_id',
+        status: 'PENDING' as 'PENDING',
+        items: [
+          {
+            id: expect.any(String),
+            quantity: 1,
+            product: {
+              id: 'any_product_id',
+              name: 'any_product_name',
+              description: 'any_product_description',
+              salePrice: 11111,
+              listPrice: 11111,
+              imageUrl: 'any_image_url',
+            },
+          },
+        ],
+        total: 0,
+        sellerId: 'any_seller_id',
+        buyerId: 'any_buyer_id',
+        updatedAt: expect.any(Date),
+        createdAt: expect.any(Date),
+      },
+      {
+        id: 'any_id',
+        status: 'PENDING' as 'PENDING',
+        items: [
+          {
+            id: expect.any(String),
+            quantity: 1,
+            product: {
+              id: 'any_product_id',
+              name: 'any_product_name',
+              description: 'any_product_description',
+              salePrice: 11111,
+              listPrice: 11111,
+              imageUrl: 'any_image_url',
+            },
+          },
+        ],
+        total: 0,
+        sellerId: 'any_seller_id',
+        buyerId: 'any_buyer_id',
+        updatedAt: expect.any(Date),
+        createdAt: expect.any(Date),
+      }],
+    }, {
+      business: {
+        id: 'any_other_business_id',
+        name: 'any_other_business_name',
+      },
+      orders: [{
+        id: 'any_id',
+        status: 'PENDING' as 'PENDING',
+        items: [
+          {
+            id: expect.any(String),
+            quantity: 1,
+            product: {
+              id: 'any_product_id',
+              name: 'any_product_name',
+              description: 'any_product_description',
+              salePrice: 11111,
+              listPrice: 11111,
+              imageUrl: 'any_image_url',
+            },
+          },
+        ],
+        total: 0,
+        sellerId: 'any_seller_id',
+        buyerId: 'any_buyer_id',
+        updatedAt: expect.any(Date),
+        createdAt: expect.any(Date),
+      }],
+    },
+    ]));
   });
 
   it.each([{

@@ -2,9 +2,9 @@ import { prisma } from '@/infra/db/helpers';
 import { CreateOrderRepository } from '@/data/protocols/db/order/create-order.repository';
 import { OrderItem } from '@/domain/models/order';
 import { GetOrderByIdRepository, UpdateOrderByIdRepository } from '@/data/protocols/db/order';
-import { ListAccountOrders } from '@/domain/usecases/order';
+import { ListAccountOrdersRepository } from '@/data/protocols/db/order/list-account-orders.repository';
 
-export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByIdRepository, UpdateOrderByIdRepository, ListAccountOrders {
+export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByIdRepository, UpdateOrderByIdRepository, ListAccountOrdersRepository {
   async create(order: CreateOrderRepository.Params): Promise<CreateOrderRepository.Result> {
     const result = await prisma.order.create({
       data: {
@@ -34,6 +34,11 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         businessId: true,
         buyerId: true,
         sellerId: true,
+        description: true,
+        paymentMethod: true,
+        change: true,
+        createdAt: true,
+        updatedAt: true,
         items: {
           select: {
             id: true,
@@ -64,31 +69,49 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
     };
   }
 
-  async listAccountOrders(params: { accountId: string; type: 'buy' | 'sell'; }): Promise<ListAccountOrders.Result> {
+  async listAccountOrders(params: { accountId: string; type: 'buy' | 'sell'; }): Promise<ListAccountOrdersRepository.Result> {
     const where = params.type === 'buy' ? { buyerId: params.accountId } : { sellerId: params.accountId };
 
     const select = {
       id: true,
+      Business: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      sellerId: true,
       status: true,
       total: true,
-      businessId: true,
+      createdAt: true,
+      updatedAt: true,
       buyerId: true,
-      sellerId: true,
       items: {
         select: {
           id: true,
           quantity: true,
-          productId: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              salePrice: true,
+              listPrice: true,
+              imageUrl: true,
+            },
+          },
         },
       },
     };
 
-    return prisma.order.findMany({
+    const orders = await prisma.order.findMany({
       where,
       select,
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return orders;
   }
 }

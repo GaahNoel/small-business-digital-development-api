@@ -11,6 +11,9 @@ export namespace CreateOrderRepository {
     buyerId: string;
     sellerId: string;
     total: number;
+    description?: string;
+    paymentMethod: 'CreditCard' | 'Cash'
+    change?: number;
     items: OrderItem[];
   };
   export type Result = CreateOrder.Result;

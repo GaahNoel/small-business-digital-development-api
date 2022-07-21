@@ -1,7 +1,10 @@
 import { CheckAccountPassword } from '@/domain/usecases/account/check-account-password';
 import { CheckAccountPasswordController } from '@/presentation/controller/account/check-account-password.controller';
+import { NotFound } from '@/presentation/errors';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import {
+  badRequest, internalServerError, notFound, success,
+} from '@/presentation/helpers/http.helpers';
 
 const fakeValidRequest = {
   email: 'fake@email.com',
@@ -78,5 +81,16 @@ describe('CheckAccountPasswordController', () => {
     const response = await sut.handle(fakeValidRequest);
 
     expect(response).toEqual(internalServerError(new Error()));
+  });
+
+  it('should return notFound if checkAccountPassword throws NotFound error', async () => {
+    jest.spyOn(checkAccountPassword, 'check').mockReturnValueOnce(Promise.reject(new NotFound({
+      entity: 'Account',
+    })));
+    const response = await sut.handle(fakeValidRequest);
+
+    expect(response).toEqual(notFound(new NotFound({
+      entity: 'Account',
+    })));
   });
 });

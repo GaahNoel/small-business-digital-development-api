@@ -20,6 +20,13 @@ describe('CreateOrderController', () => {
   let listBusinessById: ListBusinessById;
   let emailVerificationSender: EmailVerificationSender;
 
+  const baseCreatePayload = {
+    description: 'test',
+    paymentMethod: 'CreditCard' as 'CreditCard',
+    change: 0,
+    total: 10,
+  };
+
   beforeAll(() => {
     createOrder = {
       create: jest.fn(async () => Promise.resolve({ orderId: 'any_id' })),
@@ -87,6 +94,7 @@ describe('CreateOrderController', () => {
         quantity: 1,
         productId: 'any_product_id',
       }],
+      ...baseCreatePayload,
     },
     missing: ['businessId'],
   },
@@ -99,6 +107,7 @@ describe('CreateOrderController', () => {
         quantity: 1,
         productId: 'any_product_id',
       }],
+      ...baseCreatePayload,
     },
     missing: ['buyerId'],
   },
@@ -106,11 +115,12 @@ describe('CreateOrderController', () => {
     data: {
       businessId: 'any',
       buyerId: 'any',
-      total: undefined,
       items: [{
         quantity: 1,
         productId: 'any_product_id',
       }],
+      ...baseCreatePayload,
+      total: undefined,
     },
     missing: ['total'],
   },
@@ -120,6 +130,7 @@ describe('CreateOrderController', () => {
       buyerId: 'any',
       total: 1,
       items: undefined,
+      ...baseCreatePayload,
     },
     missing: ['items'],
   },
@@ -181,5 +192,18 @@ describe('CreateOrderController', () => {
     const response = await sut.handle(order);
 
     expect(response).toEqual(notFound(new NotFound({ entity: 'Account' })));
+  });
+
+  it('should return badRequest if invalid paymentMethod was provided', async () => {
+    const invalidPaymentMethod = {
+      ...order,
+      paymentMethod: undefined,
+    };
+
+    const response = await sut.handle(invalidPaymentMethod);
+
+    expect(response).toEqual(badRequest(new InvalidParamsError({
+      params: ['paymentMethod'],
+    })));
   });
 });

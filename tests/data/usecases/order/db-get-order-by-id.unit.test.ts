@@ -9,13 +9,18 @@ describe('GetOrderById', () => {
   beforeAll(() => {
     getOrderByIdRepository = {
       getOrderById: jest.fn(async () => ({
-        id: 'any_id',
-        status: 'PENDING' as 'PENDING',
+        id: 'any-id',
+        businessId: 'string',
+        buyerId: 'string',
         total: 100,
-        businessId: 'any_business_id',
-        buyerId: 'any_buyer_id',
-        sellerId: 'any_seller_id',
         items: [],
+        status: 'PENDING' as 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: 'any-description',
+        paymentMethod: 'CreditCard' as 'CreditCard',
+        change: 10,
+        sellerId: 'any-seller-id',
       })),
     };
   });
@@ -36,13 +41,18 @@ describe('GetOrderById', () => {
     const orderId = 'any_id';
     const order = await getOrderById.getOrderById({ orderId });
     expect(order).toEqual({
-      id: 'any_id',
-      status: 'PENDING',
+      id: 'any-id',
+      businessId: 'string',
+      buyerId: 'string',
       total: 100,
-      businessId: 'any_business_id',
-      buyerId: 'any_buyer_id',
-      sellerId: 'any_seller_id',
       items: [],
+      status: 'PENDING' as 'PENDING',
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+      description: 'any-description',
+      paymentMethod: 'CreditCard' as 'CreditCard',
+      change: 10,
+      sellerId: 'any-seller-id',
     });
   });
 

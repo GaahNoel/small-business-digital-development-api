@@ -10,12 +10,18 @@ describe('GetOrderByIdController', () => {
   beforeAll(() => {
     getOrderById = {
       getOrderById: jest.fn(async () => Promise.resolve({
-        id: 'any_id',
-        status: 'PENDING' as 'PENDING',
+        id: 'any-id',
+        businessId: 'string',
+        buyerId: 'string',
         total: 100,
-        businessId: 'any_business_id',
-        buyerId: 'any_buyer_id',
         items: [],
+        status: 'PENDING' as 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: 'any-description',
+        paymentMethod: 'CreditCard' as 'CreditCard',
+        change: 10,
+        sellerId: 'any-seller-id',
       })),
     };
   });
@@ -35,12 +41,18 @@ describe('GetOrderByIdController', () => {
     expect(httpResponse).toEqual({
       statusCode: 200,
       body: {
-        id: 'any_id',
-        status: 'PENDING',
+        id: 'any-id',
+        businessId: 'string',
+        buyerId: 'string',
         total: 100,
-        businessId: 'any_business_id',
-        buyerId: 'any_buyer_id',
         items: [],
+        status: 'PENDING' as 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: 'any-description',
+        paymentMethod: 'CreditCard' as 'CreditCard',
+        change: 10,
+        sellerId: 'any-seller-id',
       },
     });
   });

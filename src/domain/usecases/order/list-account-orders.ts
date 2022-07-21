@@ -1,5 +1,3 @@
-import { OrderItem } from '@/domain/models/order';
-
 type ListAccountOrdersParams = {
   accountId: string;
   type: 'buy' | 'sell';
@@ -7,16 +5,31 @@ type ListAccountOrdersParams = {
 
 export namespace ListAccountOrders {
   export type Params = ListAccountOrdersParams;
-  export type Result = {
+  export type Result = Array<{
     id: string;
-    businessId: string;
+    Business: {
+      name: string;
+      id: string;
+    };
     sellerId: string;
     status: 'PENDING' | 'COMPLETED' | 'CANCELED';
     total: number;
     createdAt?: Date;
     updatedAt?: Date;
-    items: OrderItem[];
-  } [];
+    buyerId: string;
+    items:Array<{
+      id: string,
+      quantity: number,
+      product: {
+        id: string;
+        name: string,
+        description: string,
+        salePrice: number,
+        listPrice: number,
+        imageUrl: string,
+      }
+    }>;
+  }>;
 }
 
 export interface ListAccountOrders {

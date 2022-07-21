@@ -16,6 +16,12 @@ describe('DbChangeOrderStatus', () => {
         total: 100,
         items: [],
         status: 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: 'any-description',
+        paymentMethod: 'CreditCard',
+        change: 10,
+        sellerId: 'any-seller-id',
       })),
     };
 
