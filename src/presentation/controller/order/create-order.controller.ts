@@ -59,14 +59,14 @@ export class CreateOrderController implements BaseController {
       });
 
       await this.emailVerificationSender.send({
-        message: `Your order has been created. OrderId: ${order.orderId}`,
-        subject: 'Order created',
+        message: `Seu pedido foi criada com sucesso! Id do Pedido: ${order.orderId}`,
+        subject: 'Pedido Criado',
         toEmail: buyerAccount.email,
       });
 
       await this.emailVerificationSender.send({
-        message: `You received an order. OrderId: ${order.orderId}`,
-        subject: 'Order created',
+        message: `Você recebeu um novo pedido! Id do Pedido: ${order.orderId}`,
+        subject: 'Pedido Recebido',
         toEmail: sellerAccount.email,
       });
 
