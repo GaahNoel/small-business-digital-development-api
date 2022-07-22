@@ -3,6 +3,7 @@ import { MissingParamsError } from '@/presentation/errors/missing-params.error';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
 import { BaseController } from '@/presentation/protocols/base-controller';
 import { HttpResponse } from '@/presentation/protocols/http';
+import { removeAuthParams } from '@/utils/handle-auth-params/remove-auth-params';
 
 namespace SignUpController {
   export type Request = {
@@ -18,7 +19,13 @@ export class SignUpController implements BaseController<SignUpController.Request
   async handle(data: SignUpController.Request): Promise<HttpResponse> {
     try {
       this.validateParams(data);
-      const accountAdded = await this.addAccount.add(data);
+
+      const accountAdded = await this.addAccount.add({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        provider: data.provider,
+      });
 
       return success({
         id: accountAdded.id,

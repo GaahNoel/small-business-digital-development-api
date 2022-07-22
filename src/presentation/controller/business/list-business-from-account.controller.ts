@@ -7,7 +7,9 @@ export class ListBusinessFromAccountController implements BaseController {
 
   async handle(params: ListBusinessFromAccount.Params): Promise<HttpResponse> {
     try {
-      const response = await this.listBusinessFromAccount.list(params);
+      const response = await this.listBusinessFromAccount.list({
+        accountId: params.accountId,
+      });
 
       return success(response);
     } catch (error) {

@@ -2,6 +2,7 @@ import { EditBusiness } from '@/domain/usecases/business';
 import { MissingParamsError } from '@/presentation/errors';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
+import { removeAuthParams } from '@/utils/handle-auth-params/remove-auth-params';
 
 namespace EditBusinessController{
   export type Props = EditBusiness.Params;
@@ -13,9 +14,10 @@ export class EditBusinessController implements BaseController {
 
   async handle(data: EditBusinessController.Props): Promise<HttpResponse> {
     try {
-      this.validate(data);
+      const removedAuthData = removeAuthParams(data);
+      this.validate(removedAuthData);
 
-      const response = await this.editBusiness.edit(data);
+      const response = await this.editBusiness.edit(removedAuthData);
       return success({
         id: response.id,
       });
