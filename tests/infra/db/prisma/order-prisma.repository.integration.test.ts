@@ -105,7 +105,14 @@ describe('OrderPrismaRepository', () => {
         items: [
           {
             quantity: 1,
-            productId: addedProduct.productId,
+            product: {
+              id: addedProduct.productId,
+              name: mockAddProductParams(addedBusiness.id, addedCategory.id).name,
+              description: mockAddProductParams(addedBusiness.id, addedCategory.id).description,
+              salePrice: mockAddProductParams(addedBusiness.id, addedCategory.id).salePrice,
+              listPrice: mockAddProductParams(addedBusiness.id, addedCategory.id).listPrice,
+              imageUrl: mockAddProductParams(addedBusiness.id, addedCategory.id).imageUrl,
+            },
             id: expect.any(String),
           },
         ],

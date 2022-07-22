@@ -46,7 +46,16 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
           select: {
             id: true,
             quantity: true,
-            productId: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                salePrice: true,
+                listPrice: true,
+                imageUrl: true,
+              },
+            },
           },
         },
       },
