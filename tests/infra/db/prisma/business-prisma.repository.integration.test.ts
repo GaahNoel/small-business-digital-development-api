@@ -63,7 +63,7 @@ describe('BusinessPrismaRepository', () => {
       deleteAccount,
     ]);
 
-    prisma.$disconnect();
+    await prisma.$disconnect();
   });
 
   describe('add', () => {

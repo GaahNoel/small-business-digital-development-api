@@ -41,7 +41,7 @@ describe('ProductPrismaRepository', () => {
       deleteAccount,
     ]);
 
-    prisma.$disconnect();
+    await prisma.$disconnect();
   });
 
   beforeAll(async () => {

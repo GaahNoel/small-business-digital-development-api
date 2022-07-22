@@ -1133,6 +1133,9 @@
                   "businessId":"123",
                   "buyerId":"1223",
                   "total":100,
+                  "description": "any-example",
+                  "paymentMethod": "CreditCard | Cash",
+                  "change": 10,
                   "items": {
                     "quantity": 1,
                     "productId": "123"

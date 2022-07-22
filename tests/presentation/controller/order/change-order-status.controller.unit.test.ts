@@ -11,6 +11,8 @@ describe('ChangeOrderStatusController', () => {
       changeOrderStatus: jest.fn(async () => Promise.resolve({
         orderId: 'any_id',
         status: 'COMPLETED',
+        buyerStatus: 'COMPLETED',
+        sellerStatus: 'COMPLETED',
       })),
     };
   });
@@ -22,10 +24,12 @@ describe('ChangeOrderStatusController', () => {
     await sut.handle({
       orderId: 'any_id',
       status: 'COMPLETED',
+      authAccountId: 'any_id',
     });
     expect(changeOrderStatus.changeOrderStatus).toHaveBeenCalledWith({
       orderId: 'any_id',
       status: 'COMPLETED',
+      accountId: 'any_id',
     });
   });
 
@@ -33,12 +37,15 @@ describe('ChangeOrderStatusController', () => {
     const httpResponse = await sut.handle({
       orderId: 'any_id',
       status: 'COMPLETED',
+      authAccountId: 'any_id',
     });
     expect(httpResponse).toEqual({
       statusCode: 200,
       body: {
         orderId: 'any_id',
         status: 'COMPLETED',
+        buyerStatus: 'COMPLETED',
+        sellerStatus: 'COMPLETED',
       },
     });
   });
@@ -49,6 +56,7 @@ describe('ChangeOrderStatusController', () => {
     const httpResponse = await sut.handle({
       orderId: 'any_id',
       status: 'COMPLETED',
+      authAccountId: 'any_id',
     });
     expect(httpResponse).toEqual({
       statusCode: 500,
@@ -64,6 +72,7 @@ describe('ChangeOrderStatusController', () => {
     const httpResponse = await sut.handle({
       orderId: 'any_id',
       status: 'COMPLETED',
+      authAccountId: 'any_id',
     });
     expect(httpResponse).toEqual({
       statusCode: 404,
@@ -92,6 +101,7 @@ describe('ChangeOrderStatusController', () => {
     const response = await sut.handle({
       orderId,
       status,
+      authAccountId: 'any_id',
     });
 
     expect(response).toEqual({

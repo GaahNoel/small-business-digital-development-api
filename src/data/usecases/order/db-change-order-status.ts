@@ -15,15 +15,50 @@ export class DbChangeOrderStatus implements ChangeOrderStatus {
         entity: 'Order',
       });
     }
+    const { status, entity } = this.selectStatusAndEntity(order, params);
 
     const updatedOrder = await this.updateOrderById.updateOrderById({
       orderId: params.orderId,
+      status,
+      statusType: 'order',
+    });
+
+    await this.updateOrderById.updateOrderById({
+      orderId: params.orderId,
       status: params.status,
+      statusType: entity,
     });
 
     return {
       orderId: updatedOrder.orderId,
       status: updatedOrder.status,
+      buyerStatus: updatedOrder.buyerStatus,
+      sellerStatus: updatedOrder.sellerStatus,
+    };
+  }
+
+  private selectStatusAndEntity(order: GetOrderByIdRepository.Result, { status, accountId }: ChangeOrderStatus.Params): { status: 'PENDING' | 'COMPLETED' | 'CANCELED', entity: 'seller' | 'buyer' } {
+    const entitySelected = accountId === order.buyerId ? 'buyer' : 'seller';
+
+    const orderStatusSelected = entitySelected === 'buyer' ? order.sellerStatus : order.buyerStatus;
+
+    if (orderStatusSelected === 'PENDING') {
+      return {
+        status: 'PENDING',
+        entity: entitySelected,
+      };
+    }
+
+    if (orderStatusSelected !== status) {
+      return {
+        status: 'CANCELED',
+        entity: entitySelected,
+      };
+    }
+
+    return {
+      status: 'COMPLETED',
+      entity: entitySelected,
     };
   }
 }

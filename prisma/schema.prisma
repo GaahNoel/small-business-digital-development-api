@@ -88,6 +88,8 @@ model Order {
   description   String        @default("")
   paymentMethod PaymentMethod
   change        Float         @default(0)
+  sellerStatus  OrderStatus   @default(PENDING)
+  buyerStatus   OrderStatus   @default(PENDING)
 
   Business   Business @relation(fields: [businessId], references: [id])
   businessId String

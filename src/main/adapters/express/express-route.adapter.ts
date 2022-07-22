@@ -8,6 +8,10 @@ export const adaptRoute = (controller: BaseController) => async (req: Request, r
     ...(req.query || {}),
   };
 
+  if (req.accountId) {
+    httpRequest.authAccountId = req.accountId;
+  }
+
   const successStatus = [200];
   const httpResponse = await controller.handle(httpRequest);
 

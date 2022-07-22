@@ -9,6 +9,7 @@ namespace ChangeOrderStatusController {
   export type Params = {
     orderId: string;
     status: 'COMPLETED' | 'CANCELED'
+    authAccountId: string,
   };
   export type Result = HttpResponse;
 }
@@ -22,6 +23,7 @@ export class ChangeOrderStatusController implements BaseController {
       const order = await this.changeOrderStatus.changeOrderStatus({
         orderId: data.orderId,
         status: data.status,
+        accountId: data.authAccountId,
       });
       return success(order);
     } catch (error) {

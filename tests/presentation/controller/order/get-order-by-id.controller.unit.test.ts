@@ -22,6 +22,8 @@ describe('GetOrderByIdController', () => {
         paymentMethod: 'CreditCard' as 'CreditCard',
         change: 10,
         sellerId: 'any-seller-id',
+        buyerStatus: 'PENDING',
+        sellerStatus: 'PENDING',
       })),
     };
   });
@@ -53,6 +55,8 @@ describe('GetOrderByIdController', () => {
         paymentMethod: 'CreditCard' as 'CreditCard',
         change: 10,
         sellerId: 'any-seller-id',
+        buyerStatus: 'PENDING',
+        sellerStatus: 'PENDING',
       },
     });
   });

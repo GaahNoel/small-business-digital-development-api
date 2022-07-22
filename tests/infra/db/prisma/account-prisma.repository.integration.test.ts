@@ -27,7 +27,7 @@ describe('AccountPrismaRepository', () => {
       deleteAccount,
     ]);
 
-    prisma.$disconnect();
+    await prisma.$disconnect();
   });
   describe('add', () => {
     it('should return account on add success ', async () => {

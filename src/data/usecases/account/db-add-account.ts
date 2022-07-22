@@ -38,7 +38,7 @@ export class DbAddAccount implements AddAccount {
 
     if (data.password) {
       const encryptedId = await this.encrypter.encrypt(result.id);
-      const teste = await this.emailVerificationSender.send({
+      await this.emailVerificationSender.send({
         toEmail: email,
         subject: 'Verification email',
         message: makeVerifyAccountMessage(data.name, encryptedId),

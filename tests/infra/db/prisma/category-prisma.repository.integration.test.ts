@@ -31,7 +31,7 @@ describe('CategoryPrismaRepository', () => {
       deleteAccount,
     ]);
 
-    prisma.$disconnect();
+    await prisma.$disconnect();
   });
   describe('add', () => {
     it('should add a new category', async () => {

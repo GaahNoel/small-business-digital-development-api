@@ -113,6 +113,8 @@ describe('OrderPrismaRepository', () => {
         sellerId: addedSellerAccount.id,
         businessId: addedBusiness.id,
         buyerId: addedBuyerAccount.id,
+        sellerStatus: 'PENDING',
+        buyerStatus: 'PENDING',
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
@@ -120,7 +122,48 @@ describe('OrderPrismaRepository', () => {
   });
 
   describe('updateOrderById', () => {
-    it('should update order by id successfully', async () => {
+    it('should update order by id successfully when is statusType order', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        sellerId: addedSellerAccount.id,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
+      });
+
+      await sut.updateOrderById({
+        orderId: order.orderId,
+        status: 'COMPLETED',
+        statusType: 'seller',
+      });
+
+      await sut.updateOrderById({
+        orderId: order.orderId,
+        status: 'COMPLETED',
+        statusType: 'buyer',
+      });
+
+      const result = await sut.updateOrderById({
+        orderId: order.orderId,
+        status: 'COMPLETED',
+        statusType: 'order',
+      });
+
+      expect(result).toEqual({
+        orderId: order.orderId,
+        status: 'COMPLETED',
+        total: 0,
+        buyerStatus: 'COMPLETED',
+        sellerStatus: 'COMPLETED',
+      });
+    });
+
+    it('should update order by id successfully when is statusType buyer', async () => {
       const order = await sut.create({
         items: [
           {
@@ -137,11 +180,43 @@ describe('OrderPrismaRepository', () => {
       const result = await sut.updateOrderById({
         orderId: order.orderId,
         status: 'COMPLETED',
+        statusType: 'buyer',
       });
 
       expect(result).toEqual({
         orderId: order.orderId,
+        status: 'PENDING',
+        buyerStatus: 'COMPLETED',
+        sellerStatus: 'PENDING',
+        total: 0,
+      });
+    });
+
+    it('should update order by id successfully when is statusType seller', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        sellerId: addedSellerAccount.id,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
+      });
+
+      const result = await sut.updateOrderById({
+        orderId: order.orderId,
         status: 'COMPLETED',
+        statusType: 'seller',
+      });
+
+      expect(result).toEqual({
+        orderId: order.orderId,
+        status: 'PENDING',
+        buyerStatus: 'PENDING',
+        sellerStatus: 'COMPLETED',
         total: 0,
       });
     });
