@@ -1,16 +1,33 @@
+import { GetAccountByIdRepository } from '@/data';
 import { GetOrderByIdRepository, UpdateOrderByIdRepository } from '@/data/protocols/db/order';
+import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 import { DbChangeOrderStatus } from '@/data/usecases/order';
+import { OrderStatus } from '@/domain/models/order';
 import { NotFound } from '@/presentation/errors';
 
 describe('DbChangeOrderStatus', () => {
   let sut: DbChangeOrderStatus;
   let getOrderByIdRepository: GetOrderByIdRepository;
   let updateOrderByIdRepository: UpdateOrderByIdRepository;
+  let getAccountByIdRepository: GetAccountByIdRepository;
+  let emailSender : EmailVerificationSender;
 
   const orderId = 'any_id';
   const accountId = 'any_id';
-
-  type OrderStatus = 'PENDING' | 'COMPLETED' | 'CANCELED';
+  const sellerAccountInfo = {
+    id: 'valid_id',
+    name: 'any_name',
+    email: 'email@seller.com',
+    verified: true,
+    provider: 'credentials',
+  };
+  const buyerAccountInfo = {
+    id: 'valid_id',
+    name: 'any_name',
+    email: 'email@buyer.com',
+    verified: true,
+    provider: 'credentials',
+  };
 
   type GetOrderByIdReturnType = {
     orderStatus?: OrderStatus,
@@ -49,10 +66,23 @@ describe('DbChangeOrderStatus', () => {
         sellerStatus: 'PENDING',
       })),
     };
+    getAccountByIdRepository = {
+      getById: jest.fn(async () => Promise.resolve({
+        id: 'valid_id',
+        name: 'any_name',
+        email: 'email@email.com',
+        verified: true,
+        provider: 'credentials',
+      })),
+    };
+
+    emailSender = {
+      send: jest.fn(async () => Promise.resolve(true)),
+    };
   });
 
   beforeEach(() => {
-    sut = new DbChangeOrderStatus(getOrderByIdRepository, updateOrderByIdRepository);
+    sut = new DbChangeOrderStatus(getOrderByIdRepository, updateOrderByIdRepository, getAccountByIdRepository, emailSender);
   });
 
   it('should call changeOrderStatus with COMPLETED', async () => {
@@ -76,7 +106,7 @@ describe('DbChangeOrderStatus', () => {
     expect(order.status).toBe(orderStatus);
   });
 
-  it('should call changeOrderStatus with CANCELED', async () => {
+  it('should call changeOrderStatus with CANCELED if any entity set it to canceled', async () => {
     (getOrderByIdRepository.getOrderById as jest.Mock).mockImplementationOnce(() => Promise.resolve(
       getOrderByIdReturn({
         sellerStatus: 'CANCELED',
@@ -89,6 +119,38 @@ describe('DbChangeOrderStatus', () => {
     }));
 
     const orderStatus = 'COMPLETED' as 'COMPLETED';
+    const params = { orderId, accountId: 'any-buyer-id', status: orderStatus };
+
+    const order = await sut.changeOrderStatus(params);
+
+    expect(updateOrderByIdRepository.updateOrderById).toHaveBeenCalledWith({
+      orderId,
+      status: 'CANCELED',
+      statusType: 'order',
+    });
+
+    expect(updateOrderByIdRepository.updateOrderById).toHaveBeenCalledWith({
+      orderId,
+      status: orderStatus,
+      statusType: 'buyer',
+    });
+    expect(order.orderId).toBe(orderId);
+    expect(order.status).toBe('CANCELED');
+  });
+
+  it('should call changeOrderStatus with CANCELED if status provided is CANCELED', async () => {
+    (getOrderByIdRepository.getOrderById as jest.Mock).mockImplementationOnce(() => Promise.resolve(
+      getOrderByIdReturn({
+        sellerStatus: 'PENDING',
+        buyerStatus: 'PENDING',
+      }),
+    ));
+    (updateOrderByIdRepository.updateOrderById as jest.Mock).mockImplementationOnce(() => Promise.resolve({
+      orderId: 'any_id',
+      status: 'CANCELED',
+    }));
+
+    const orderStatus = 'CANCELED' as 'CANCELED';
     const params = { orderId, accountId: 'any-buyer-id', status: orderStatus };
 
     const order = await sut.changeOrderStatus(params);
@@ -170,6 +232,42 @@ describe('DbChangeOrderStatus', () => {
     });
     expect(order.orderId).toBe(orderId);
     expect(order.status).toBe('COMPLETED');
+  });
+
+  it('should call getAccountByIdRepository with correct params', async () => {
+    const orderStatus = 'COMPLETED' as 'COMPLETED';
+    const params = { orderId, accountId: 'any-buyer-id', status: orderStatus };
+
+    await sut.changeOrderStatus(params);
+
+    expect(getAccountByIdRepository.getById).toHaveBeenCalledWith({
+      accountId: 'any-buyer-id',
+    });
+    expect(getAccountByIdRepository.getById).toHaveBeenCalledWith({
+      accountId: 'any-seller-id',
+    });
+  });
+
+  it('should call email sender', async () => {
+    (getAccountByIdRepository.getById as jest.Mock)
+      .mockImplementationOnce(() => Promise.resolve(buyerAccountInfo))
+      .mockImplementationOnce(() => Promise.resolve(sellerAccountInfo));
+
+    const orderStatus = 'COMPLETED' as 'COMPLETED';
+    const params = { orderId, accountId: 'any-buyer-id', status: orderStatus };
+
+    await sut.changeOrderStatus(params);
+
+    expect(emailSender.send).toHaveBeenCalledWith({
+      subject: expect.any(String),
+      message: expect.any(String),
+      toEmail: buyerAccountInfo.email,
+    });
+    expect(emailSender.send).toHaveBeenCalledWith({
+      subject: expect.any(String),
+      message: expect.any(String),
+      toEmail: sellerAccountInfo.email,
+    });
   });
 
   it('should throw notFound error if order not found', async () => {

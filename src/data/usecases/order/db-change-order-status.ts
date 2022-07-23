@@ -1,9 +1,17 @@
+import { GetAccountByIdRepository } from '@/data/protocols';
 import { GetOrderByIdRepository, UpdateOrderByIdRepository } from '@/data/protocols/db/order';
+import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 import { ChangeOrderStatus } from '@/domain/usecases/order/change-order-status';
 import { NotFound } from '@/presentation/errors';
 
+enum TranslateOrderStatus {
+  PENDING = 'PENDENTE',
+  COMPLETED = 'CONCLUÍDO',
+  CANCELED = 'CANCELADO',
+}
+
 export class DbChangeOrderStatus implements ChangeOrderStatus {
-  constructor(private readonly getOrderById: GetOrderByIdRepository, private readonly updateOrderById: UpdateOrderByIdRepository) {}
+  constructor(private readonly getOrderById: GetOrderByIdRepository, private readonly updateOrderById: UpdateOrderByIdRepository, private readonly getAccountById: GetAccountByIdRepository, private readonly emailSender: EmailVerificationSender) {}
 
   public async changeOrderStatus(params: ChangeOrderStatus.Params): Promise<ChangeOrderStatus.Result> {
     const order = await this.getOrderById.getOrderById({
@@ -29,6 +37,32 @@ export class DbChangeOrderStatus implements ChangeOrderStatus {
       statusType: entity,
     });
 
+    const { email: sellerEmail } = await this.getAccountById.getById({
+      accountId: order.sellerId,
+    });
+
+    const { email: buyerEmail } = await this.getAccountById.getById({
+      accountId: order.buyerId,
+    });
+
+    await this.emailSender.send({
+      toEmail: buyerEmail,
+      subject: 'Status do pedido alterado',
+      message: `
+        Olá, os status do seu pedido - ${order.id} foi alterado para: ${TranslateOrderStatus[status]},
+        qualquer dúvida entre em contato com o vendedor por meio do email: ${sellerEmail}
+      `,
+    });
+
+    await this.emailSender.send({
+      toEmail: sellerEmail,
+      subject: 'Order status changed',
+      message: `
+        Olá, os status do seu pedido - ${order.id} foi alterado para: ${TranslateOrderStatus[status]},
+        qualquer dúvida entre em contato com o comprador por meio do email: ${sellerEmail}
+      `,
+    });
+
     return {
       orderId: updatedOrder.orderId,
       status: updatedOrder.status,
@@ -42,16 +76,16 @@ export class DbChangeOrderStatus implements ChangeOrderStatus {
 
     const orderStatusSelected = entitySelected === 'buyer' ? order.sellerStatus : order.buyerStatus;
 
-    if (orderStatusSelected === 'PENDING') {
+    if (status === 'CANCELED' || orderStatusSelected === 'CANCELED') {
       return {
-        status: 'PENDING',
+        status: 'CANCELED',
         entity: entitySelected,
       };
     }
 
-    if (orderStatusSelected !== status) {
+    if (orderStatusSelected === 'PENDING') {
       return {
-        status: 'CANCELED',
+        status: 'PENDING',
         entity: entitySelected,
       };
     }
