@@ -15,11 +15,10 @@ export type Challenge = {
   goal: number;
   periodicity: Periodicity;
   reward: number;
-  ActiveChallenge: ActiveChallenge[];
   createdAt?: Date
   updatedAt ?: Date
 };
 
-type Periodicity = 'daily' | 'weekly';
+export type Periodicity = 'daily' | 'weekly';
 
-type ChallengeType = 'buyAny' | 'sellAny' | 'buyProximity' | 'buyback' | 'buyProduct' | 'buyService' | 'sellProduct' | 'sellService';
+export type ChallengeType = 'buyAny' | 'sellAny' | 'buyProximity' | 'buyback' | 'buyProduct' | 'buyService' | 'sellProduct' | 'sellService';
