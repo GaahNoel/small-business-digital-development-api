@@ -1198,6 +1198,61 @@
           }
         }
       
+    },
+    "/api/challenge/create": {
+      "post": {
+        "tags": ["Challenge"],
+        "summary": "Create",
+        "description": "Create new challenge",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                    "description": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "type": {
+                      "type": "buyAny | sellAny | buyProximity | buyback | buyProduct | buyService | sellProduct | sellService",
+                      "required": true
+                    },
+                    "goal": {
+                      "type": "number",
+                      "required": true
+                    },
+                    "periodicity": {
+                      "type": "daily | weekly",
+                      "required": true
+                    },
+                    "reward": {
+                      "type": "number",
+                      "required": true
+                    }
+                  }
+                },
+                "example": {
+                  "description":"Buy 5 products",
+                  "goal":5,
+                  "type": "buyProduct",
+                  "periodicity": "daily",
+                  "reward": 50
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
     }
   }
 }
