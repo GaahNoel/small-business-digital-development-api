@@ -1,5 +1,6 @@
 type RenewAccountChallengesParams = {
   accountId: string;
+  periodicity: 'daily' | 'weekly';
 };
 
 export namespace RenewAccountChallenges {

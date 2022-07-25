@@ -29,27 +29,26 @@ describe('DbRenewAccountChallenges', () => {
   });
 
   it('should call GetChallengeTotalCountRepository ', async () => {
-    await sut.renew({ accountId: 'any_account_id' });
+    await sut.renew({ accountId: 'any_account_id', periodicity: 'daily' });
     expect(getChallengeTotalCount.getTotalCount).toHaveBeenCalledWith({ periodicity: 'daily' });
-    expect(getChallengeTotalCount.getTotalCount).toHaveBeenCalledWith({ periodicity: 'weekly' });
-    expect(getChallengeTotalCount.getTotalCount).toHaveBeenCalledTimes(2);
+    expect(getChallengeTotalCount.getTotalCount).toHaveBeenCalledTimes(1);
   });
 
   it('should call GetChallengeByIndexRepository ', async () => {
-    await sut.renew({ accountId: 'any_account_id' });
-    expect(getChallengeByIndex.getByIndex).toHaveBeenCalledTimes(4);
+    await sut.renew({ accountId: 'any_account_id', periodicity: 'daily' });
+    expect(getChallengeByIndex.getByIndex).toHaveBeenCalledTimes(2);
   });
 
   it('should call SetAccountChallengesRepository with correct params', async () => {
-    await sut.renew({ accountId: 'any_account_id' });
+    await sut.renew({ accountId: 'any_account_id', periodicity: 'daily' });
     expect(setAccountChallengesRepository.setAccountChallenges).toHaveBeenCalledWith({
       accountId: 'any_account_id',
-      challenges: [{ id: 'id' }, { id: 'id' }, { id: 'id' }, { id: 'id' }],
+      challenges: [{ id: 'id' }, { id: 'id' }],
     });
   });
 
   it('should return challenges if renew successfully executed', async () => {
-    const result = await sut.renew({ accountId: 'any_account_id' });
-    expect(result).toEqual({ challenges: [{ id: 'id' }, { id: 'id' }, { id: 'id' }, { id: 'id' }] });
+    const result = await sut.renew({ accountId: 'any_account_id', periodicity: 'daily' });
+    expect(result).toEqual({ challenges: [{ id: 'id' }, { id: 'id' }] });
   });
 });

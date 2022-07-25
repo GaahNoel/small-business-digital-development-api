@@ -12,39 +12,21 @@ export class DbRenewAccountChallenges implements RenewAccountChallenges {
 
   async renew(params: RenewAccountChallenges.Params): Promise<RenewAccountChallenges.Result> {
     const dailyChallengesTotal = await this.getChallengeTotalCount.getTotalCount({
-      periodicity: 'daily',
+      periodicity: params.periodicity,
     });
 
-    const weeklyChallengesTotal = await this.getChallengeTotalCount.getTotalCount({
-      periodicity: 'weekly',
-    });
-
-    const randomDailyIndexes = [];
-    const randomWeeklyIndexes = [];
+    const randomIndexes = [];
 
     for (let i = 0; i < 2; i += 1) {
-      randomDailyIndexes.push(Math.floor(Math.random() * dailyChallengesTotal.total));
+      randomIndexes.push(Math.floor(Math.random() * dailyChallengesTotal.total));
     }
 
-    for (let i = 0; i < 2; i += 1) {
-      randomWeeklyIndexes.push(Math.floor(Math.random() * weeklyChallengesTotal.total));
-    }
-
-    const dailyChallenges = await Promise.all(
-      randomDailyIndexes.map(async (index) => {
+    const challenges = await Promise.all(
+      randomIndexes.map(async (index) => {
         const challenge = await this.getChallengeByIndex.getByIndex({ challengeIndex: index });
         return challenge;
       }),
     );
-
-    const weeklyChallenges = await Promise.all(
-      randomWeeklyIndexes.map(async (index) => {
-        const challenge = await this.getChallengeByIndex.getByIndex({ challengeIndex: index });
-        return challenge;
-      }),
-    );
-
-    const challenges = [...dailyChallenges, ...weeklyChallenges];
 
     await this.setAccountChallengesRepository.setAccountChallenges({
       accountId: params.accountId,
