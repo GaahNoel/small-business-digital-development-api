@@ -129,8 +129,8 @@ model Challenge {
   periodicity     Periodicity
   reward          Int
   ActiveChallenge ActiveChallenge[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 }
 
 enum ChallengeType {
@@ -150,15 +150,15 @@ enum Periodicity {
 }
 
 model ActiveChallenge {
-  id          String    @id @default(uuid())
+  id          String          @id @default(uuid())
   challengeId String
-  challenge   Challenge @relation(fields: [challengeId], references: [id])
+  challenge   Challenge       @relation(fields: [challengeId], references: [id])
   accountId   String
-  account     Account   @relation(fields: [accountId], references: [id])
-  progress    Float     @default(0)
+  account     Account         @relation(fields: [accountId], references: [id])
+  progress    Float           @default(0)
   status      ChallengeStatus @default(PENDING)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 }
 
 enum ChallengeStatus {
