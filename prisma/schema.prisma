@@ -11,16 +11,17 @@ datasource db {
 }
 
 model Account {
-  id           String     @id @default(uuid())
-  name         String
-  password     String?
-  email        String     @unique
-  createdAt    DateTime   @default(now())
-  verified     Boolean    @default(false)
-  provider     Provider
-  Businesses   Business[]
-  BuyOrders    Order[]    @relation(name: "BuyOrders")
-  SellerOrders Order[]    @relation(name: "SellerOrders")
+  id              String            @id @default(uuid())
+  name            String
+  password        String?
+  email           String            @unique
+  createdAt       DateTime          @default(now())
+  verified        Boolean           @default(false)
+  provider        Provider
+  Businesses      Business[]
+  BuyOrders       Order[]           @relation(name: "BuyOrders")
+  SellerOrders    Order[]           @relation(name: "SellerOrders")
+  ActiveChallenge ActiveChallenge[]
 }
 
 enum Provider {
@@ -118,4 +119,49 @@ model OrderItem {
   updatedAt DateTime @updatedAt
   Order     Order?   @relation(fields: [orderId], references: [id])
   orderId   String?
+}
+
+model Challenge {
+  id              String            @id @default(uuid())
+  description     String
+  type            ChallengeType
+  goal            Int
+  periodicity     Periodicity
+  reward          Int
+  ActiveChallenge ActiveChallenge[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum ChallengeType {
+  buyAny
+  sellAny
+  buyProximity
+  buyback
+  buyProduct
+  buyService
+  sellProduct
+  sellService
+}
+
+enum Periodicity {
+  daily
+  weekly
+}
+
+model ActiveChallenge {
+  id          String    @id @default(uuid())
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id])
+  accountId   String
+  account     Account   @relation(fields: [accountId], references: [id])
+  progress    Float     @default(0)
+  status      ChallengeStatus @default(PENDING)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum ChallengeStatus {
+  COMPLETED
+  PENDING
 }
