@@ -1253,6 +1253,40 @@
           }
         }
       
+    },
+    "/api/challenge/renew/{accountId}": {
+      "get": {
+        "tags": ["Challenge"],
+        "summary": "Renew",
+        "description": "Renew account challenges",
+        "parameters": [{
+          "name": "accountId",
+          "in": "path",
+          "description": "Account id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "periodicity",
+          "in": "query",
+          "description": "periodicity of challenge",
+          "required": true,
+          "schema": {
+            "type": "daily | weekly"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
     }
   }
 }
