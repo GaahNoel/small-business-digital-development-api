@@ -1,10 +1,12 @@
 export namespace GetChallengeTotalCountRepository {
-  export type Params = {};
+  export type Params = {
+    periodicity?: 'daily' | 'weekly'
+  };
   export type Result = {
     total: number;
   };
 }
 
 export interface GetChallengeTotalCountRepository {
-  getTotalCount(): Promise<GetChallengeTotalCountRepository.Result>;
+  getTotalCount(params: GetChallengeTotalCountRepository.Params): Promise<GetChallengeTotalCountRepository.Result>;
 }

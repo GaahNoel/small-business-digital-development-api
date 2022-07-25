@@ -47,6 +47,7 @@ describe('BusinessPrismaRepository', () => {
   });
 
   beforeAll(async () => {
+    const deleteActiveChallenges = prisma.activeChallenge.deleteMany({});
     const deleteOrderItems = prisma.orderItem.deleteMany();
     const deleteOrders = prisma.order.deleteMany();
     const deleteProduct = prisma.product.deleteMany();
@@ -55,6 +56,7 @@ describe('BusinessPrismaRepository', () => {
     const deleteAccount = prisma.account.deleteMany();
 
     await prisma.$transaction([
+      deleteActiveChallenges,
       deleteOrderItems,
       deleteOrders,
       deleteProduct,

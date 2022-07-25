@@ -20,16 +20,27 @@ export class ChallengePrismaRepository implements CreateChallengeRepository, Get
     };
   }
 
-  async getTotalCount(): Promise<GetChallengeTotalCountRepository.Result> {
-    const total = await prisma.challenge.count();
+  async getTotalCount(params: GetChallengeTotalCountRepository.Params): Promise<GetChallengeTotalCountRepository.Result> {
+    const where = params.periodicity ? {
+      periodicity: params.periodicity,
+    } : {};
+    const total = await prisma.challenge.count({
+      where,
+    });
     return {
       total,
     };
   }
 
-  async getByIndex(params: GetChallengeByIndexRepository.Params): Promise<GetChallengeByIndexRepository.Result> {
+  async getByIndex({ challengeIndex, periodicity = 'daily' }: GetChallengeByIndexRepository.Params): Promise<GetChallengeByIndexRepository.Result> {
     const challenge = await prisma.challenge.findFirst({
-      skip: params.challengeIndex,
+      skip: challengeIndex,
+      where: {
+        periodicity,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
 
     return challenge;

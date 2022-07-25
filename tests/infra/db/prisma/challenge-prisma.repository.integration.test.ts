@@ -10,9 +10,13 @@ describe('ChallengePrismaRepository', () => {
   let addedAccount: AddAccountRepository.Result;
 
   beforeAll(async () => {
-    await prisma.account.deleteMany({});
-    await prisma.challenge.deleteMany({});
     await prisma.activeChallenge.deleteMany({});
+    await prisma.challenge.deleteMany({});
+    await prisma.orderItem.deleteMany({});
+    await prisma.order.deleteMany({});
+    await prisma.product.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
 
     addedAccount = await new AccountPrismaRepository().add(mockAddAccountParams());
   });
@@ -39,7 +43,20 @@ describe('ChallengePrismaRepository', () => {
       const mockParams = mockCreateChallengeParams();
       await sut.create(mockParams);
 
-      const result = await sut.getTotalCount();
+      const result = await sut.getTotalCount({});
+
+      expect(result).toEqual({
+        total: 1,
+      });
+    });
+
+    it('should return total daily challenges count', async () => {
+      const mockParams = mockCreateChallengeParams();
+      await sut.create(mockParams);
+
+      const result = await sut.getTotalCount({
+        periodicity: 'daily',
+      });
 
       expect(result).toEqual({
         total: 1,
@@ -49,38 +66,45 @@ describe('ChallengePrismaRepository', () => {
 
   describe('getByIndex', () => {
     it('should return challenge if exists', async () => {
-      const mockParams = mockCreateChallengeParams();
-      const createdFirstChallenge = await sut.create(mockParams);
+      const mockFirstDailyChallengeParams = mockCreateChallengeParams();
+      await sut.create(mockFirstDailyChallengeParams);
 
-      const mockOtherParams = mockCreateChallengeParams();
-      mockOtherParams.periodicity = 'weekly';
-      const createdSecondChallenge = await sut.create(mockOtherParams);
+      const mockSecondDailyChallengeParams = mockCreateChallengeParams();
+      const createdSecondDailyChallenge = await sut.create(mockSecondDailyChallengeParams);
+
+      const mockFirstWeeklyChallengeParams = mockCreateChallengeParams('weekly');
+      await sut.create(mockFirstWeeklyChallengeParams);
+
+      const mockSecondWeeklyChallengeParams = mockCreateChallengeParams('weekly');
+      const createdSecondWeeklyChallenge = await sut.create(mockSecondWeeklyChallengeParams);
 
       const firstResult = await sut.getByIndex({
         challengeIndex: 1,
+        periodicity: 'daily',
       });
 
       const secondResult = await sut.getByIndex({
-        challengeIndex: 0,
+        challengeIndex: 1,
+        periodicity: 'weekly',
       });
 
       expect(firstResult).toEqual({
-        id: createdSecondChallenge.challengeId,
-        description: mockOtherParams.description,
-        type: mockOtherParams.type,
-        goal: mockOtherParams.goal,
-        periodicity: mockOtherParams.periodicity,
-        reward: mockOtherParams.reward,
+        id: createdSecondDailyChallenge.challengeId,
+        description: mockSecondDailyChallengeParams.description,
+        type: mockSecondDailyChallengeParams.type,
+        goal: mockSecondDailyChallengeParams.goal,
+        periodicity: mockSecondDailyChallengeParams.periodicity,
+        reward: mockSecondDailyChallengeParams.reward,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
       expect(secondResult).toEqual({
-        id: createdFirstChallenge.challengeId,
-        description: mockParams.description,
-        type: mockParams.type,
-        goal: mockParams.goal,
-        periodicity: mockParams.periodicity,
-        reward: mockParams.reward,
+        id: createdSecondWeeklyChallenge.challengeId,
+        description: mockSecondWeeklyChallengeParams.description,
+        type: mockSecondWeeklyChallengeParams.type,
+        goal: mockSecondWeeklyChallengeParams.goal,
+        periodicity: mockSecondWeeklyChallengeParams.periodicity,
+        reward: mockSecondWeeklyChallengeParams.reward,
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
