@@ -24,6 +24,8 @@ describe('GetOrderByIdController', () => {
         sellerId: 'any-seller-id',
         buyerStatus: 'PENDING',
         sellerStatus: 'PENDING',
+        latitude: 10,
+        longitude: 10,
       })),
     };
   });
@@ -57,6 +59,8 @@ describe('GetOrderByIdController', () => {
         sellerId: 'any-seller-id',
         buyerStatus: 'PENDING',
         sellerStatus: 'PENDING',
+        latitude: 10,
+        longitude: 10,
       },
     });
   });

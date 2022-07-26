@@ -91,6 +91,8 @@ model Order {
   change        Float         @default(0)
   sellerStatus  OrderStatus   @default(PENDING)
   buyerStatus   OrderStatus   @default(PENDING)
+  latitude      String        @default("")
+  longitude      String       @default("")
 
   Business   Business @relation(fields: [businessId], references: [id])
   businessId String

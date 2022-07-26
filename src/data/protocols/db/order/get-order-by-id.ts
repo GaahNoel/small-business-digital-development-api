@@ -29,6 +29,8 @@ export namespace GetOrderByIdRepository {
     }[];
     sellerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
     buyerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
+    latitude: string;
+    longitude: string;
   };
 }
 

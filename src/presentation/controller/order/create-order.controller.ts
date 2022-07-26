@@ -19,6 +19,8 @@ namespace CreateOrderController {
     description?: string;
     paymentMethod: 'CreditCard' | 'Cash'
     change?: number;
+    latitude?: number;
+    longitude?: number;
   };
   export type Result = HttpResponse;
 
@@ -56,6 +58,8 @@ export class CreateOrderController implements BaseController {
         description: data.description,
         paymentMethod: data.paymentMethod,
         change: data.change,
+        latitude: data.latitude,
+        longitude: data.longitude,
       });
 
       await this.emailVerificationSender.send({

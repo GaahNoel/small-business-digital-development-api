@@ -25,6 +25,8 @@ describe('CreateOrderController', () => {
     paymentMethod: 'CreditCard' as 'CreditCard',
     change: 0,
     total: 10,
+    latitude: 10,
+    longitude: 10,
   };
 
   beforeAll(() => {

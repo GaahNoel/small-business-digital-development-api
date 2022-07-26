@@ -30,6 +30,8 @@ export namespace GetOrderById {
     }[];
     sellerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
     buyerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
+    latitude: number;
+    longitude: number;
   };
 }
 

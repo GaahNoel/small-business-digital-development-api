@@ -31,6 +31,8 @@ export class DbGetOrderById implements GetOrderById {
       change: result.change,
       buyerStatus: result.buyerStatus,
       sellerStatus: result.sellerStatus,
+      latitude: result.latitude ? Number(result.latitude) : undefined,
+      longitude: result.longitude ? Number(result.longitude) : undefined,
     };
   }
 }

@@ -10,6 +10,8 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
     const result = await prisma.order.create({
       data: {
         ...order,
+        latitude: order.latitude ? String(order.latitude) : undefined,
+        longitude: order.longitude ? String(order.longitude) : undefined,
         items: {
           create: order.items.map((orderItem: OrderItem) => ({
             ...orderItem,
@@ -42,6 +44,8 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         updatedAt: true,
         sellerStatus: true,
         buyerStatus: true,
+        latitude: true,
+        longitude: true,
         items: {
           select: {
             id: true,
@@ -54,6 +58,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
                 salePrice: true,
                 listPrice: true,
                 imageUrl: true,
+                type: true,
               },
             },
           },

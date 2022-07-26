@@ -30,6 +30,8 @@ describe('OrderPrismaRepository', () => {
     paymentMethod: 'CreditCard' as 'CreditCard',
     change: 0,
     total: 0,
+    latitude: 10,
+    longitude: 10,
   };
 
   beforeAll(async () => {
@@ -81,6 +83,27 @@ describe('OrderPrismaRepository', () => {
         orderId: expect.any(String),
       });
     });
+
+    it('should create order successfully without latitude and longitude', async () => {
+      const order = await sut.create({
+        items: [
+          {
+            quantity: 1,
+            productId: addedProduct.productId,
+          },
+        ],
+        sellerId: addedSellerAccount.id,
+        businessId: addedBusiness.id,
+        buyerId: addedBuyerAccount.id,
+        ...baseCreatePayload,
+        latitude: undefined,
+        longitude: undefined,
+      });
+
+      expect(order).toEqual({
+        orderId: expect.any(String),
+      });
+    });
   });
 
   describe('getOrderById', () => {
@@ -108,6 +131,7 @@ describe('OrderPrismaRepository', () => {
             quantity: 1,
             product: {
               id: addedProduct.productId,
+              type: mockAddProductParams(addedBusiness.id, addedCategory.id).type,
               name: mockAddProductParams(addedBusiness.id, addedCategory.id).name,
               description: mockAddProductParams(addedBusiness.id, addedCategory.id).description,
               salePrice: mockAddProductParams(addedBusiness.id, addedCategory.id).salePrice,
@@ -123,6 +147,8 @@ describe('OrderPrismaRepository', () => {
         buyerId: addedBuyerAccount.id,
         sellerStatus: 'PENDING',
         buyerStatus: 'PENDING',
+        latitude: '10',
+        longitude: '10',
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });

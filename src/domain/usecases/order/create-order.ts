@@ -9,6 +9,8 @@ type CreateOrderParams = {
   paymentMethod: 'CreditCard' | 'Cash'
   change?: number;
   items: OrderItem[];
+  latitude?: number;
+  longitude?: number;
 };
 
 export namespace CreateOrder {
