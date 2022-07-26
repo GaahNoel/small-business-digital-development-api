@@ -1202,8 +1202,8 @@
     "/api/challenge/{accountId}": {
       "get": {
         "tags": ["Challenge"],
-        "summary": "Renew",
-        "description": "Renew account challenges",
+        "summary": "Get account challenges",
+        "description": "Get account challenges",
         "parameters": [{
           "name": "token",
           "in": "header",
