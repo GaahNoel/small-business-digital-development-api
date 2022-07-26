@@ -11,19 +11,19 @@ export class DbRenewAccountChallenges implements RenewAccountChallenges {
   ) {}
 
   async renew(params: RenewAccountChallenges.Params): Promise<RenewAccountChallenges.Result> {
-    const dailyChallengesTotal = await this.getChallengeTotalCount.getTotalCount({
+    const challengesTotal = await this.getChallengeTotalCount.getTotalCount({
       periodicity: params.periodicity,
     });
 
     const randomIndexes = [];
 
     for (let i = 0; i < 2; i += 1) {
-      randomIndexes.push(Math.floor(Math.random() * dailyChallengesTotal.total));
+      randomIndexes.push(Math.floor(Math.random() * challengesTotal.total));
     }
 
     const challenges = await Promise.all(
       randomIndexes.map(async (index) => {
-        const challenge = await this.getChallengeByIndex.getByIndex({ challengeIndex: index });
+        const challenge = await this.getChallengeByIndex.getByIndex({ challengeIndex: index, periodicity: params.periodicity });
         return challenge;
       }),
     );
@@ -31,6 +31,7 @@ export class DbRenewAccountChallenges implements RenewAccountChallenges {
     await this.setAccountChallengesRepository.setAccountChallenges({
       accountId: params.accountId,
       challenges,
+      periodicity: params.periodicity,
     });
 
     return { challenges };

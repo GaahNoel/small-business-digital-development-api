@@ -44,6 +44,7 @@ describe('DbRenewAccountChallenges', () => {
     expect(setAccountChallengesRepository.setAccountChallenges).toHaveBeenCalledWith({
       accountId: 'any_account_id',
       challenges: [{ id: 'id' }, { id: 'id' }],
+      periodicity: 'daily',
     });
   });
 

@@ -107,4 +107,17 @@ describe('AccountPrismaRepository', () => {
       expect(account.id).toEqual(id);
     });
   });
+
+  describe('getAllAccountIds', () => {
+    it('should return all account ids', async () => {
+      const sut = makeSut();
+
+      const request = mockAddAccountParams();
+      const { id } = await sut.add(request);
+
+      const { accountIds } = await sut.getAllAccountIds();
+
+      expect(accountIds).toContain(id);
+    });
+  });
 });

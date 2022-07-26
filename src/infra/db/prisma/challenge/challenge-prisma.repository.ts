@@ -1,4 +1,6 @@
-import { GetAccountChallengeRepository, GetChallengeByIndexRepository, GetChallengeTotalCountRepository } from '@/data/protocols/db/challenge';
+import {
+  GetAccountChallengeRepository, GetAllAccountIdsRepository, GetChallengeByIndexRepository, GetChallengeTotalCountRepository,
+} from '@/data/protocols/db/challenge';
 import { CreateChallengeRepository } from '@/data/protocols/db/challenge/create-challenge.repository';
 import { SetAccountChallengesRepository } from '@/data/protocols/db/challenge/set-account-challenges.repository';
 import { GetAccountChallenges } from '@/domain/usecases/challenge';
@@ -56,6 +58,9 @@ export class ChallengePrismaRepository implements
     await prisma.activeChallenge.deleteMany({
       where: {
         accountId: params.accountId,
+        challenge: {
+          periodicity: params.periodicity,
+        },
       },
     });
 

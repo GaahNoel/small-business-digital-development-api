@@ -4,6 +4,7 @@ export namespace SetAccountChallengesRepository {
     challenges: Array<{
       id: string;
     }>;
+    periodicity: 'daily' | 'weekly';
   };
   export type Result = void;
 }

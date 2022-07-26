@@ -9,6 +9,25 @@
     }
   },
   "paths": {
+    "/api/account/all": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Get All Account ids",
+        "description": "Get All Account ids",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/account/{id}": {
       "get": {
         "tags": ["Account"],

@@ -1,4 +1,3 @@
-import { arrayBuffer } from 'stream/consumers';
 import { mockCreateChallengeParams } from '@/tests/domain/mocks/challenge.mock';
 import { ChallengePrismaRepository } from '@/infra/db/prisma/challenge';
 import { prisma } from '@/infra/db/helpers';
@@ -138,6 +137,7 @@ describe('ChallengePrismaRepository', () => {
             id: createdSecondChallenge.challengeId,
           },
         ],
+        periodicity: 'daily' as 'daily',
       };
 
       await sut.setAccountChallenges(mockAccountParams);
@@ -171,6 +171,7 @@ describe('ChallengePrismaRepository', () => {
             id: createdSecondChallenge.challengeId,
           },
         ],
+        periodicity: 'daily' as 'daily',
       };
 
       await sut.setAccountChallenges(mockAccountParams);

@@ -1,6 +1,7 @@
 import { AddAccountRepository } from '@/data';
 import { FindAccountByEmailRepository, GetAccountByIdRepository, VerifyAccountRepository } from '@/data/protocols/db/account';
 import { EditAccountRepository } from '@/data/protocols/db/account/edit-account.repository';
+import { GetAllAccountIdsRepository } from '@/data/protocols/db/challenge';
 import { prisma } from '@/infra/db/helpers';
 
 export class AccountPrismaRepository implements
@@ -8,7 +9,8 @@ export class AccountPrismaRepository implements
   FindAccountByEmailRepository,
   VerifyAccountRepository,
   EditAccountRepository,
-  GetAccountByIdRepository {
+  GetAccountByIdRepository,
+  GetAllAccountIdsRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const result = await prisma.account.create({
       data: {
@@ -73,6 +75,18 @@ export class AccountPrismaRepository implements
       email: result.email,
       verified: result.verified,
       provider: result.provider,
+    };
+  }
+
+  async getAllAccountIds(): Promise<GetAllAccountIdsRepository.Result> {
+    const accountIds = await prisma.account.findMany({
+      select: {
+        id: true,
+      },
+    });
+
+    return {
+      accountIds: accountIds.map((account) => account.id),
     };
   }
 }
