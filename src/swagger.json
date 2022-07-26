@@ -1199,6 +1199,74 @@
         }
       
     },
+    "/api/challenge/{accountId}": {
+      "get": {
+        "tags": ["Challenge"],
+        "summary": "Renew",
+        "description": "Renew account challenges",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "accountId",
+          "in": "path",
+          "description": "Account Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
+    "/api/challenge/renew/{accountId}": {
+      "get": {
+        "tags": ["Challenge"],
+        "summary": "Renew",
+        "description": "Renew account challenges",
+        "parameters": [{
+          "name": "accountId",
+          "in": "path",
+          "description": "Account id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "periodicity",
+          "in": "query",
+          "description": "periodicity of challenge",
+          "required": true,
+          "schema": {
+            "type": "daily | weekly"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
     "/api/challenge/create": {
       "post": {
         "tags": ["Challenge"],
@@ -1243,40 +1311,6 @@
               }
             }
           }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      
-    },
-    "/api/challenge/renew/{accountId}": {
-      "get": {
-        "tags": ["Challenge"],
-        "summary": "Renew",
-        "description": "Renew account challenges",
-        "parameters": [{
-          "name": "accountId",
-          "in": "path",
-          "description": "Account id",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "periodicity",
-          "in": "query",
-          "description": "periodicity of challenge",
-          "required": true,
-          "schema": {
-            "type": "daily | weekly"
-          }
-        }]
         },
         "responses": {
           "200": {

@@ -1,3 +1,4 @@
+import { arrayBuffer } from 'stream/consumers';
 import { mockCreateChallengeParams } from '@/tests/domain/mocks/challenge.mock';
 import { ChallengePrismaRepository } from '@/infra/db/prisma/challenge';
 import { prisma } from '@/infra/db/helpers';
@@ -21,7 +22,14 @@ describe('ChallengePrismaRepository', () => {
     addedAccount = await new AccountPrismaRepository().add(mockAddAccountParams());
   });
 
+  afterAll(async () => {
+    await prisma.activeChallenge.deleteMany({});
+    await prisma.challenge.deleteMany({});
+    await prisma.account.deleteMany({});
+  });
+
   beforeEach(async () => {
+    await prisma.activeChallenge.deleteMany({});
     await prisma.challenge.deleteMany({});
 
     sut = new ChallengePrismaRepository();
@@ -141,6 +149,37 @@ describe('ChallengePrismaRepository', () => {
       });
 
       expect(accountChallenges).toHaveLength(2);
+    });
+  });
+
+  describe('getAccountChallenges', () => {
+    it('should return account challenges', async () => {
+      const mockParams = mockCreateChallengeParams();
+      const createdFirstChallenge = await sut.create(mockParams);
+
+      const mockOtherParams = mockCreateChallengeParams();
+      mockOtherParams.periodicity = 'weekly';
+      const createdSecondChallenge = await sut.create(mockOtherParams);
+
+      const mockAccountParams = {
+        accountId: addedAccount.id,
+        challenges: [
+          {
+            id: createdFirstChallenge.challengeId,
+          },
+          {
+            id: createdSecondChallenge.challengeId,
+          },
+        ],
+      };
+
+      await sut.setAccountChallenges(mockAccountParams);
+
+      const accountChallenges = await sut.getAccountChallenges({
+        accountId: addedAccount.id,
+      });
+
+      expect(accountChallenges.challenges).toHaveLength(2);
     });
   });
 });

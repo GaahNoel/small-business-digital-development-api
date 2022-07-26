@@ -1,9 +1,15 @@
-import { GetChallengeByIndexRepository, GetChallengeTotalCountRepository } from '@/data/protocols/db/challenge';
+import { GetAccountChallengeRepository, GetChallengeByIndexRepository, GetChallengeTotalCountRepository } from '@/data/protocols/db/challenge';
 import { CreateChallengeRepository } from '@/data/protocols/db/challenge/create-challenge.repository';
 import { SetAccountChallengesRepository } from '@/data/protocols/db/challenge/set-account-challenges.repository';
+import { GetAccountChallenges } from '@/domain/usecases/challenge';
 import { prisma } from '../../helpers';
 
-export class ChallengePrismaRepository implements CreateChallengeRepository, GetChallengeByIndexRepository, GetChallengeTotalCountRepository, SetAccountChallengesRepository {
+export class ChallengePrismaRepository implements
+  CreateChallengeRepository,
+  GetChallengeByIndexRepository,
+  GetChallengeTotalCountRepository,
+  SetAccountChallengesRepository,
+  GetAccountChallengeRepository {
   async create(params: CreateChallengeRepository.Params): Promise<CreateChallengeRepository.Result> {
     const createdChallenge = await prisma.challenge.create({
       data: {
@@ -59,5 +65,36 @@ export class ChallengePrismaRepository implements CreateChallengeRepository, Get
         challengeId: challenge.id,
       })),
     });
+  }
+
+  async getAccountChallenges(params: { accountId: string; }): Promise<GetAccountChallenges.Result> {
+    const challenges = await prisma.activeChallenge.findMany({
+      where: {
+        accountId: params.accountId,
+      },
+      select: {
+        challenge: {
+          select: {
+            id: true,
+            description: true,
+            type: true,
+            goal: true,
+            periodicity: true,
+            reward: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        id: true,
+        accountId: true,
+        progress: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    return {
+      challenges,
+    };
   }
 }
