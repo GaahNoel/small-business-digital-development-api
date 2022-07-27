@@ -5,28 +5,29 @@ import {
 type GetAccountChallengesParams = {
   accountId: string;
 };
+export type Challenges = Array<{
+  id: string;
+  challenge: {
+    id: string;
+    description: string;
+    type: ChallengeType;
+    goal: number;
+    periodicity: Periodicity;
+    reward: number;
+    createdAt?: Date
+    updatedAt ?: Date
+  };
+  accountId: string;
+  progress: number;
+  status: 'PENDING' | 'COMPLETED'
+  createdAt?: Date
+  updatedAt ?: Date
+}>;
 
 export namespace GetAccountChallenges {
   export type Params = GetAccountChallengesParams;
   export type Result = {
-    challenges: {
-      id: string;
-      challenge: {
-        id: string;
-        description: string;
-        type: ChallengeType;
-        goal: number;
-        periodicity: Periodicity;
-        reward: number;
-        createdAt?: Date
-        updatedAt ?: Date
-      };
-      accountId: string;
-      progress: number;
-      status: 'PENDING' | 'COMPLETED'
-      createdAt?: Date
-      updatedAt ?: Date
-    }[];
+    challenges: Challenges;
   };
 }
 

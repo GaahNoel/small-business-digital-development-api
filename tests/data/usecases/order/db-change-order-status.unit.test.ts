@@ -50,6 +50,8 @@ describe('DbChangeOrderStatus', () => {
     sellerId: 'any-seller-id',
     sellerStatus,
     buyerStatus,
+    latitude: '10',
+    longitude: '10',
   });
 
   beforeAll(() => {

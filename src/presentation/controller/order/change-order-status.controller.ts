@@ -5,13 +5,15 @@ import {
 } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
+export type ChangeOrderStatusControllerParams = {
+  orderId: string;
+  status: 'COMPLETED' | 'CANCELED'
+  authAccountId: string,
+};
+
 namespace ChangeOrderStatusController {
-  export type Params = {
-    orderId: string;
-    status: 'COMPLETED' | 'CANCELED'
-    authAccountId: string,
-  };
-  export type Result = HttpResponse;
+  export type Params = ChangeOrderStatusControllerParams;
+  export type Result = HttpResponse<ChangeOrderStatus.Result>;
 }
 
 export class ChangeOrderStatusController implements BaseController {
