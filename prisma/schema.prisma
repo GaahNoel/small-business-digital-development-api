@@ -22,6 +22,7 @@ model Account {
   BuyOrders       Order[]           @relation(name: "BuyOrders")
   SellerOrders    Order[]           @relation(name: "SellerOrders")
   ActiveChallenge ActiveChallenge[]
+  balance         Float             @default(0) 
 }
 
 enum Provider {

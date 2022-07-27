@@ -5,7 +5,7 @@ import {
 type GetAccountChallengesParams = {
   accountId: string;
 };
-export type Challenges = Array<{
+export type ChallengeInfos = {
   id: string;
   challenge: {
     id: string;
@@ -22,12 +22,12 @@ export type Challenges = Array<{
   status: 'PENDING' | 'COMPLETED'
   createdAt?: Date
   updatedAt ?: Date
-}>;
+};
 
 export namespace GetAccountChallenges {
   export type Params = GetAccountChallengesParams;
   export type Result = {
-    challenges: Challenges;
+    challenges: Array<ChallengeInfos>;
   };
 }
 

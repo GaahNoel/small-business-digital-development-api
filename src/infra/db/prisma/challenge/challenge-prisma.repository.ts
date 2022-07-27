@@ -4,6 +4,8 @@ import {
 import { CreateChallengeRepository } from '@/data/protocols/db/challenge/create-challenge.repository';
 import { SetAccountChallengesRepository } from '@/data/protocols/db/challenge/set-account-challenges.repository';
 import { GetAccountChallenges } from '@/domain/usecases/challenge';
+import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active-challenge';
+import challengeRoutes from '@/main/routes/challenge.routes';
 import { prisma } from '../../helpers';
 
 export class ChallengePrismaRepository implements
@@ -11,7 +13,8 @@ export class ChallengePrismaRepository implements
   GetChallengeByIndexRepository,
   GetChallengeTotalCountRepository,
   SetAccountChallengesRepository,
-  GetAccountChallengeRepository {
+  GetAccountChallengeRepository,
+  UpdateActiveChallenge {
   async create(params: CreateChallengeRepository.Params): Promise<CreateChallengeRepository.Result> {
     const createdChallenge = await prisma.challenge.create({
       data: {
@@ -100,6 +103,21 @@ export class ChallengePrismaRepository implements
     });
     return {
       challenges,
+    };
+  }
+
+  async updateActiveChallenge(params: UpdateActiveChallenge.Params): Promise<UpdateActiveChallenge.Result> {
+    const updatedChallenge = await prisma.activeChallenge.update({
+      where: {
+        id: params.activeChallengeId,
+      },
+      data: {
+        progress: params.progress,
+        status: params.status,
+      },
+    });
+    return {
+      status: updatedChallenge.status,
     };
   }
 }

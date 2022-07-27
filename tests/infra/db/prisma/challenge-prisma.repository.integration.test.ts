@@ -183,4 +183,37 @@ describe('ChallengePrismaRepository', () => {
       expect(accountChallenges.challenges).toHaveLength(2);
     });
   });
+
+  describe('updateActiveChallenge', () => {
+    it('should update active challenge', async () => {
+      const mockParams = mockCreateChallengeParams();
+      const createdFirstChallenge = await sut.create(mockParams);
+
+      const mockAccountParams = {
+        accountId: addedAccount.id,
+        challenges: [
+          {
+            id: createdFirstChallenge.challengeId,
+          },
+        ],
+        periodicity: 'daily' as 'daily',
+      };
+
+      await sut.setAccountChallenges(mockAccountParams);
+
+      const { challenges: accountChallenges } = await sut.getAccountChallenges({
+        accountId: addedAccount.id,
+      });
+
+      const response = await sut.updateActiveChallenge({
+        activeChallengeId: accountChallenges[0].id,
+        progress: 5,
+        status: 'COMPLETED',
+      });
+
+      expect(response).toEqual({
+        status: 'COMPLETED',
+      });
+    });
+  });
 });

@@ -1,11 +1,13 @@
 import { GetAccountChallenges } from '@/domain/usecases/challenge';
 import { GetOrderById } from '@/domain/usecases/order';
 import { ChangeOrderStatusController } from '@/presentation/controller/order';
-import { AddAccountBalance, ChangeOrderStatusHandleChallengeDecorator } from '@/presentation/decorators';
+import { ChangeOrderStatusHandleChallengeDecorator } from '@/presentation/decorators';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
-import { BuyAnyStrategy, SellAnyStrategy } from '@/presentation/strategies';
+import { BuyOrSellAnyStrategy } from '@/presentation/strategies';
 import { ChangeOrderStatus } from '@/domain/usecases/order/change-order-status';
 import { ChallengeType } from '@/domain/models/challenge';
+import { AddAccountBalance } from '@/domain/usecases/account/add-account-balance';
+import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active-challenge';
 
 describe('ChangeOrderStatusHandleChallengeDecorator', () => {
   let sut: ChangeOrderStatusHandleChallengeDecorator;
@@ -14,8 +16,8 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
   let getOrderById: GetOrderById;
   let getAccountChallenges: GetAccountChallenges;
   let addAccountBalance: AddAccountBalance;
-  let buyAnyStrategy: BuyAnyStrategy;
-  let sellAnyStrategy: SellAnyStrategy;
+  let buyOrSellAnyStrategy: BuyOrSellAnyStrategy;
+  let updateActiveChallenge: UpdateActiveChallenge;
 
   const makeRequest = () => ({
     orderId: 'any-id',
@@ -80,31 +82,33 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
     };
 
     addAccountBalance = {
-      addBalance: jest.fn(async () => Promise.resolve()),
-    };
-
-    buyAnyStrategy = {
-      handle: jest.fn(async () => Promise.resolve({
-        status: 'COMPLETED',
+      addBalance: jest.fn(async () => Promise.resolve({
+        newBalance: 3,
       })),
     };
-    sellAnyStrategy = {
-      handle: jest.fn(async () => Promise.resolve({
+
+    updateActiveChallenge = {
+      updateActiveChallenge: jest.fn(async () => Promise.resolve({
         status: 'COMPLETED',
       })),
     };
 
+    buyOrSellAnyStrategy = new BuyOrSellAnyStrategy(updateActiveChallenge);
     controller = new ChangeOrderStatusController(changeOrderStatus);
   });
 
   beforeEach(() => {
+    jest.spyOn(buyOrSellAnyStrategy, 'handle')
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        status: 'COMPLETED',
+      })));
+
     sut = new ChangeOrderStatusHandleChallengeDecorator(
       controller,
       getOrderById,
       getAccountChallenges,
       addAccountBalance,
-      buyAnyStrategy,
-      sellAnyStrategy,
+      buyOrSellAnyStrategy,
     );
   });
 
@@ -117,6 +121,7 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
 
   it('should return response if called successfully', async () => {
     jest.spyOn(controller, 'handle').mockImplementationOnce(() => Promise.resolve(success({ status: 'COMPLETED' })));
+
     const response = await sut.handle(makeRequest());
 
     expect(response).toEqual(success({
@@ -133,18 +138,14 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
         challenges: [makeChallenge('sellAny', 'PENDING')],
       })));
 
-    (buyAnyStrategy.handle as jest.Mock)
+    const buyAnyStrategySpy = jest.spyOn(buyOrSellAnyStrategy, 'handle')
       .mockImplementationOnce(jest.fn(async () => Promise.resolve({
         status: 'PENDING',
-      })))
-      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
-        status: 'COMPLETED',
       })));
 
-    const buyAnyStrategySpy = jest.spyOn(buyAnyStrategy, 'handle');
     await sut.handle(makeRequest());
 
-    expect(buyAnyStrategySpy).toHaveBeenCalledTimes(2);
+    expect(buyAnyStrategySpy).toHaveBeenCalledTimes(3);
     expect(buyAnyStrategySpy).toHaveBeenCalledWith(makeRequest());
   });
 

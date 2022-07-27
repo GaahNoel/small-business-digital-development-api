@@ -1,5 +1,6 @@
 import { AddAccountRepository } from '@/data';
 import { FindAccountByEmailRepository, GetAccountByIdRepository, VerifyAccountRepository } from '@/data/protocols/db/account';
+import { AddAccountBalanceRepository } from '@/data/protocols/db/account/add-account-balance.repository';
 import { EditAccountRepository } from '@/data/protocols/db/account/edit-account.repository';
 import { GetAllAccountIdsRepository } from '@/data/protocols/db/challenge';
 import { prisma } from '@/infra/db/helpers';
@@ -10,7 +11,8 @@ export class AccountPrismaRepository implements
   VerifyAccountRepository,
   EditAccountRepository,
   GetAccountByIdRepository,
-  GetAllAccountIdsRepository {
+  GetAllAccountIdsRepository,
+  AddAccountBalanceRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const result = await prisma.account.create({
       data: {
@@ -87,6 +89,21 @@ export class AccountPrismaRepository implements
 
     return {
       accountIds: accountIds.map((account) => account.id),
+    };
+  }
+
+  async addBalance({ accountId, balance }: AddAccountBalanceRepository.Params): Promise<AddAccountBalanceRepository.Result> {
+    const account = await prisma.account.update({
+      where: {
+        id: accountId,
+      },
+      data: {
+        balance,
+      },
+    });
+
+    return {
+      newBalance: account.balance,
     };
   }
 }

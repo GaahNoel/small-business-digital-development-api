@@ -120,4 +120,18 @@ describe('AccountPrismaRepository', () => {
       expect(accountIds).toContain(id);
     });
   });
+
+  describe('addBalance', () => {
+    it('should add balance to account', async () => {
+      const sut = makeSut();
+
+      const request = mockAddAccountParams();
+      const { id } = await sut.add(request);
+
+      const balance = 1;
+      const result = await sut.addBalance({ accountId: id, balance });
+
+      expect(result.newBalance).toBe(1);
+    });
+  });
 });

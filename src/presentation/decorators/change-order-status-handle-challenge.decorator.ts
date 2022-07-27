@@ -1,14 +1,10 @@
-import { Challenges, GetAccountChallenges } from '@/domain/usecases/challenge';
+import { AddAccountBalance } from '@/domain/usecases/account/add-account-balance';
+import { ChallengeInfos, GetAccountChallenges } from '@/domain/usecases/challenge';
 import { GetOrderById } from '@/domain/usecases/order';
-import { ChangeOrderStatusController, ChangeOrderStatusControllerParams } from '../controller/order';
-import { internalServerError } from '../helpers/http.helpers';
-import { BaseController, HttpResponse } from '../protocols';
-import { BuyAnyStrategy } from '../strategies/buy-any.strategy';
-import { SellAnyStrategy } from '../strategies/sell-any.strategy';
-
-export interface AddAccountBalance {
-  addBalance({ accountId, balance }: { accountId: string, balance: number }): Promise<void>;
-}
+import { ChangeOrderStatusController, ChangeOrderStatusControllerParams } from '@/presentation/controller/order';
+import { internalServerError } from '@/presentation/helpers/http.helpers';
+import { BaseController, HttpResponse } from '@/presentation/protocols';
+import { BuyOrSellAnyStrategy } from '@/presentation/strategies/';
 
 namespace ChangeOrderStatusHandleChallengeDecorator {
   export type Params = ChangeOrderStatusControllerParams;
@@ -23,12 +19,11 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
     private readonly getOrderById: GetOrderById,
     private readonly getAccountChallenges: GetAccountChallenges,
     private readonly addAccountBalance: AddAccountBalance,
-    private readonly buyAnyStrategy: BuyAnyStrategy,
-    private readonly sellAnyStrategy: SellAnyStrategy,
+    private readonly buyOrSellAnyStrategy: BuyOrSellAnyStrategy,
   ) {
     this.strategies = {
-      buyAny: this.buyAnyStrategy,
-      sellAny: this.sellAnyStrategy,
+      buyAny: this.buyOrSellAnyStrategy,
+      sellAny: this.buyOrSellAnyStrategy,
     };
   }
 
@@ -99,7 +94,7 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
     }
   }
 
-  private async getChallenges(id: string, type: 'buy' | 'sell'): Promise<Challenges> {
+  private async getChallenges(id: string, type: 'buy' | 'sell'): Promise<ChallengeInfos[]> {
     const { challenges } = await this.getAccountChallenges.getAccountChallenges({
       accountId: id,
     });

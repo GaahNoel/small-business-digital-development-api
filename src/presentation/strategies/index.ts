@@ -1,2 +1,1 @@
-export * from './buy-any.strategy';
-export * from './sell-any.strategy';
+export * from './buy-or-sell-any.strategy';
