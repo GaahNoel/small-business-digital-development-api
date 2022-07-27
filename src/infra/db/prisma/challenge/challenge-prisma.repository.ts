@@ -1,11 +1,10 @@
 import {
-  GetAccountChallengeRepository, GetAllAccountIdsRepository, GetChallengeByIndexRepository, GetChallengeTotalCountRepository,
+  GetAccountChallengeRepository, GetAllAccountIdsRepository, GetChallengeByIndexRepository, GetChallengeTotalCountRepository, UpdateActiveChallengeRepository,
 } from '@/data/protocols/db/challenge';
 import { CreateChallengeRepository } from '@/data/protocols/db/challenge/create-challenge.repository';
 import { SetAccountChallengesRepository } from '@/data/protocols/db/challenge/set-account-challenges.repository';
 import { GetAccountChallenges } from '@/domain/usecases/challenge';
 import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active-challenge';
-import challengeRoutes from '@/main/routes/challenge.routes';
 import { prisma } from '../../helpers';
 
 export class ChallengePrismaRepository implements
@@ -14,7 +13,7 @@ export class ChallengePrismaRepository implements
   GetChallengeTotalCountRepository,
   SetAccountChallengesRepository,
   GetAccountChallengeRepository,
-  UpdateActiveChallenge {
+  UpdateActiveChallengeRepository {
   async create(params: CreateChallengeRepository.Params): Promise<CreateChallengeRepository.Result> {
     const createdChallenge = await prisma.challenge.create({
       data: {

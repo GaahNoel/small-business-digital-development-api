@@ -50,7 +50,7 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
           return null;
         }
 
-        const result = await strategy.handle(data);
+        const result = await strategy.handle(challenge);
         return {
           ...challenge,
           status: result.status,
