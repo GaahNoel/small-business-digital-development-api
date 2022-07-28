@@ -6,8 +6,17 @@ describe('BuyOrSellAnyStrategy', () => {
   let updateActiveChallenge: UpdateActiveChallenge;
 
   const mockedProgress = 1;
+  const mockedProduct = {
+    product: {
+      id: 'any-id',
+      productId: 'any-product-id',
+      quantity: 1,
+      price: 100,
+      type: 'product' as 'product',
+    },
+  };
 
-  const makeRequest = (progress: number = 1) => ({
+  const makeRequest = (progress: number = 1, items = []) => ({
     challenge: {
       id: 'any-id',
       challenge: {
@@ -31,7 +40,7 @@ describe('BuyOrSellAnyStrategy', () => {
       businessId: 'string',
       buyerId: 'string',
       total: 100,
-      items: [],
+      items,
       status: 'PENDING' as 'PENDING',
       createdAt: new Date('2022-02-10'),
       updatedAt: new Date('2022-02-10'),
@@ -61,7 +70,17 @@ describe('BuyOrSellAnyStrategy', () => {
   });
 
   it('should call updateActiveChallenge with correct params if should change status to COMPLETED', async () => {
-    await sut.handle(makeRequest(4));
+    await sut.handle(makeRequest(4, [mockedProduct]));
+
+    expect(updateActiveChallenge.updateActiveChallenge).toHaveBeenCalledWith({
+      activeChallengeId: 'any-id',
+      progress: 5,
+      status: 'COMPLETED',
+    });
+  });
+
+  it('should change status to COMPLETED', async () => {
+    await sut.handle(makeRequest(3, [mockedProduct, mockedProduct]));
 
     expect(updateActiveChallenge.updateActiveChallenge).toHaveBeenCalledWith({
       activeChallengeId: 'any-id',
@@ -70,7 +89,7 @@ describe('BuyOrSellAnyStrategy', () => {
     });
   });
   it('should call updateActiveChallenge with correct params if should not change status', async () => {
-    await sut.handle(makeRequest());
+    await sut.handle(makeRequest(1, [mockedProduct]));
 
     expect(updateActiveChallenge.updateActiveChallenge).toHaveBeenCalledWith({
       activeChallengeId: 'any-id',
@@ -79,8 +98,7 @@ describe('BuyOrSellAnyStrategy', () => {
     });
   });
   it('should return status if called successfully', async () => {
-    const result = await sut.handle(makeRequest());
-
+    const result = await sut.handle(makeRequest(1, [mockedProduct]));
     expect(result).toEqual({
       status: 'PENDING',
     });

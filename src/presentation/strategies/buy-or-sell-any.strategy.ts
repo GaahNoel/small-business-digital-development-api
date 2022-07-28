@@ -4,8 +4,9 @@ import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active
 export class BuyOrSellAnyStrategy implements ChallengeStrategy {
   constructor(private readonly updateActiveChallenge: UpdateActiveChallenge) {}
 
-  async handle({ challenge }: ChallengeStrategy.Params): Promise<ChallengeStrategy.Result> {
-    const newProgress = challenge.progress + 1;
+  async handle({ challenge, orderInfos }: ChallengeStrategy.Params): Promise<ChallengeStrategy.Result> {
+    const newProgress = challenge.progress + orderInfos.items.length;
+
     const newStatus = newProgress === challenge.challenge.goal ? 'COMPLETED' : 'PENDING';
 
     const updatedChallenge = await this.updateActiveChallenge.updateActiveChallenge({
