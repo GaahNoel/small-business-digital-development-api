@@ -146,7 +146,6 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
     await sut.handle(makeRequest());
 
     expect(buyAnyStrategySpy).toHaveBeenCalledTimes(3);
-    expect(buyAnyStrategySpy).toHaveBeenCalledWith(makeRequest());
   });
 
   it('should call addAccountBalance with correct value when buyer has completed challenges', async () => {

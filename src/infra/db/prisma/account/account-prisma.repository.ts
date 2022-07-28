@@ -77,6 +77,7 @@ export class AccountPrismaRepository implements
       email: result.email,
       verified: result.verified,
       provider: result.provider,
+      balance: result.balance,
     };
   }
 
