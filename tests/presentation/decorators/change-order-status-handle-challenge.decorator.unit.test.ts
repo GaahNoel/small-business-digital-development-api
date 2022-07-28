@@ -3,7 +3,7 @@ import { GetOrderById } from '@/domain/usecases/order';
 import { ChangeOrderStatusController } from '@/presentation/controller/order';
 import { ChangeOrderStatusHandleChallengeDecorator } from '@/presentation/decorators';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
-import { BuyOrSellAnyStrategy } from '@/presentation/strategies';
+import { BuyOrSellAnyOnlyProductOrService, BuyOrSellAnyStrategy } from '@/presentation/strategies';
 import { ChangeOrderStatus } from '@/domain/usecases/order/change-order-status';
 import { ChallengeType } from '@/domain/models/challenge';
 import { AddAccountBalance } from '@/domain/usecases/account/add-account-balance';
@@ -17,6 +17,7 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
   let getAccountChallenges: GetAccountChallenges;
   let addAccountBalance: AddAccountBalance;
   let buyOrSellAnyStrategy: BuyOrSellAnyStrategy;
+  let buyOrSellAnyOnlyProductOrService: BuyOrSellAnyOnlyProductOrService;
   let updateActiveChallenge: UpdateActiveChallenge;
 
   const makeRequest = () => ({
@@ -92,6 +93,7 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
         status: 'COMPLETED',
       })),
     };
+    buyOrSellAnyOnlyProductOrService = new BuyOrSellAnyOnlyProductOrService(updateActiveChallenge);
 
     buyOrSellAnyStrategy = new BuyOrSellAnyStrategy(updateActiveChallenge);
     controller = new ChangeOrderStatusController(changeOrderStatus);
@@ -109,6 +111,7 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
       getAccountChallenges,
       addAccountBalance,
       buyOrSellAnyStrategy,
+      buyOrSellAnyOnlyProductOrService,
     );
   });
 
@@ -201,6 +204,25 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
       accountId: 'any_account_id',
       balance: 100,
     });
+  });
+
+  it('should call buyOrSellAnyOnlyProductOrService with correct params', async () => {
+    (getAccountChallenges.getAccountChallenges as jest.Mock)
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        challenges: [makeChallenge('buyProduct', 'PENDING'), makeChallenge('buyService', 'PENDING'), makeChallenge('sellProduct', 'PENDING')],
+      })))
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        challenges: [makeChallenge('buyAny', 'PENDING'), makeChallenge('sellProduct', 'PENDING'), makeChallenge('sellService', 'PENDING')],
+      })));
+
+    const buyOrSellAnyOnlyProductOrServiceSpy = jest.spyOn(buyOrSellAnyOnlyProductOrService, 'handle')
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        status: 'PENDING',
+      })));
+
+    await sut.handle(makeRequest());
+
+    expect(buyOrSellAnyOnlyProductOrServiceSpy).toHaveBeenCalledTimes(4);
   });
 
   it('should return controller response if order status not success', async () => {

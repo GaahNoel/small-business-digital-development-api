@@ -1,16 +1,15 @@
 import { ChallengeStrategy } from '@/presentation/interfaces';
-import { ChallengeInfos } from '@/domain/usecases/challenge';
 import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active-challenge';
 
-export class BuyOrSellAnyStrategy implements ChallengeStrategy<ChallengeInfos> {
+export class BuyOrSellAnyStrategy implements ChallengeStrategy {
   constructor(private readonly updateActiveChallenge: UpdateActiveChallenge) {}
 
-  async handle(params: ChallengeInfos): Promise<ChallengeStrategy.Result> {
-    const newProgress = params.progress + 1;
-    const newStatus = newProgress === params.challenge.goal ? 'COMPLETED' : 'PENDING';
+  async handle({ challenge }: ChallengeStrategy.Params): Promise<ChallengeStrategy.Result> {
+    const newProgress = challenge.progress + 1;
+    const newStatus = newProgress === challenge.challenge.goal ? 'COMPLETED' : 'PENDING';
 
     const updatedChallenge = await this.updateActiveChallenge.updateActiveChallenge({
-      activeChallengeId: params.id,
+      activeChallengeId: challenge.id,
       progress: newProgress,
       status: newStatus,
     });

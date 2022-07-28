@@ -4,7 +4,7 @@ import { GetOrderById } from '@/domain/usecases/order';
 import { ChangeOrderStatusController, ChangeOrderStatusControllerParams } from '@/presentation/controller/order';
 import { internalServerError } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
-import { BuyOrSellAnyStrategy } from '@/presentation/strategies/';
+import { BuyOrSellAnyOnlyProductOrService, BuyOrSellAnyStrategy } from '@/presentation/strategies/';
 
 namespace ChangeOrderStatusHandleChallengeDecorator {
   export type Params = ChangeOrderStatusControllerParams;
@@ -20,10 +20,15 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
     private readonly getAccountChallenges: GetAccountChallenges,
     private readonly addAccountBalance: AddAccountBalance,
     private readonly buyOrSellAnyStrategy: BuyOrSellAnyStrategy,
+    private readonly buyOrSellAnyOnlyProductOrService: BuyOrSellAnyOnlyProductOrService,
   ) {
     this.strategies = {
       buyAny: this.buyOrSellAnyStrategy,
       sellAny: this.buyOrSellAnyStrategy,
+      buyProduct: this.buyOrSellAnyOnlyProductOrService,
+      buyService: this.buyOrSellAnyOnlyProductOrService,
+      sellProduct: this.buyOrSellAnyOnlyProductOrService,
+      sellService: this.buyOrSellAnyOnlyProductOrService,
     };
   }
 
@@ -34,9 +39,11 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
         return response;
       }
 
-      const { buyerId, sellerId } = await this.getOrderById.getOrderById({
+      const orderInfos = await this.getOrderById.getOrderById({
         orderId: data.orderId,
       });
+
+      const { buyerId, sellerId } = orderInfos;
 
       const buyerChallenges = await this.getChallenges(buyerId, 'buy');
       const sellerChallenges = await this.getChallenges(sellerId, 'sell');
@@ -50,7 +57,10 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
           return null;
         }
 
-        const result = await strategy.handle(challenge);
+        const result = await strategy.handle({
+          challenge,
+          orderInfos,
+        });
         return {
           ...challenge,
           status: result.status,

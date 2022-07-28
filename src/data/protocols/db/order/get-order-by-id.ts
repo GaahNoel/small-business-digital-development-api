@@ -25,6 +25,7 @@ export namespace GetOrderByIdRepository {
         salePrice: number;
         listPrice: number;
         imageUrl: string;
+        type: 'product' | 'service';
       }
     }[];
     sellerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
