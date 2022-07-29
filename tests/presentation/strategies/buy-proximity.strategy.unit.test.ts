@@ -80,6 +80,7 @@ describe('BuyProximityStrategy', () => {
         state: 'any_state',
         zip: 'any_zip',
         country: 'any_country',
+        maxPermittedCouponPercentage: 10,
       })),
     };
   });
