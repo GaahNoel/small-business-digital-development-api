@@ -22,7 +22,7 @@ model Account {
   BuyOrders       Order[]           @relation(name: "BuyOrders")
   SellerOrders    Order[]           @relation(name: "SellerOrders")
   ActiveChallenge ActiveChallenge[]
-  balance         Float             @default(0) 
+  balance         Float             @default(0)
 }
 
 enum Provider {
@@ -31,22 +31,23 @@ enum Provider {
 }
 
 model Business {
-  id          String    @id @default(uuid())
-  name        String
-  description String
-  createdAt   DateTime  @default(now())
-  products    Product[]
-  accountId   String
-  account     Account   @relation(fields: [accountId], references: [id])
-  imageUrl    String
-  latitude    String
-  longitude   String
-  street      String
-  city        String
-  state       String
-  zip         String
-  country     String
-  Order       Order[]
+  id                           String    @id @default(uuid())
+  name                         String
+  description                  String
+  createdAt                    DateTime  @default(now())
+  products                     Product[]
+  accountId                    String
+  account                      Account   @relation(fields: [accountId], references: [id])
+  imageUrl                     String
+  latitude                     String
+  longitude                    String
+  street                       String
+  city                         String
+  state                        String
+  zip                          String
+  country                      String
+  Order                        Order[]
+  maxPermittedCouponPercentage Float     @default(0)
 }
 
 model Product {
@@ -93,7 +94,7 @@ model Order {
   sellerStatus  OrderStatus   @default(PENDING)
   buyerStatus   OrderStatus   @default(PENDING)
   latitude      String        @default("")
-  longitude      String       @default("")
+  longitude     String        @default("")
 
   Business   Business @relation(fields: [businessId], references: [id])
   businessId String

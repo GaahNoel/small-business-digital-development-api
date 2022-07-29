@@ -15,6 +15,7 @@ namespace AddBusinessController {
     state: string;
     street: string;
     zip: string;
+    maxPermittedCouponPercentage: number
   };
 }
 
@@ -37,6 +38,7 @@ export class AddBusinessController implements BaseController {
         state: data.state,
         street: data.street,
         zip: data.zip,
+        maxPermittedCouponPercentage: data.maxPermittedCouponPercentage,
       });
 
       return success({ id: result.id });

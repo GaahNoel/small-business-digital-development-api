@@ -29,6 +29,7 @@ const fakeRequest : AddBusinessParams = {
   state: 'any_state',
   street: 'any_street',
   zip: 'any_zip',
+  maxPermittedCouponPercentage: 10,
 };
 
 describe('AddBusiness Controller', () => {

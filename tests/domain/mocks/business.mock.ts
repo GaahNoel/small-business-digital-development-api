@@ -14,6 +14,7 @@ export const mockAddBusinessParams = (accountId = 'any_account_id'): AddBusiness
   state: 'any_state',
   street: 'any_street',
   zip: 'any_zip',
+  maxPermittedCouponPercentage: 10,
 });
 
 export const mockBusinessModel = (): BusinessModel => ({
