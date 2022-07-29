@@ -4,7 +4,7 @@ import { GetOrderById } from '@/domain/usecases/order';
 import { ChangeOrderStatusController, ChangeOrderStatusControllerParams } from '@/presentation/controller/order';
 import { internalServerError } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
-import { BuyOrSellAnyOnlyProductOrService, BuyOrSellAnyStrategy } from '@/presentation/strategies/';
+import { BuyOrSellAnyOnlyProductOrServiceStrategy, BuyOrSellAnyStrategy, BuyProximityStrategy } from '@/presentation/strategies/';
 
 namespace ChangeOrderStatusHandleChallengeDecorator {
   export type Params = ChangeOrderStatusControllerParams;
@@ -20,7 +20,8 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
     private readonly getAccountChallenges: GetAccountChallenges,
     private readonly addAccountBalance: AddAccountBalance,
     private readonly buyOrSellAnyStrategy: BuyOrSellAnyStrategy,
-    private readonly buyOrSellAnyOnlyProductOrService: BuyOrSellAnyOnlyProductOrService,
+    private readonly buyOrSellAnyOnlyProductOrService: BuyOrSellAnyOnlyProductOrServiceStrategy,
+    private readonly buyProximity: BuyProximityStrategy,
   ) {
     this.strategies = {
       buyAny: this.buyOrSellAnyStrategy,
@@ -29,6 +30,7 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
       buyService: this.buyOrSellAnyOnlyProductOrService,
       sellProduct: this.buyOrSellAnyOnlyProductOrService,
       sellService: this.buyOrSellAnyOnlyProductOrService,
+      buyProximity: this.buyProximity,
     };
   }
 

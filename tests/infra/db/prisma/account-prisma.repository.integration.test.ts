@@ -31,6 +31,10 @@ describe('AccountPrismaRepository', () => {
 
     await prisma.$disconnect();
   });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
   describe('add', () => {
     it('should return account on add success ', async () => {
       const sut = makeSut();

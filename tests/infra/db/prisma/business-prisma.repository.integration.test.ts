@@ -68,6 +68,10 @@ describe('BusinessPrismaRepository', () => {
     await prisma.$disconnect();
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
   describe('add', () => {
     it('should return business on add success ', async () => {
       const { sut, addAccountRepository } = makeSut();

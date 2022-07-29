@@ -1,8 +1,8 @@
 import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active-challenge';
-import { BuyOrSellAnyOnlyProductOrService } from '@/presentation/strategies';
+import { BuyOrSellAnyOnlyProductOrServiceStrategy } from '@/presentation/strategies';
 
 describe('BuyOrSellOnlyProductOrService', () => {
-  let sut: BuyOrSellAnyOnlyProductOrService;
+  let sut: BuyOrSellAnyOnlyProductOrServiceStrategy;
   let updateActiveChallenge: UpdateActiveChallenge;
 
   const mockedProgress = 1;
@@ -57,7 +57,7 @@ describe('BuyOrSellOnlyProductOrService', () => {
   });
 
   beforeEach(() => {
-    sut = new BuyOrSellAnyOnlyProductOrService(updateActiveChallenge);
+    sut = new BuyOrSellAnyOnlyProductOrServiceStrategy(updateActiveChallenge);
   });
 
   it('should return pending if no challenge match with the bought product', async () => {

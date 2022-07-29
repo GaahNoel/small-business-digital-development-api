@@ -1,7 +1,7 @@
 import { UpdateActiveChallenge } from '@/domain/usecases/challenge/update-active-challenge';
 import { ChallengeData, ChallengeStrategy } from '../interfaces';
 
-export class BuyOrSellAnyOnlyProductOrService implements ChallengeStrategy {
+export class BuyOrSellAnyOnlyProductOrServiceStrategy implements ChallengeStrategy {
   constructor(private readonly updateActiveChallenge: UpdateActiveChallenge) {}
 
   async handle({ challenge, orderInfos }: ChallengeData): Promise<ChallengeStrategy.Result> {

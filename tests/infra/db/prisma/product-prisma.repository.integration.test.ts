@@ -44,6 +44,10 @@ describe('ProductPrismaRepository', () => {
     await prisma.$disconnect();
   });
 
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
   beforeAll(async () => {
     const account = await addAccountRepository.add(mockAddAccountParams());
     const business = await addBusinessRepository.add(mockAddBusinessParams(account.id));

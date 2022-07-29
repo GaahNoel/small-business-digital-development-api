@@ -33,6 +33,10 @@ describe('CategoryPrismaRepository', () => {
 
     await prisma.$disconnect();
   });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
   describe('add', () => {
     it('should add a new category', async () => {
       const { sut } = makeSut();
