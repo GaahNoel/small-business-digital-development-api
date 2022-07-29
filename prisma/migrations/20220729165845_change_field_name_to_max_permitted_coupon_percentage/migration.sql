@@ -7,4 +7,4 @@
 */
 -- AlterTable
 ALTER TABLE "Business" DROP COLUMN "maxCouponPermitted",
-ADD COLUMN     "maxPermittedCouponPercentage" DOUBLE PRECISION NOT NULL;
+ADD COLUMN     "maxPermittedCouponPercentage" DOUBLE PRECISION;

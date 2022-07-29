@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE "Business" ADD COLUMN     "maxCouponPermitted" DOUBLE PRECISION NOT NULL;
+ALTER TABLE "Business" ADD COLUMN     "maxCouponPermitted" DOUBLE PRECISION;

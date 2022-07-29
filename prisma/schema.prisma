@@ -47,7 +47,7 @@ model Business {
   zip                          String
   country                      String
   Order                        Order[]
-  maxPermittedCouponPercentage Float     @default(0)
+  maxPermittedCouponPercentage Float?     @default(0) 
 }
 
 model Product {
