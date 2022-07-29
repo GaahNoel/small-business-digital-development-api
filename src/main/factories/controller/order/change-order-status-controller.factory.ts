@@ -8,7 +8,7 @@ import { env } from '@/main/config/env';
 import { ChangeOrderStatusController } from '@/presentation/controller/order';
 import { ChangeOrderStatusHandleChallengeDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
-import { BuyOrSellAnyStrategy } from '@/presentation/strategies';
+import { BuyOrSellAnyOnlyProductOrService, BuyOrSellAnyStrategy } from '@/presentation/strategies';
 
 export const makeChangeOrderStatusControllerFactory = (): BaseController => {
   const getOrderByIdRepository = new OrderPrismaRepository();
@@ -32,5 +32,7 @@ export const makeChangeOrderStatusControllerFactory = (): BaseController => {
   const changeOrderStatusController = new ChangeOrderStatusController(changeOrderStatus);
 
   const buyOrSellAnyStrategy = new BuyOrSellAnyStrategy(updateActiveChallenge);
-  return new ChangeOrderStatusHandleChallengeDecorator(changeOrderStatusController, getOrderById, challengeRepository, accountRepository, buyOrSellAnyStrategy);
+  const buyOrSellOnlyStrategy = new BuyOrSellAnyOnlyProductOrService(updateActiveChallenge);
+
+  return new ChangeOrderStatusHandleChallengeDecorator(changeOrderStatusController, getOrderById, challengeRepository, accountRepository, buyOrSellAnyStrategy, buyOrSellOnlyStrategy);
 };
