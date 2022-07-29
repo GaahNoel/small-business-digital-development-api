@@ -1,9 +1,11 @@
 import { GetAccountChallenges } from '@/domain/usecases/challenge';
-import { GetOrderById } from '@/domain/usecases/order';
+import { GetOrderById, ListAccountOrders } from '@/domain/usecases/order';
 import { ChangeOrderStatusController } from '@/presentation/controller/order';
 import { ChangeOrderStatusHandleChallengeDecorator } from '@/presentation/decorators';
 import { internalServerError, success } from '@/presentation/helpers/http.helpers';
-import { BuyOrSellAnyOnlyProductOrServiceStrategy, BuyOrSellAnyStrategy, BuyProximityStrategy } from '@/presentation/strategies';
+import {
+  BuyBackStrategy, BuyOrSellAnyOnlyProductOrServiceStrategy, BuyOrSellAnyStrategy, BuyProximityStrategy,
+} from '@/presentation/strategies';
 import { ChangeOrderStatus } from '@/domain/usecases/order/change-order-status';
 import { ChallengeType } from '@/domain/models/challenge';
 import { AddAccountBalance } from '@/domain/usecases/account/add-account-balance';
@@ -17,11 +19,43 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
   let getOrderById: GetOrderById;
   let getBusinessById: ListBusinessById;
   let getAccountChallenges: GetAccountChallenges;
+  let listAccountOrders: ListAccountOrders;
   let addAccountBalance: AddAccountBalance;
   let buyOrSellAnyStrategy: BuyOrSellAnyStrategy;
   let buyOrSellAnyOnlyProductOrService: BuyOrSellAnyOnlyProductOrServiceStrategy;
   let buyProximity: BuyProximityStrategy;
+  let buyBack: BuyBackStrategy;
   let updateActiveChallenge: UpdateActiveChallenge;
+
+  const mockOrders = (businessId: string = 'any_business_id') => ([
+    {
+      id: 'any_id',
+      status: 'PENDING' as 'PENDING',
+      items: [
+        {
+          id: expect.any(String),
+          quantity: 1,
+          product: {
+            id: 'any_product_id',
+            name: 'any_product_name',
+            description: 'any_product_description',
+            salePrice: 11111,
+            listPrice: 11111,
+            imageUrl: 'any_image_url',
+          },
+        },
+      ],
+      total: 0,
+      sellerId: 'any_seller_id',
+      buyerId: 'any_buyer_id',
+      updatedAt: expect.any(Date),
+      createdAt: expect.any(Date),
+      Business: {
+        id: businessId,
+        name: 'any_business_name',
+      },
+    },
+  ]);
 
   const makeRequest = () => ({
     orderId: 'any-id',
@@ -111,11 +145,17 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
         state: 'any_state',
         zip: 'any_zip',
         country: 'any_country',
+        maxPermittedCouponPercentage: 10,
       })),
+    };
+
+    listAccountOrders = {
+      listAccountOrders: jest.fn(async () => Promise.resolve(mockOrders())),
     };
 
     buyOrSellAnyOnlyProductOrService = new BuyOrSellAnyOnlyProductOrServiceStrategy(updateActiveChallenge);
     buyProximity = new BuyProximityStrategy(updateActiveChallenge, getBusinessById);
+    buyBack = new BuyBackStrategy(updateActiveChallenge, listAccountOrders);
 
     buyOrSellAnyStrategy = new BuyOrSellAnyStrategy(updateActiveChallenge);
     controller = new ChangeOrderStatusController(changeOrderStatus);
@@ -135,6 +175,7 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
       buyOrSellAnyStrategy,
       buyOrSellAnyOnlyProductOrService,
       buyProximity,
+      buyBack,
     );
   });
 
@@ -265,6 +306,24 @@ describe('ChangeOrderStatusHandleChallengeDecorator', () => {
     await sut.handle(makeRequest());
 
     expect(buyProximitySpy).toHaveBeenCalledTimes(2);
+  });
+  it('should call buyBack with correct params', async () => {
+    (getAccountChallenges.getAccountChallenges as jest.Mock)
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        challenges: [makeChallenge('buyProximity', 'PENDING'), makeChallenge('buyback', 'PENDING'), makeChallenge('buyback', 'PENDING')],
+      })))
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        challenges: [makeChallenge('buyback', 'PENDING'), makeChallenge('buyProximity', 'PENDING'), makeChallenge('sellService', 'PENDING')],
+      })));
+
+    const buyBackSpy = jest.spyOn(buyBack, 'handle')
+      .mockImplementationOnce(jest.fn(async () => Promise.resolve({
+        status: 'PENDING',
+      })));
+
+    await sut.handle(makeRequest());
+
+    expect(buyBackSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should return controller response if order status not success', async () => {

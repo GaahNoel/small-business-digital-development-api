@@ -4,7 +4,9 @@ import { GetOrderById } from '@/domain/usecases/order';
 import { ChangeOrderStatusController, ChangeOrderStatusControllerParams } from '@/presentation/controller/order';
 import { internalServerError } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
-import { BuyOrSellAnyOnlyProductOrServiceStrategy, BuyOrSellAnyStrategy, BuyProximityStrategy } from '@/presentation/strategies/';
+import {
+  BuyBackStrategy, BuyOrSellAnyOnlyProductOrServiceStrategy, BuyOrSellAnyStrategy, BuyProximityStrategy,
+} from '@/presentation/strategies/';
 
 namespace ChangeOrderStatusHandleChallengeDecorator {
   export type Params = ChangeOrderStatusControllerParams;
@@ -22,6 +24,7 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
     private readonly buyOrSellAnyStrategy: BuyOrSellAnyStrategy,
     private readonly buyOrSellAnyOnlyProductOrService: BuyOrSellAnyOnlyProductOrServiceStrategy,
     private readonly buyProximity: BuyProximityStrategy,
+    private readonly buyBack: BuyBackStrategy,
   ) {
     this.strategies = {
       buyAny: this.buyOrSellAnyStrategy,
@@ -31,6 +34,7 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
       sellProduct: this.buyOrSellAnyOnlyProductOrService,
       sellService: this.buyOrSellAnyOnlyProductOrService,
       buyProximity: this.buyProximity,
+      buyback: this.buyBack,
     };
   }
 
