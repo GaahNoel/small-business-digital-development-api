@@ -99,6 +99,7 @@ export class BusinessPrismaRepository implements
       zip: result.zip,
       country: result.country,
       accountId: result.accountId,
+      maxPermittedCouponPercentage: result.maxPermittedCouponPercentage,
     };
   }
 
@@ -133,6 +134,7 @@ export class BusinessPrismaRepository implements
         zip: true,
         country: true,
         accountId: true,
+        maxPermittedCouponPercentage: true,
       },
     });
   }

@@ -36,6 +36,7 @@ export class ListBusinessByIdController implements BaseController {
         state: result.state,
         zip: result.zip,
         country: result.country,
+        maxPermittedCouponPercentage: result.maxPermittedCouponPercentage,
       });
     } catch (error) {
       if (error instanceof MissingParamsError) {

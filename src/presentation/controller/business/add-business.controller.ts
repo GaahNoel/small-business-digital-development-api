@@ -15,7 +15,7 @@ namespace AddBusinessController {
     state: string;
     street: string;
     zip: string;
-    maxPermittedCouponPercentage: number
+    maxPermittedCouponPercentage?: number
   };
 }
 

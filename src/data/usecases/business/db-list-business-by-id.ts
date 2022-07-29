@@ -28,6 +28,7 @@ export class DbListBusinessById implements ListBusinessById {
       state: result.state,
       zip: result.zip,
       country: result.country,
+      maxPermittedCouponPercentage: result.maxPermittedCouponPercentage,
     };
   }
 }

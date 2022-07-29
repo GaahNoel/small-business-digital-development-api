@@ -17,16 +17,17 @@ export interface ListBusiness {
 export namespace ListBusiness {
   export type Params = ListBusinessParams;
   export type Result = {
-    id: string;
-    name: string;
-    description: string;
-    imageUrl: string;
-    latitude: String
-    longitude: String
-    street: String
-    city: String
-    state: String
-    zip: String
-    country: String
+    id: String;
+    name: String;
+    description: String;
+    imageUrl: String;
+    latitude: String;
+    longitude: String;
+    street: String;
+    city: String;
+    state: String;
+    zip: String;
+    country: String;
+    maxPermittedCouponPercentage: number;
   }[];
 }

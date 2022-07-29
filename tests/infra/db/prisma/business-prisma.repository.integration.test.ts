@@ -38,6 +38,7 @@ describe('BusinessPrismaRepository', () => {
     state: 'any_state',
     zip: 'any_zip',
     country: 'any_country',
+    maxPermittedCouponPercentage: 5,
   };
   beforeEach(async () => {
     await prisma.orderItem.deleteMany();

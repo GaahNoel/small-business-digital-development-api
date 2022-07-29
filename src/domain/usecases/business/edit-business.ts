@@ -11,6 +11,7 @@ export type EditBusinessParams = {
   state?: string
   zip?: string
   country?: string
+  maxPermittedCouponPercentage?: number
 };
 
 export interface EditBusiness {

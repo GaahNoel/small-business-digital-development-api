@@ -495,6 +495,10 @@
                   "zip": {
                     "type": "string",
                     "required": true
+                  },
+                  "maxPermittedCouponPercentage": {
+                    "type": "number",
+                    "required": false
                   }
                 },
                 "example": {
@@ -508,7 +512,8 @@
                   "longitude":"-123123",
                   "state":"state",
                   "street":"street",
-                  "zip":"111111000"
+                  "zip":"111111000",
+                  "maxPermittedCouponPercentage": 10
                 }
               }
             }
@@ -555,47 +560,51 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "description": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "imageUrl": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "accountId": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "city": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "country": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "latitude": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "longitude": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "state": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "street": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "zip": {
                     "type": "string",
-                    "required": true
+                    "required": false
+                  },
+                  "maxPermittedCouponPercentage": {
+                    "type": "number",
+                    "required": false
                   }
                 },
                 "example": {
@@ -609,7 +618,8 @@
                   "longitude":"-123123",
                   "state":"state",
                   "street":"street",
-                  "zip":"111111000"
+                  "zip":"111111000",
+                  "maxPermittedCouponPercentage": 5
                 }
               }
             }
