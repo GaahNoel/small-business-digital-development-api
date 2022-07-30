@@ -23,6 +23,7 @@ model Account {
   SellerOrders    Order[]           @relation(name: "SellerOrders")
   ActiveChallenge ActiveChallenge[]
   balance         Float             @default(0)
+  AccountBonus    AccountBonus[]
 }
 
 enum Provider {
@@ -47,7 +48,7 @@ model Business {
   zip                          String
   country                      String
   Order                        Order[]
-  maxPermittedCouponPercentage Float?     @default(0) 
+  maxPermittedCouponPercentage Float?    @default(0)
 }
 
 model Product {
@@ -168,4 +169,46 @@ model ActiveChallenge {
 enum ChallengeStatus {
   COMPLETED
   PENDING
+}
+
+model Bonus {
+  id           String         @id @default(uuid())
+  name         String
+  description  String
+  duration     Int
+  type         BonusType
+  price        Float          @default(0)
+  percent      Float?
+  AccountBonus AccountBonus[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+enum BonusType {
+  coupon
+  highlight
+}
+
+model AccountBonus {
+  id        String       @id @default(uuid())
+  accountId String
+  account   Account      @relation(fields: [accountId], references: [id])
+  bonusId   String
+  bonus     Bonus        @relation(fields: [bonusId], references: [id])
+  status    BonusStatus
+  measure   BonusMeasure
+  value     Float        @default(0)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+enum BonusStatus {
+  ACTIVE
+  USED
+  EXPIRED
+}
+
+enum BonusMeasure {
+  percent
+  priority
 }
