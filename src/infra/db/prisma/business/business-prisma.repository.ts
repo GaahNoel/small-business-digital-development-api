@@ -71,6 +71,7 @@ export class BusinessPrismaRepository implements
         state: data.state,
         zip: data.zip,
         country: data.country,
+        maxPermittedCouponPercentage: data.maxPermittedCouponPercentage,
       },
     });
 
