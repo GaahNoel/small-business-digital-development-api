@@ -1294,7 +1294,6 @@
             "description": "Internal server error"
           }
         }
-      
     },
     "/api/challenge/create": {
       "post": {
@@ -1350,6 +1349,33 @@
           }
         }
       
+    },
+    "/api/bonus/list": {
+      "get": {
+        "tags": ["Bonus"],
+        "summary": "List",
+        "description": "List all bonus",
+        "parameters": [{
+          "name": "type",
+          "in": "query",
+          "description": "client | business",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
     }
   }
 }
