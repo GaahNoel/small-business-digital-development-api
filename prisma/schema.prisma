@@ -195,9 +195,10 @@ model AccountBonus {
   account   Account      @relation(fields: [accountId], references: [id])
   bonusId   String
   bonus     Bonus        @relation(fields: [bonusId], references: [id])
-  status    BonusStatus
+  status    BonusStatus  @default(ACTIVE)
   measure   BonusMeasure
   value     Float        @default(0)
+  quantity  Int          @default(1)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 }

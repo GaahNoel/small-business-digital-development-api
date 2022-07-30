@@ -1,2 +1,2 @@
-export * from './buy-bonus';
+export * from './create-account-bonus';
 export * from './list-bonus';

@@ -1,14 +1,46 @@
 import { prisma } from '@/infra/db/helpers/connection.helper';
 import { BonusPrismaRepository } from '@/infra/db/prisma/bonus';
+import { AccountPrismaRepository } from '@/infra/db/prisma/account';
+import { CreateBonusRepository } from '@/data/protocols/db/bonus';
+import { AddAccountRepository } from '@/data';
 
 describe('BonusPrismaRepository', () => {
   let sut: BonusPrismaRepository;
+  let createAccountRepository = new AccountPrismaRepository();
+  let createdBonus: CreateBonusRepository.Result;
+  let createdAccount: AddAccountRepository.Result;
+
+  beforeAll(async () => {
+    createAccountRepository = new AccountPrismaRepository();
+  });
 
   beforeEach(async () => {
     await prisma.accountBonus.deleteMany({});
     await prisma.bonus.deleteMany({});
+    await prisma.account.deleteMany({});
 
     sut = new BonusPrismaRepository();
+
+    createdAccount = await createAccountRepository.add({
+      name: 'Account 1',
+      email: 'teste@bonus.com',
+      password: '123456',
+      provider: 'credentials',
+    });
+
+    createdBonus = await sut.create({
+      name: 'Bonus 1',
+      description: 'Bonus 1 description',
+      price: 10,
+      duration: 1,
+      type: 'coupon' as 'coupon',
+      percent: 10,
+    });
+  });
+  afterAll(async () => {
+    await prisma.accountBonus.deleteMany({});
+    await prisma.bonus.deleteMany({});
+    await prisma.account.deleteMany({});
   });
 
   describe('create', () => {
@@ -37,15 +69,6 @@ describe('BonusPrismaRepository', () => {
       };
 
       await sut.create({
-        name: 'Bonus 1',
-        description: 'Bonus 1 description',
-        price: 10,
-        duration: 1,
-        type: 'coupon' as 'coupon',
-        percent: 10,
-      });
-
-      await sut.create({
         name: 'Bonus 2',
         description: 'Bonus 2 description',
         price: 20,
@@ -56,29 +79,22 @@ describe('BonusPrismaRepository', () => {
 
       const result = await sut.list(params);
 
-      expect(result).toEqual([{
-        id: expect.any(String),
-        name: 'Bonus 1',
-        description: 'Bonus 1 description',
-        price: 10,
-        duration: 1,
-        type: 'coupon',
-        percent: 10,
-      }]);
+      expect(result).toEqual([
+        {
+          id: expect.any(String),
+          name: 'Bonus 1',
+          description: 'Bonus 1 description',
+          price: 10,
+          duration: 1,
+          type: 'coupon',
+          percent: 10,
+        },
+      ]);
     });
     it('should return highlight bonuses if called successfully', async () => {
       const params = {
         type: 'highlight' as 'highlight',
       };
-
-      await sut.create({
-        name: 'Bonus 1',
-        description: 'Bonus 1 description',
-        price: 10,
-        duration: 1,
-        type: 'coupon' as 'coupon',
-        percent: 10,
-      });
 
       await sut.create({
         name: 'Bonus 2',
@@ -102,15 +118,6 @@ describe('BonusPrismaRepository', () => {
       }]);
     });
     it('should return all bonuses if called successfully without type', async () => {
-      await sut.create({
-        name: 'Bonus 1',
-        description: 'Bonus 1 description',
-        price: 10,
-        duration: 1,
-        type: 'coupon' as 'coupon',
-        percent: 10,
-      });
-
       await sut.create({
         name: 'Bonus 2',
         description: 'Bonus 2 description',
@@ -142,6 +149,91 @@ describe('BonusPrismaRepository', () => {
         type: 'highlight',
         percent: 20,
       }]);
+    });
+  });
+
+  describe('createAccountBonus', () => {
+    it('should create account bonus and return your id if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      const result = await sut.createAccountBonus(params);
+
+      expect(result).toEqual({
+        accountBonusId: expect.any(String),
+      });
+    });
+  });
+
+  describe('getAccountBonus', () => {
+    it('should return account bonus if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      await sut.createAccountBonus(params);
+
+      const result = await sut.getAccountBonus({
+        accountId: createdAccount.id,
+        type: 'coupon',
+      });
+
+      expect(result).toEqual([{
+        id: expect.any(String),
+        accountId: createdAccount.id,
+        bonus: {
+          id: createdBonus.bonusId,
+          type: 'coupon' as 'coupon',
+          duration: 1,
+          price: 10,
+          name: 'Bonus 1',
+          description: 'Bonus 1 description',
+          percent: 10,
+        },
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+        status: 'ACTIVE',
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      }]);
+    });
+  });
+
+  describe('getBonusById', () => {
+    it('should return bonus if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      await sut.createAccountBonus(params);
+
+      const result = await sut.getBonusById({
+        bonusId: createdBonus.bonusId,
+      });
+
+      expect(result).toEqual({
+        id: createdBonus.bonusId,
+        type: 'coupon' as 'coupon',
+        duration: 1,
+        price: 10,
+        name: 'Bonus 1',
+        description: 'Bonus 1 description',
+        percent: 10,
+      });
     });
   });
 });
