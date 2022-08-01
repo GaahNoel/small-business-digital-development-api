@@ -3,6 +3,7 @@ import { DbCreateAccountBonus, DbGetBonusById } from '@/data/usecases/bonus';
 import { AccountPrismaRepository } from '@/infra';
 import { BonusPrismaRepository } from '@/infra/db/prisma/bonus';
 import { BuyBonusController } from '@/presentation/controller/bonus';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeBuyBonusController = (): BaseController => {
@@ -13,5 +14,5 @@ export const makeBuyBonusController = (): BaseController => {
   const createAccountBonus = new DbCreateAccountBonus(bonusRepository, bonusRepository, bonusRepository);
   const withdrawAccountBalance = new DbWithdrawAccountBalance(accountRepository, accountRepository);
 
-  return new BuyBonusController(getBonusById, createAccountBonus, withdrawAccountBalance);
+  return new ErrorHandlerDecorator(new BuyBonusController(getBonusById, createAccountBonus, withdrawAccountBalance));
 };

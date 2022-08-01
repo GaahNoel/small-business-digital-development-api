@@ -111,10 +111,10 @@ describe('BuyBonusController', () => {
     missing: ['bonusId', 'quantity'],
   }])('should return badRequest if missingParamsError was thrown', async ({ params, missing }) => {
     makeRequest();
-    const response = await sut.handle(params);
-    expect(response).toEqual(badRequest(new MissingParamsError({
+    const response = sut.handle(params);
+    await expect(response).rejects.toThrow(new MissingParamsError({
       params: missing,
-    })));
+    }));
   });
 
   it('should return bad request if withdrawAccountBalance throws InvalidParamsError', async () => {
@@ -124,17 +124,17 @@ describe('BuyBonusController', () => {
       });
     });
     const fakeRequest = makeRequest();
-    const response = await sut.handle(fakeRequest);
-    expect(response).toEqual(badRequest(new InvalidParamsError({
+    const response = sut.handle(fakeRequest);
+    await expect(response).rejects.toThrow(new InvalidParamsError({
       params: ['amount'],
-    })));
+    }));
   });
   it('should throw internalServerError if receive unhandled error', async () => {
     (withdrawAccountBalance.withdraw as jest.Mock).mockImplementationOnce(async () => {
       throw new Error();
     });
     const fakeRequest = makeRequest();
-    const response = await sut.handle(fakeRequest);
-    expect(response).toEqual(internalServerError(new Error()));
+    const response = sut.handle(fakeRequest);
+    await expect(response).rejects.toThrow(new Error());
   });
 });

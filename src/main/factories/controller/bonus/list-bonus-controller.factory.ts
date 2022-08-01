@@ -1,6 +1,7 @@
 import { DbListBonus } from '@/data/usecases/bonus';
 import { BonusPrismaRepository } from '@/infra/db/prisma/bonus';
 import { ListBonusController } from '@/presentation/controller/bonus';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeListBonusController = (): BaseController => {
@@ -8,5 +9,5 @@ export const makeListBonusController = (): BaseController => {
 
   const listBonus = new DbListBonus(listBonusRepository);
 
-  return new ListBonusController(listBonus);
+  return new ErrorHandlerDecorator(new ListBonusController(listBonus));
 };

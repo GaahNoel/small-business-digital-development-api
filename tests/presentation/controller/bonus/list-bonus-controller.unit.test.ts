@@ -82,9 +82,9 @@ describe('ListBonusController', () => {
 
     (listBonus.listBonus as jest.Mock).mockImplementationOnce(() => Promise.reject(new NotFound({ entity: 'bonus' })));
 
-    const result = await sut.handle(params);
+    const result = sut.handle(params);
 
-    expect(result).toEqual(notFound(new NotFound({ entity: 'bonus' })));
+    await expect(result).rejects.toThrow(new NotFound({ entity: 'bonus' }));
   });
 
   it('should throw internalServerError if unhandled error was thrown by listBonus', async () => {
@@ -94,8 +94,8 @@ describe('ListBonusController', () => {
 
     (listBonus.listBonus as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error()));
 
-    const result = await sut.handle(params);
+    const result = sut.handle(params);
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 });

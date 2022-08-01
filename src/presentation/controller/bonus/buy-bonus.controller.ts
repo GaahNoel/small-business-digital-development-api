@@ -17,37 +17,26 @@ export class BuyBonusController implements BaseController {
   constructor(private readonly getBonusById: GetBonusById, private readonly createAccountBonus: CreateAccountBonus, private readonly withdrawAccountBalance: WithdrawAccountBalance) {}
 
   async handle(data: BuyBonusController.Params): Promise<BuyBonusController.Response> {
-    try {
-      this.validade(data);
-      const bonus = await this.getBonusById.getById({
-        bonusId: data.bonusId,
-      });
+    this.validade(data);
+    const bonus = await this.getBonusById.getById({
+      bonusId: data.bonusId,
+    });
 
-      const updatedAccount = await this.withdrawAccountBalance.withdraw({
-        accountId: data.accountId,
-        amount: bonus.price * data.quantity,
-      });
+    const updatedAccount = await this.withdrawAccountBalance.withdraw({
+      accountId: data.accountId,
+      amount: bonus.price * data.quantity,
+    });
 
-      const accountBonus = await this.createAccountBonus.createAccountBonus({
-        bonusId: data.bonusId,
-        quantity: data.quantity,
-        accountId: data.accountId,
-      });
+    const accountBonus = await this.createAccountBonus.createAccountBonus({
+      bonusId: data.bonusId,
+      quantity: data.quantity,
+      accountId: data.accountId,
+    });
 
-      return success({
-        newBalance: updatedAccount.newBalance,
-        accountBonusId: accountBonus.accountBonusId,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-      if (error instanceof InvalidParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success({
+      newBalance: updatedAccount.newBalance,
+      accountBonusId: accountBonus.accountBonusId,
+    });
   }
 
   private validade(data: BuyBonusController.Params): void {
