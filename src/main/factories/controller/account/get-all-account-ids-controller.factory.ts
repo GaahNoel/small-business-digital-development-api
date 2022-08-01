@@ -1,6 +1,7 @@
 import { DbGetAllAccountIds } from '@/data';
 import { AccountPrismaRepository } from '@/infra';
 import { GetAllAccountIdsController } from '@/presentation/controller/account';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeGetAllAccountIdsController = (): BaseController => {
@@ -8,5 +9,5 @@ export const makeGetAllAccountIdsController = (): BaseController => {
 
   const getAllAccountIds = new DbGetAllAccountIds(getAllAccountIdsRepository);
 
-  return new GetAllAccountIdsController(getAllAccountIds);
+  return new ErrorHandlerDecorator(new GetAllAccountIdsController(getAllAccountIds));
 };

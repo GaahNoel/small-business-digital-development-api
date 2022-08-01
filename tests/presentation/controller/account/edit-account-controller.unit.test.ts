@@ -1,6 +1,7 @@
 import { EditAccount } from '@/domain/usecases/account';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { EditAccountController } from '@/presentation/controller/account/edit-account.controller';
+import { MissingParamsError } from '@/presentation/errors';
 
 const fakeRequest = {
   id: 'any-id',
@@ -37,26 +38,30 @@ describe('EditAccountController', () => {
     }));
   });
 
-  it('should return 500 on EditAccount throws', async () => {
+  it('should throws on EditAccount throws', async () => {
     editAccount.edit = jest.fn(async () => Promise.reject(new Error()));
-    const httpResponse = await sut.handle(fakeRequest);
+    const httpResponse = sut.handle(fakeRequest);
 
-    expect(httpResponse).toEqual(internalServerError(new Error()));
+    await expect(httpResponse).rejects.toThrow(new Error());
   });
 
-  it('should return badRequest if no params was provided', async () => {
-    const httpResponse = await sut.handle({
+  it('should throw MissingParamsError if no params was provided', async () => {
+    const httpResponse = sut.handle({
       id: 'any-id',
     });
 
-    expect(httpResponse).toEqual(badRequest(new Error()));
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
+      params: ['name', 'password', 'email'],
+    }));
   });
 
-  it('should return badRequest if id was provided', async () => {
-    const httpResponse = await sut.handle({
+  it('should throw MissingParamsError if id was not provided', async () => {
+    const httpResponse = sut.handle({
       id: '',
     });
 
-    expect(httpResponse).toEqual(badRequest(new Error()));
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
+      params: ['id', 'name', 'password', 'email'],
+    }));
   });
 });

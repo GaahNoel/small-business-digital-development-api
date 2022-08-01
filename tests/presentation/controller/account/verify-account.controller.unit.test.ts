@@ -24,17 +24,17 @@ describe('VerifyAccountController ', () => {
     expect(verifySpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should return internalServerError if verify account throws', async () => {
+  it('should throw error if verify account throws', async () => {
     const { sut, verifyAccount } = makeSut();
     jest.spyOn(verifyAccount, 'verify').mockImplementationOnce(() => {
       throw new Error();
     });
 
-    const response = await sut.handle({
+    const response = sut.handle({
       id: 'any_id',
     });
 
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 
   it('should return success if correct id was provided', async () => {

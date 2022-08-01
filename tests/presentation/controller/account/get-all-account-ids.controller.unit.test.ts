@@ -24,14 +24,14 @@ describe('GetAllAccountIdsController', () => {
     expect(getAllAccountIds.getAllAccountIds).toHaveBeenCalledTimes(1);
   });
 
-  it('should return not found if getAllAccountIds throws not found error', async () => {
+  it('should throw not found if getAllAccountIds throws not found error', async () => {
     (getAllAccountIds.getAllAccountIds as jest.Mock).mockImplementationOnce(async () => Promise.reject(new NotFound({
       entity: 'Account',
     })));
-    const httpResponse = await sut.handle();
-    expect(httpResponse).toEqual(notFound(new NotFound({
+    const httpResponse = sut.handle();
+    await expect(httpResponse).rejects.toThrow(new NotFound({
       entity: 'Account',
-    })));
+    }));
   });
 
   it('should return accountIds if executed successfully', async () => {
@@ -39,9 +39,9 @@ describe('GetAllAccountIdsController', () => {
     expect(accountIds).toEqual(success({ accountIds: ['any_account_id'] }));
   });
 
-  it('should return internal server error if getAllAccountIds throws', async () => {
+  it('should return throw error if getAllAccountIds throws', async () => {
     (getAllAccountIds.getAllAccountIds as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
-    const httpResponse = await sut.handle();
-    expect(httpResponse).toEqual(internalServerError(new Error()));
+    const httpResponse = sut.handle();
+    await expect(httpResponse).rejects.toThrow(new Error());
   });
 });

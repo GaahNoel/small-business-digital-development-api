@@ -4,6 +4,7 @@ import { JwtAdapter } from '@/infra/cryptography';
 import { WinstonLogger } from '@/main/adapters/winston/logger.adapter';
 import { env } from '@/main/config/env';
 import { VerifyAccountController } from '@/presentation/controller/account/verify-account.controller';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeVerifyAccountController = (): BaseController => {
@@ -17,5 +18,5 @@ export const makeVerifyAccountController = (): BaseController => {
     encrypter,
   );
 
-  return new VerifyAccountController(addAccount);
+  return new ErrorHandlerDecorator(new VerifyAccountController(addAccount));
 };

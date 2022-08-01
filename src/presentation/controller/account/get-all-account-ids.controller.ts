@@ -12,16 +12,8 @@ export class GetAllAccountIdsController implements BaseController {
   constructor(private readonly getAllAccountIds: GetAllAccountIds) {}
 
   async handle(): Promise<GetAllAccountIdsController.Result> {
-    try {
-      const result = await this.getAllAccountIds.getAllAccountIds();
+    const result = await this.getAllAccountIds.getAllAccountIds();
 
-      return success(result);
-    } catch (error) {
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success(result);
   }
 }

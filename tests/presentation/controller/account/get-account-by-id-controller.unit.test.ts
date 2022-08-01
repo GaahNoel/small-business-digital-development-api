@@ -1,7 +1,6 @@
 import { GetAccountById } from '@/domain/usecases/account';
 import { GetAccountByIdController } from '@/presentation/controller/account';
 import { NotFound } from '@/presentation/errors';
-import { internalServerError, notFound } from '@/presentation/helpers/http.helpers';
 
 describe('GetAccountByIdController', () => {
   let sut: GetAccountByIdController;
@@ -14,6 +13,7 @@ describe('GetAccountByIdController', () => {
         email: 'email@email.com',
         verified: true,
         provider: 'credentials',
+        balance: 10,
       })),
     };
   });
@@ -48,27 +48,28 @@ describe('GetAccountByIdController', () => {
         email: 'email@email.com',
         verified: true,
         provider: 'credentials',
+        balance: 10,
       },
     });
   });
 
-  it('should return 404 if GetAccountById returns undefined', async () => {
+  it('should throw not found GetAccountById returns undefined', async () => {
     (getAccountById.getById as jest.Mock).mockImplementation(async () => Promise.reject(new NotFound({ entity: 'Account' })));
 
-    const httpResponse = await sut.handle({
+    const httpResponse = sut.handle({
       accountId: 'any_id',
     });
 
-    expect(httpResponse).toEqual(notFound(new NotFound({ entity: 'Account' })));
+    await expect(httpResponse).rejects.toThrow(new NotFound({ entity: 'Account' }));
   });
 
-  it('should return 500 if GetAccountById throws', async () => {
+  it('should throw error if GetAccountById throws', async () => {
     (getAccountById.getById as jest.Mock).mockImplementation(async () => Promise.reject(new Error()));
 
-    const httpResponse = await sut.handle({
+    const httpResponse = sut.handle({
       accountId: 'any_id',
     });
 
-    expect(httpResponse).toEqual(internalServerError(new Error()));
+    await expect(httpResponse).rejects.toThrow(new Error());
   });
 });
