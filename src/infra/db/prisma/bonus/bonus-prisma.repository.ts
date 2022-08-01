@@ -2,7 +2,6 @@ import { CreateAccountBonusRepository, ListBonusRepository } from '@/data/protoc
 import { CreateBonusRepository } from '@/data/protocols/db/bonus/create-bonus.repository';
 import { GetAccountBonusRepository } from '@/data/protocols/db/bonus/get-account-bonus.repository';
 import { GetBonusByIdRepository } from '@/data/protocols/db/bonus/get-bonus-by-id.repository';
-import { Bonus } from '@/domain/models/bonus';
 import { prisma } from '../../helpers';
 
 export class BonusPrismaRepository implements

@@ -11,6 +11,12 @@ describe('BonusPrismaRepository', () => {
   let createdAccount: AddAccountRepository.Result;
 
   beforeAll(async () => {
+    await prisma.accountBonus.deleteMany({});
+    await prisma.bonus.deleteMany({});
+    await prisma.product.deleteMany({});
+    await prisma.business.deleteMany({});
+    await prisma.account.deleteMany({});
+
     createAccountRepository = new AccountPrismaRepository();
   });
 

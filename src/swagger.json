@@ -1350,6 +1350,49 @@
         }
       
     },
+    "/api/bonus/{accountId}": {
+      "get": {
+          "tags": ["Bonus"],
+          "summary": "Get account bonuses",
+          "description": "Get account bonuses",
+          "parameters": [{
+            "name": "token",
+            "in": "headers",
+            "description": "Jwt auth token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },{
+            "name": "type",
+            "in": "query",
+            "description": "coupon | highlight",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },{
+            "name": "state",
+            "in": "query",
+            "description": "ACTIVE | EXPIRED | USED",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }]
+        },
+      "responses": {
+        "200": {
+          "description": "Success"
+        },
+        "404": {
+          "description": "Not Found"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    },
     "/api/bonus/list": {
       "get": {
         "tags": ["Bonus"],
@@ -1382,6 +1425,15 @@
         "tags": ["Bonus"],
         "summary": "Buy",
         "description": "Buy bonus for account",
+        "parameters": [{
+          "name": "token",
+          "in": "headers",
+          "description": "Jwt auth token",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
         "requestBody": {
           "content": {
             "application/json": {
