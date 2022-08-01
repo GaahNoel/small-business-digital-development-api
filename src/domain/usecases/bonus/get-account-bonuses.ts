@@ -1,13 +1,14 @@
 import {
-  BonusMeasure, BonusStatus, BonusType,
+  AccountBonus, BonusMeasure, BonusStatus, BonusType,
 } from '@/domain/models/bonus';
 
-export namespace GetAccountBonusRepository {
+export namespace GetAccountBonuses {
   export type Params = {
     accountId: string,
     type: BonusType
     status?: BonusStatus
   };
+
   export type Result = Array<{
     id: string;
     accountId: string;
@@ -28,7 +29,6 @@ export namespace GetAccountBonusRepository {
     updatedAt?: Date;
   }>;
 }
-
-export interface GetAccountBonusRepository {
-  getAccountBonus(params: GetAccountBonusRepository.Params): Promise<GetAccountBonusRepository.Result>;
+export interface GetAccountBonuses {
+  getBonuses(params: GetAccountBonuses.Params): Promise<GetAccountBonuses.Result>;
 }

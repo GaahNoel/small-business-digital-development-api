@@ -53,13 +53,19 @@ export class BonusPrismaRepository implements
   }
 
   async getAccountBonus(params: GetAccountBonusRepository.Params): Promise<GetAccountBonusRepository.Result> {
-    const accountBonuses = await prisma.accountBonus.findMany({
-      where: {
-        accountId: params.accountId,
-        bonus: {
-          type: params.type,
-        },
+    const where = {
+      accountId: params.accountId,
+      bonus: {
+        type: params.type,
       },
+    };
+
+    if (params.status) {
+      Object.assign(where, { status: params.status });
+    }
+
+    const accountBonuses = await prisma.accountBonus.findMany({
+      where,
       select: {
         id: true,
         accountId: true,

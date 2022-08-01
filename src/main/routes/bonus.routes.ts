@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { adaptRoute } from '../adapters/express/express-route.adapter';
-import { makeBuyBonusController } from '../factories/controller/bonus/buy-bonus-controller.factory';
-import { makeListBonusController } from '../factories/controller/bonus/list-bonus-controller.factory';
+import { makeGetAccountBonusesController, makeBuyBonusController, makeListBonusController } from '../factories/controller/bonus';
+import { auth } from '../middlewares/auth';
 
 export default (router: Router): void => {
   router.get('/bonus/list', adaptRoute(makeListBonusController()));
-  router.post('/bonus/buy', adaptRoute(makeBuyBonusController()));
+  router.get('/bonus/:accountId', auth(), adaptRoute(makeGetAccountBonusesController()));
+  router.post('/bonus/buy', auth(), adaptRoute(makeBuyBonusController()));
 };

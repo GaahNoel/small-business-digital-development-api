@@ -16,6 +16,7 @@ export type BonusMeasure = 'percent' | 'priority';
 export type AccountBonus = {
   id: string;
   accountId: string;
+  businessId?:string;
   bonusId: string;
   quantity: number;
   status: BonusStatus;

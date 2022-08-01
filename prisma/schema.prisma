@@ -32,13 +32,13 @@ enum Provider {
 }
 
 model Business {
-  id                           String    @id @default(uuid())
+  id                           String         @id @default(uuid())
   name                         String
   description                  String
-  createdAt                    DateTime  @default(now())
+  createdAt                    DateTime       @default(now())
   products                     Product[]
   accountId                    String
-  account                      Account   @relation(fields: [accountId], references: [id])
+  account                      Account        @relation(fields: [accountId], references: [id])
   imageUrl                     String
   latitude                     String
   longitude                    String
@@ -48,7 +48,8 @@ model Business {
   zip                          String
   country                      String
   Order                        Order[]
-  maxPermittedCouponPercentage Float?    @default(0)
+  maxPermittedCouponPercentage Float?         @default(0)
+  AccountBonus                 AccountBonus[]
 }
 
 model Product {
@@ -190,17 +191,19 @@ enum BonusType {
 }
 
 model AccountBonus {
-  id        String       @id @default(uuid())
-  accountId String
-  account   Account      @relation(fields: [accountId], references: [id])
-  bonusId   String
-  bonus     Bonus        @relation(fields: [bonusId], references: [id])
-  status    BonusStatus  @default(ACTIVE)
-  measure   BonusMeasure
-  value     Float        @default(0)
-  quantity  Int          @default(1)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id         String       @id @default(uuid())
+  accountId  String
+  account    Account      @relation(fields: [accountId], references: [id])
+  bonusId    String
+  bonus      Bonus        @relation(fields: [bonusId], references: [id])
+  status     BonusStatus  @default(ACTIVE)
+  measure    BonusMeasure
+  businessId String?
+  business   Business?    @relation(fields: [businessId], references: [id])
+  value      Float        @default(0)
+  quantity   Int          @default(1)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 enum BonusStatus {
