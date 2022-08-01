@@ -3,6 +3,7 @@ import { DbListProductsByBusinesses } from '@/data/usecases/product';
 import { BusinessPrismaRepository } from '@/infra/db/prisma/business';
 import { ProductPrismaRepository } from '@/infra/db/prisma/product';
 import { ListProductsByBusinessesController } from '@/presentation/controller/product';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeListProductsByBusinessesController = (): BaseController => {
@@ -12,5 +13,5 @@ export const makeListProductsByBusinessesController = (): BaseController => {
   const listBusiness = new DbListBusiness(listBusinessRepository);
   const listProductsByBusinesses = new DbListProductsByBusinesses(listProductsByBusinessesRepository);
 
-  return new ListProductsByBusinessesController(listBusiness, listProductsByBusinesses);
+  return new ErrorHandlerDecorator(new ListProductsByBusinessesController(listBusiness, listProductsByBusinesses));
 };
