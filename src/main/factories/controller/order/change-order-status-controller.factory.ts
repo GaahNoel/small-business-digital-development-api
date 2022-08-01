@@ -1,3 +1,4 @@
+import { DbAddAccountBalance } from '@/data';
 import { DbListBusinessById } from '@/data/usecases/business/db-list-business-by-id';
 import { DbUpdateActiveChallenge } from '@/data/usecases/challenge';
 import { DbChangeOrderStatus, DbGetOrderById, DbListAccountOrders } from '@/data/usecases/order';
@@ -35,6 +36,7 @@ export const makeChangeOrderStatusControllerFactory = (): BaseController => {
   const getOrderById = new DbGetOrderById(orderRepository);
   const getBusinessById = new DbListBusinessById(businessRepository);
   const listAccountOrders = new DbListAccountOrders(orderRepository);
+  const addAccountBalance = new DbAddAccountBalance(accountRepository, accountRepository);
 
   const changeOrderStatusController = new ChangeOrderStatusController(changeOrderStatus);
 
@@ -47,7 +49,7 @@ export const makeChangeOrderStatusControllerFactory = (): BaseController => {
     changeOrderStatusController,
     getOrderById,
     challengeRepository,
-    accountRepository,
+    addAccountBalance,
     buyOrSellAnyStrategy,
     buyOrSellOnlyStrategy,
     buyProximity,

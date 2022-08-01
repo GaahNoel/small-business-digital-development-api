@@ -125,7 +125,7 @@ describe('AccountPrismaRepository', () => {
     });
   });
 
-  describe('addBalance', () => {
+  describe('updateBalance', () => {
     it('should add balance to account', async () => {
       const sut = makeSut();
 
@@ -133,7 +133,7 @@ describe('AccountPrismaRepository', () => {
       const { id } = await sut.add(request);
 
       const balance = 1;
-      const result = await sut.addBalance({ accountId: id, balance });
+      const result = await sut.updateBalance({ accountId: id, balance });
 
       expect(result.newBalance).toBe(1);
     });

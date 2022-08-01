@@ -1,8 +1,11 @@
 import { AddAccountRepository } from '@/data';
-import { FindAccountByEmailRepository, GetAccountByIdRepository, VerifyAccountRepository } from '@/data/protocols/db/account';
-import { AddAccountBalanceRepository } from '@/data/protocols/db/account/add-account-balance.repository';
+import {
+  FindAccountByEmailRepository, GetAccountByIdRepository, VerifyAccountRepository, WithdrawAccountBalanceRepository,
+} from '@/data/protocols/db/account';
+import { UpdateAccountBalanceRepository } from '@/data/protocols/db/account/add-account-balance.repository';
 import { EditAccountRepository } from '@/data/protocols/db/account/edit-account.repository';
 import { GetAllAccountIdsRepository } from '@/data/protocols/db/challenge';
+import { WithdrawAccountBalance } from '@/domain/usecases/account/withdraw-account-balance';
 import { prisma } from '@/infra/db/helpers';
 
 export class AccountPrismaRepository implements
@@ -12,7 +15,7 @@ export class AccountPrismaRepository implements
   EditAccountRepository,
   GetAccountByIdRepository,
   GetAllAccountIdsRepository,
-  AddAccountBalanceRepository {
+  UpdateAccountBalanceRepository {
   async add(data: AddAccountRepository.Params): Promise<AddAccountRepository.Result> {
     const result = await prisma.account.create({
       data: {
@@ -93,7 +96,7 @@ export class AccountPrismaRepository implements
     };
   }
 
-  async addBalance({ accountId, balance }: AddAccountBalanceRepository.Params): Promise<AddAccountBalanceRepository.Result> {
+  async updateBalance({ accountId, balance }: UpdateAccountBalanceRepository.Params): Promise<UpdateAccountBalanceRepository.Result> {
     const account = await prisma.account.update({
       where: {
         id: accountId,

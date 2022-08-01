@@ -1,10 +1,10 @@
-export namespace AddAccountBalanceRepository {
+export namespace UpdateAccountBalanceRepository {
   export type Params = { accountId: string, balance: number };
   export type Result = {
     newBalance: number
   };
 }
 
-export interface AddAccountBalanceRepository {
-  addBalance({ accountId, balance }: AddAccountBalanceRepository.Params): Promise<AddAccountBalanceRepository.Result>;
+export interface UpdateAccountBalanceRepository {
+  updateBalance({ accountId, balance }: UpdateAccountBalanceRepository.Params): Promise<UpdateAccountBalanceRepository.Result>;
 }
