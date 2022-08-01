@@ -16,39 +16,27 @@ export class ListBusinessByIdController implements BaseController {
   constructor(private readonly listBusinessById: ListBusinessById) {}
 
   async handle(data: ListBusinessByIdController.Params): Promise<ListBusinessByIdController.Result> {
-    try {
-      this.validate(data);
+    this.validate(data);
 
-      const result = await this.listBusinessById.list({
-        businessId: data.businessId,
-      });
+    const result = await this.listBusinessById.list({
+      businessId: data.businessId,
+    });
 
-      return success({
-        id: result.id,
-        name: result.name,
-        description: result.description,
-        accountId: result.accountId,
-        imageUrl: result.imageUrl,
-        latitude: result.latitude,
-        longitude: result.longitude,
-        street: result.street,
-        city: result.city,
-        state: result.state,
-        zip: result.zip,
-        country: result.country,
-        maxPermittedCouponPercentage: result.maxPermittedCouponPercentage,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success({
+      id: result.id,
+      name: result.name,
+      description: result.description,
+      accountId: result.accountId,
+      imageUrl: result.imageUrl,
+      latitude: result.latitude,
+      longitude: result.longitude,
+      street: result.street,
+      city: result.city,
+      state: result.state,
+      zip: result.zip,
+      country: result.country,
+      maxPermittedCouponPercentage: result.maxPermittedCouponPercentage,
+    });
   }
 
   private validate(data:ListBusinessByIdController.Params) {

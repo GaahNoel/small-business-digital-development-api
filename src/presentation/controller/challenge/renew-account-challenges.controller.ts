@@ -20,38 +20,22 @@ export class RenewAccountChallengesController implements BaseController {
   constructor(private readonly renewAccountChallenges: RenewAccountChallenges, private readonly getAccountById: GetAccountById) {}
 
   async handle(data: RenewAccountChallengesController.Params): Promise<RenewAccountChallengesController.Result> {
-    try {
-      this.validate(data);
-      const account = await this.getAccountById.getById({
-        accountId: data.accountId,
+    this.validate(data);
+    const account = await this.getAccountById.getById({
+      accountId: data.accountId,
+    });
+
+    if (!account) {
+      throw new NotFound({
+        entity: 'Account',
       });
-
-      if (!account) {
-        throw new NotFound({
-          entity: 'Account',
-        });
-      }
-
-      const result = await this.renewAccountChallenges.renew({
-        accountId: data.accountId,
-        periodicity: data.periodicity,
-      });
-      return success(result);
-    } catch (error) {
-      if (error instanceof InvalidParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      return internalServerError(error);
     }
+
+    const result = await this.renewAccountChallenges.renew({
+      accountId: data.accountId,
+      periodicity: data.periodicity,
+    });
+    return success(result);
   }
 
   private validate(data: RenewAccountChallengesController.Params): void {

@@ -19,29 +19,21 @@ export class ListBusinessController implements BaseController {
   constructor(private readonly listBusiness: ListBusiness) {}
 
   async handle(data: ListBusinessController.Params): Promise<ListBusinessController.Result> {
-    try {
-      this.validate(data);
+    this.validate(data);
 
-      const result = await this.listBusiness.list({
-        location: {
-          latitude: data.latitude,
-          longitude: data.longitude,
-          radius: data.radius,
-        },
-        city: {
-          name: data.city,
-          state: data.state,
-        },
-      });
+    const result = await this.listBusiness.list({
+      location: {
+        latitude: data.latitude,
+        longitude: data.longitude,
+        radius: data.radius,
+      },
+      city: {
+        name: data.city,
+        state: data.state,
+      },
+    });
 
-      return success(result);
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success(result);
   }
 
   private validate(data: ListBusinessController.Params): void {

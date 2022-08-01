@@ -17,7 +17,7 @@ export class ChangeOrderStatusHandleChallengeDecorator implements BaseController
   private strategies;
 
   constructor(
-    private readonly controller: ChangeOrderStatusController,
+    private readonly controller: BaseController,
     private readonly getOrderById: GetOrderById,
     private readonly getAccountChallenges: GetAccountChallenges,
     private readonly addAccountBalance: AddAccountBalance,

@@ -17,23 +17,15 @@ export class DeleteBusinessController implements BaseController {
   constructor(private readonly deleteBusiness: DeleteBusiness) {}
 
   async handle(params: DeleteBusinessController.Params): Promise<HttpResponse> {
-    try {
-      this.validate(params);
-      const result = await this.deleteBusiness.delete({
-        businessId: params.businessId,
-      });
+    this.validate(params);
+    const result = await this.deleteBusiness.delete({
+      businessId: params.businessId,
+    });
 
-      return success({
-        delete: true,
-        id: result.id,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success({
+      delete: true,
+      id: result.id,
+    });
   }
 
   private validate(params: DeleteBusinessController.Params): void {

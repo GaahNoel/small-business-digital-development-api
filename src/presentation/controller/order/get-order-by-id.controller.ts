@@ -16,21 +16,11 @@ export class GetOrderByIdController implements BaseController {
   constructor(private readonly getOrderById: GetOrderById) {}
 
   async handle(params: GetOrderByIdController.Params): Promise<GetOrderByIdController.Result> {
-    try {
-      this.validate(params);
-      const order = await this.getOrderById.getOrderById({
-        orderId: params.orderId,
-      });
-      return success(order);
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-      return internalServerError(error);
-    }
+    this.validate(params);
+    const order = await this.getOrderById.getOrderById({
+      orderId: params.orderId,
+    });
+    return success(order);
   }
 
   private validate(data: GetOrderByIdController.Params): void {

@@ -1,5 +1,5 @@
 import { AddProduct } from '@/domain/usecases/product/add-product';
-import { internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { mockAddProductParams } from '@/tests/domain/mocks/product.mock';
 import { mockAddProduct } from '../../mocks/product.mock';
 import { AddProductController } from '@/presentation/controller/product';
@@ -38,13 +38,13 @@ describe('AddProductController', () => {
     expect(response).toEqual(success({ id: expect.anything() }));
   });
 
-  it('should return internal server error if add category throws', async () => {
+  it('should throw error if add category throws', async () => {
     const { sut, addProductStub } = makeSut();
     jest.spyOn(addProductStub, 'add').mockReturnValue(Promise.reject(new Error()));
 
     const request = mockAddProductParams();
 
-    const response = await sut.handle(request);
-    expect(response).toEqual(internalServerError(new Error()));
+    const response = sut.handle(request);
+    await expect(response).rejects.toThrow(new Error());
   });
 });

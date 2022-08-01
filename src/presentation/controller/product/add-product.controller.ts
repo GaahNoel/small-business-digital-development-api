@@ -22,21 +22,17 @@ export class AddProductController implements BaseController {
   ) {}
 
   async handle(data: AddProductController.Request): Promise<HttpResponse> {
-    try {
-      const product = await this.addProduct.add({
-        name: data.name,
-        type: data.type,
-        description: data.description,
-        listPrice: data.listPrice,
-        salePrice: data.salePrice,
-        imageUrl: data.imageUrl,
-        businessId: data.businessId,
-        categoryId: data.categoryId,
-      });
+    const product = await this.addProduct.add({
+      name: data.name,
+      type: data.type,
+      description: data.description,
+      listPrice: data.listPrice,
+      salePrice: data.salePrice,
+      imageUrl: data.imageUrl,
+      businessId: data.businessId,
+      categoryId: data.categoryId,
+    });
 
-      return success({ id: product.id });
-    } catch (error) {
-      return internalServerError(error);
-    }
+    return success({ id: product.id });
   }
 }

@@ -4,7 +4,7 @@ import { RenewAccountChallengesController } from '@/presentation/controller/chal
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 
 describe('RenewAccountChallengesController', () => {
@@ -28,6 +28,7 @@ describe('RenewAccountChallengesController', () => {
         id: 'any_id',
         verified: true,
         provider: 'credentials',
+        balance: 10,
       })),
     };
   });
@@ -66,16 +67,16 @@ describe('RenewAccountChallengesController', () => {
   it('should return not found if account was nos found', async () => {
     (getAccountById.getById as jest.Mock).mockImplementationOnce(async () => Promise.resolve(null));
     const accountId = 'any_account_id';
-    const response = await sut.handle({ accountId, periodicity: 'daily' });
-    expect(response).toEqual(notFound(new NotFound({
+    const response = sut.handle({ accountId, periodicity: 'daily' });
+    await expect(response).rejects.toThrow(new NotFound({
       entity: 'Account',
-    })));
+    }));
   });
   it('should return internal server error if any error occur', async () => {
     (renewAccountChallenges.renew as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
     const accountId = 'any_account_id';
-    const response = await sut.handle({ accountId, periodicity: 'daily' });
-    expect(response).toEqual(internalServerError(new Error()));
+    const response = sut.handle({ accountId, periodicity: 'daily' });
+    await expect(response).rejects.toThrow(new Error());
   });
 
   it.each([
@@ -96,17 +97,17 @@ describe('RenewAccountChallengesController', () => {
 
   ])('should throw MissingParamsError', async (params) => {
     const { missing } = params;
-    const result = await sut.handle(params.params);
+    const result = sut.handle(params.params);
 
-    expect(result).toEqual(badRequest(new MissingParamsError({ params: missing })));
+    await expect(result).rejects.toThrow(new MissingParamsError({ params: missing }));
   });
 
   it('should throw InvalidParamsError if periodicity is invalid', async () => {
-    const result = await sut.handle({
+    const result = sut.handle({
       accountId: 'any_id',
       periodicity: 'invalid' as 'daily',
     });
 
-    expect(result).toEqual(badRequest(new InvalidParamsError({ params: ['periodicity'] })));
+    await expect(result).rejects.toThrow(new InvalidParamsError({ params: ['periodicity'] }));
   });
 });

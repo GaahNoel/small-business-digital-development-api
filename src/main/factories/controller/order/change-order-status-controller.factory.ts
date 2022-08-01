@@ -9,7 +9,7 @@ import { OrderPrismaRepository } from '@/infra/db/prisma/order';
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 import { env } from '@/main/config/env';
 import { ChangeOrderStatusController } from '@/presentation/controller/order';
-import { ChangeOrderStatusHandleChallengeDecorator } from '@/presentation/decorators';
+import { ChangeOrderStatusHandleChallengeDecorator, ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 import {
   BuyBackStrategy, BuyOrSellAnyOnlyProductOrServiceStrategy, BuyOrSellAnyStrategy, BuyProximityStrategy,
@@ -38,7 +38,7 @@ export const makeChangeOrderStatusControllerFactory = (): BaseController => {
   const listAccountOrders = new DbListAccountOrders(orderRepository);
   const addAccountBalance = new DbAddAccountBalance(accountRepository, accountRepository);
 
-  const changeOrderStatusController = new ChangeOrderStatusController(changeOrderStatus);
+  const changeOrderStatusController = new ErrorHandlerDecorator(new ChangeOrderStatusController(changeOrderStatus));
 
   const buyOrSellAnyStrategy = new BuyOrSellAnyStrategy(updateActiveChallenge);
   const buyOrSellOnlyStrategy = new BuyOrSellAnyOnlyProductOrServiceStrategy(updateActiveChallenge);

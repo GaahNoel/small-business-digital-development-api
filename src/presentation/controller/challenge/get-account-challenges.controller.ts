@@ -16,23 +16,11 @@ export class GetAccountChallengesController implements BaseController {
   constructor(private readonly getAccountChallenges: GetAccountChallenges) {}
 
   async handle(params: GetAccountChallengesController.Params): Promise<GetAccountChallengesController.Result> {
-    try {
-      this.validate(params);
-      const accountChallenges = await this.getAccountChallenges.getAccountChallenges({
-        accountId: params.accountId,
-      });
-      return success(accountChallenges);
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      return internalServerError(error);
-    }
+    this.validate(params);
+    const accountChallenges = await this.getAccountChallenges.getAccountChallenges({
+      accountId: params.accountId,
+    });
+    return success(accountChallenges);
   }
 
   private validate(params: GetAccountChallengesController.Params): void {

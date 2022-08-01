@@ -1,7 +1,6 @@
 import { GetOrderById } from '@/domain/usecases/order';
 import { GetOrderByIdController } from '@/presentation/controller/order';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
-import { badRequest, internalServerError, notFound } from '@/presentation/helpers/http.helpers';
 
 describe('GetOrderByIdController', () => {
   let sut: GetOrderByIdController;
@@ -65,30 +64,30 @@ describe('GetOrderByIdController', () => {
     });
   });
 
-  it('should return internalServerError if GetOrderById throws', async () => {
+  it('should throw error if GetOrderById throws', async () => {
     (getOrderById.getOrderById as jest.Mock).mockImplementationOnce(async () => {
       throw new Error();
     });
-    const httpResponse = await sut.handle({ orderId: 'any_id' });
-    expect(httpResponse).toEqual(internalServerError(new Error()));
+    const httpResponse = sut.handle({ orderId: 'any_id' });
+    await expect(httpResponse).rejects.toThrow(new Error());
   });
 
-  it('should return badRequest if orderId was not provided', async () => {
-    const httpResponse = await sut.handle({ orderId: undefined });
-    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+  it('should throw MissingParamsError if orderId was not provided', async () => {
+    const httpResponse = sut.handle({ orderId: undefined });
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
       params: ['orderId'],
-    })));
+    }));
   });
 
-  it('should return notFound if order was not found', async () => {
+  it('should throw NotFound if order was not found', async () => {
     (getOrderById.getOrderById as jest.Mock).mockImplementationOnce(async () => {
       throw new NotFound({
         entity: 'order',
       });
     });
-    const httpResponse = await sut.handle({ orderId: 'any_id' });
-    expect(httpResponse).toEqual(notFound(new NotFound({
+    const httpResponse = sut.handle({ orderId: 'any_id' });
+    await expect(httpResponse).rejects.toThrow(new NotFound({
       entity: 'order',
-    })));
+    }));
   });
 });

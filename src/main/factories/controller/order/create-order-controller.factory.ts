@@ -8,6 +8,7 @@ import { ProductPrismaRepository } from '@/infra/db/prisma/product';
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 import { env } from '@/main/config/env';
 import { CreateOrderController } from '@/presentation/controller/order';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeCreateOrderController = (): BaseController => {
@@ -29,6 +30,6 @@ export const makeCreateOrderController = (): BaseController => {
 
   const createOrder = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository, getProductByIdRepository);
 
-  const controller = new CreateOrderController(createOrder, getAccountById, listBusinessById, emailVerificationSender);
+  const controller = new ErrorHandlerDecorator(new CreateOrderController(createOrder, getAccountById, listBusinessById, emailVerificationSender));
   return controller;
 };

@@ -46,37 +46,37 @@ describe('GetAccountChallengesController', () => {
     });
   });
 
-  it('should return not found if challenges not found', async () => {
+  it('should throw NotFound if challenges not found', async () => {
     getAccountChallenges.getAccountChallenges = jest.fn(async () => Promise.reject(new NotFound({
       entity: 'challenge',
     })));
 
-    const result = await sut.handle({
+    const result = sut.handle({
       accountId: 'any_account_id',
     });
 
-    expect(result).toEqual(notFound(new NotFound({
+    await expect(result).rejects.toThrow(new NotFound({
       entity: 'challenge',
-    })));
+    }));
   });
 
-  it('should return bad request if account id not provided', async () => {
-    const result = await sut.handle({
+  it('should throw MissingParamsError if account id not provided', async () => {
+    const result = sut.handle({
       accountId: undefined,
     });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: ['accountId'],
-    })));
+    }));
   });
 
-  it('should return internalServerError when received not handled error', async () => {
+  it('should throw error when received not handled error', async () => {
     (getAccountChallenges.getAccountChallenges as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
 
-    const result = await sut.handle({
+    const result = sut.handle({
       accountId: 'any_account_id',
     });
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 });

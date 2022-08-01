@@ -38,13 +38,13 @@ describe('AddCategory Controller', () => {
     expect(response).toEqual(success({ id: expect.anything() }));
   });
 
-  it('should return internal server error if add category throws', async () => {
+  it('should throw error if add category throws', async () => {
     const { sut, addCategoryStub } = makeSut();
     jest.spyOn(addCategoryStub, 'add').mockReturnValue(Promise.reject(new Error()));
 
     const request = mockAddCategoryParams();
 
-    const response = await sut.handle(request);
-    expect(response).toEqual(internalServerError(new Error()));
+    const response = sut.handle(request);
+    await expect(response).rejects.toThrow(new Error());
   });
 });

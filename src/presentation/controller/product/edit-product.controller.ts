@@ -21,19 +21,12 @@ export class EditProductController implements BaseController {
   constructor(private readonly editProduct: EditProduct) {}
 
   async handle(params: EditProductController.Params): Promise<EditProductController.Result> {
-    try {
-      const paramsWithoutAuth = removeAuthParams(params);
-      this.validate(paramsWithoutAuth);
-      const result = await this.editProduct.edit(paramsWithoutAuth);
-      return success({
-        productId: result.productId,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-      return internalServerError(error);
-    }
+    const paramsWithoutAuth = removeAuthParams(params);
+    this.validate(paramsWithoutAuth);
+    const result = await this.editProduct.edit(paramsWithoutAuth);
+    return success({
+      productId: result.productId,
+    });
   }
 
   private validate(params: EditProductController.Params): void {

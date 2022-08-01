@@ -6,14 +6,10 @@ export class ListProductFromBusinessController implements BaseController {
   constructor(private readonly listProductFromBusiness: ListProductFromBusiness) {}
 
   async handle(params: ListProductFromBusiness.Params): Promise<HttpResponse> {
-    try {
-      const response = await this.listProductFromBusiness.list({
-        businessId: params.businessId,
-      });
+    const response = await this.listProductFromBusiness.list({
+      businessId: params.businessId,
+    });
 
-      return success(response);
-    } catch (error) {
-      return internalServerError(error);
-    }
+    return success(response);
   }
 }

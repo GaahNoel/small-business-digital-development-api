@@ -45,19 +45,19 @@ describe('EditBusinessController', () => {
     expect(result).toEqual(success({ id: 'any_id' }));
   });
 
-  it('should return bad request if business id was not provided', async () => {
-    const result = await editBusinessController.handle({ ...editBusinessParams, businessId: undefined });
+  it('should throw MissingParamsError if business id was not provided', async () => {
+    const result = editBusinessController.handle({ ...editBusinessParams, businessId: undefined });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: ['businessId'],
-    })));
+    }));
   });
 
-  it('should return internal server error if editBusiness throws', async () => {
+  it('should throw error if editBusiness throws', async () => {
     (editBusiness.edit as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
 
-    const response = await editBusinessController.handle(editBusinessParams);
+    const response = editBusinessController.handle(editBusinessParams);
 
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 });

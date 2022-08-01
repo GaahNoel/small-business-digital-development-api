@@ -1,6 +1,6 @@
 import { CreateChallenge } from '@/domain/usecases/challenge';
 import { CreateChallengeController } from '@/presentation/controller/challenge';
-import { internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { mockCreateChallengeParams } from '@/tests/domain/mocks/challenge.mock';
 
 describe('CreateChallengeController', () => {
@@ -37,7 +37,7 @@ describe('CreateChallengeController', () => {
 
   it('should return internalServerError if createChallenge throws', async () => {
     createChallenge.create = jest.fn(async () => Promise.reject(new Error()));
-    const result = await sut.handle(mockCreateChallengeParams());
-    expect(result).toEqual(internalServerError(new Error()));
+    const result = sut.handle(mockCreateChallengeParams());
+    await expect(result).rejects.toThrow(new Error());
   });
 });

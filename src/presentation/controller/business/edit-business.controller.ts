@@ -13,20 +13,13 @@ export class EditBusinessController implements BaseController {
   constructor(private readonly editBusiness: EditBusiness) {}
 
   async handle(data: EditBusinessController.Props): Promise<HttpResponse> {
-    try {
-      const removedAuthData = removeAuthParams(data);
-      this.validate(removedAuthData);
+    const removedAuthData = removeAuthParams(data);
+    this.validate(removedAuthData);
 
-      const response = await this.editBusiness.edit(removedAuthData);
-      return success({
-        id: response.id,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-      return internalServerError(error);
-    }
+    const response = await this.editBusiness.edit(removedAuthData);
+    return success({
+      id: response.id,
+    });
   }
 
   private validate(data: EditBusinessController.Props): void {

@@ -1,6 +1,6 @@
 import { ListBusinessById } from '@/domain/usecases/business/list-business-by-id';
 import { ListBusinessByIdController } from '@/presentation/controller/business/list-business-by-id.controller';
-import { InternalServerError, MissingParamsError, NotFound } from '@/presentation/errors';
+import { MissingParamsError, NotFound } from '@/presentation/errors';
 
 describe('ListBusinessByIdController', () => {
   let sut: ListBusinessByIdController;
@@ -59,25 +59,21 @@ describe('ListBusinessByIdController', () => {
     });
   });
 
-  it('should return 500 if listBusinessById throws unhandled error', async () => {
+  it('should throw InternalServerError if listBusinessById throws unhandled error', async () => {
     (listBusinessById.list as jest.Mock).mockImplementationOnce(() => {
       throw new Error();
     });
-    const httpResponse = await sut.handle({ businessId: 'any_business_id' });
-    expect(httpResponse).toEqual({
-      statusCode: 500,
-      body: new InternalServerError(new Error().stack),
-    });
+    const httpResponse = sut.handle({ businessId: 'any_business_id' });
+    await expect(httpResponse).rejects.toThrow(
+      new Error(),
+    );
   });
 
-  it('should return bad request if businessId is not provided', async () => {
-    const httpResponse = await sut.handle({ businessId: undefined });
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      body: new MissingParamsError({
-        params: ['businessId'],
-      }),
-    });
+  it('should throw MissingParamsError if businessId is not provided', async () => {
+    const httpResponse = sut.handle({ businessId: undefined });
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
+      params: ['businessId'],
+    }));
   });
 
   it('should return not found if business not found', async () => {
@@ -86,12 +82,9 @@ describe('ListBusinessByIdController', () => {
         entity: 'Business',
       });
     });
-    const httpResponse = await sut.handle({ businessId: 'any_business_id' });
-    expect(httpResponse).toEqual({
-      statusCode: 404,
-      body: new NotFound({
-        entity: 'Business',
-      }),
-    });
+    const httpResponse = sut.handle({ businessId: 'any_business_id' });
+    await expect(httpResponse).rejects.toThrow(new NotFound({
+      entity: 'Business',
+    }));
   });
 });

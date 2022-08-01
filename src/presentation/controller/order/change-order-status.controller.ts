@@ -20,25 +20,13 @@ export class ChangeOrderStatusController implements BaseController {
   constructor(private readonly changeOrderStatus: ChangeOrderStatus) {}
 
   async handle(data: ChangeOrderStatusController.Params): Promise<ChangeOrderStatusController.Result> {
-    try {
-      this.validate(data);
-      const order = await this.changeOrderStatus.changeOrderStatus({
-        orderId: data.orderId,
-        status: data.status,
-        accountId: data.authAccountId,
-      });
-      return success(order);
-    } catch (error) {
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    this.validate(data);
+    const order = await this.changeOrderStatus.changeOrderStatus({
+      orderId: data.orderId,
+      status: data.status,
+      accountId: data.authAccountId,
+    });
+    return success(order);
   }
 
   private validate(data: ChangeOrderStatusController.Params): void {

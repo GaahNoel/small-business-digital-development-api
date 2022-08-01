@@ -46,12 +46,12 @@ describe('AddBusiness Controller', () => {
     expect(response).toEqual(success({ id: 'any_id' }));
   });
 
-  it('should return internal server error if AddBusiness throws', async () => {
+  it('should throw error if AddBusiness throws', async () => {
     const { sut, addBusinessStub } = makeSut();
     jest.spyOn(addBusinessStub, 'add').mockImplementationOnce(() => {
       throw new Error();
     });
-    const httpResponse = await sut.handle(fakeRequest);
-    expect(httpResponse).toEqual(internalServerError(new Error()));
+    const httpResponse = sut.handle(fakeRequest);
+    await expect(httpResponse).rejects.toThrow(new Error());
   });
 });

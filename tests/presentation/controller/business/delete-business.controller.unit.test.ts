@@ -32,20 +32,20 @@ describe('DeleteBusinessController', () => {
   });
 
   it('should return internal server error if DeleteBusiness throws', async () => {
-    deleteBusiness.delete = jest.fn(() => Promise.reject(new Error()));
+    (deleteBusiness.delete as jest.Mock).mockImplementationOnce(() => Promise.reject(new Error()));
 
-    const result = await sut.handle({
+    const result = sut.handle({
       businessId: 'any-business-id',
     });
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 
-  it('should return bad request if id is not provided', async () => {
-    const result = await sut.handle({ businessId: '' });
+  it('should throw MissingParamsError if id is not provided', async () => {
+    const result = sut.handle({ businessId: '' });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: ['businessId'],
-    })));
+    }));
   });
 });

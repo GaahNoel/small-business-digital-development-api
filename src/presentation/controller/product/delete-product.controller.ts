@@ -13,21 +13,14 @@ export class DeleteProductController implements BaseController {
   constructor(private readonly deleteProduct: DeleteProduct) {}
 
   async handle(params: DeleteProductController.Params): Promise<HttpResponse> {
-    try {
-      this.validate(params);
-      const result = await this.deleteProduct.delete({
-        productId: params.productId,
-      });
-      return success({
-        id: result.id,
-        delete: true,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-      return internalServerError(error);
-    }
+    this.validate(params);
+    const result = await this.deleteProduct.delete({
+      productId: params.productId,
+    });
+    return success({
+      id: result.id,
+      delete: true,
+    });
   }
 
   private validate(data :DeleteProductController.Params): void {

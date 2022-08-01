@@ -1,5 +1,5 @@
 type ListProductsByBusinessesParams = {
-  businessesIds: string[];
+  businessesIds: String[];
   type: 'product' | 'service';
   location?: {
     latitude: number;

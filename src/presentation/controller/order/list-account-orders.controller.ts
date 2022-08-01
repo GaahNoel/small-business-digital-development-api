@@ -41,17 +41,32 @@ export class ListAccountOrdersController implements BaseController {
   constructor(private readonly listAccountOrders: ListAccountOrders) {}
 
   async handle(params: ListAccountOrdersController.Params): Promise<ListAccountOrdersController.Result> {
-    try {
-      this.validate(params);
-      const result = await this.listAccountOrders.listAccountOrders(params);
+    this.validate(params);
+    const result = await this.listAccountOrders.listAccountOrders(params);
 
-      const mappedOrder: MappedOrderType[] = [];
+    const mappedOrder: MappedOrderType[] = [];
 
-      result.forEach(async (order) => {
-        const foundBusiness = mappedOrder.find((o) => o.business.id === order.Business.id);
+    result.forEach(async (order) => {
+      const foundBusiness = mappedOrder.find((o) => o.business.id === order.Business.id);
 
-        if (foundBusiness) {
-          foundBusiness.orders.push({
+      if (foundBusiness) {
+        foundBusiness.orders.push({
+          id: order.id,
+          status: order.status,
+          total: order.total,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          items: order.items,
+          buyerId: order.buyerId,
+          sellerId: order.sellerId,
+        });
+      } else {
+        mappedOrder.push({
+          business: {
+            name: order.Business.name,
+            id: order.Business.id,
+          },
+          orders: [{
             id: order.id,
             status: order.status,
             total: order.total,
@@ -60,35 +75,12 @@ export class ListAccountOrdersController implements BaseController {
             items: order.items,
             buyerId: order.buyerId,
             sellerId: order.sellerId,
-          });
-        } else {
-          mappedOrder.push({
-            business: {
-              name: order.Business.name,
-              id: order.Business.id,
-            },
-            orders: [{
-              id: order.id,
-              status: order.status,
-              total: order.total,
-              createdAt: order.createdAt,
-              updatedAt: order.updatedAt,
-              items: order.items,
-              buyerId: order.buyerId,
-              sellerId: order.sellerId,
-            }],
-          });
-        }
-      });
-
-      return success(mappedOrder);
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
+          }],
+        });
       }
+    });
 
-      return internalServerError(error);
-    }
+    return success(mappedOrder);
   }
 
   private validate(data: ListAccountOrdersController.Params): void {

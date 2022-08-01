@@ -16,24 +16,12 @@ export class GetProductByIdController implements BaseController {
   constructor(private readonly getProductById: GetProductById) {}
 
   async handle(params: GetProductByIdController.Params): Promise<GetProductByIdController.Result> {
-    try {
-      this.validate(params);
-      const result = await this.getProductById.get({
-        productId: params.productId,
-      });
+    this.validate(params);
+    const result = await this.getProductById.get({
+      productId: params.productId,
+    });
 
-      return success(result);
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success(result);
   }
 
   private validate(params: GetProductById.Params): void {

@@ -31,18 +31,18 @@ describe('GetBusinessCitiesAndStatesController', () => {
     });
   });
 
-  it('should return internalServerError if getCitiesAndStates throws', async () => {
+  it('should throw error if getCitiesAndStates throws', async () => {
     (getBusinessCitiesAndStates.getCitiesAndStates as jest.Mock).mockImplementation(async () => Promise.reject(new Error('any_error')));
-    const httpResponse = await sut.handle();
-    expect(httpResponse).toEqual(internalServerError(new Error('any_error')));
+    const httpResponse = sut.handle();
+    await expect(httpResponse).rejects.toThrow(new Error('any_error'));
   });
 
-  it('should return bad request if no business found on db', async () => {
+  it('should throw not found if no business found on db', async () => {
     (getBusinessCitiesAndStates.getCitiesAndStates as jest.Mock).mockImplementation(async () => Promise.resolve([]));
-    const httpResponse = await sut.handle();
-    expect(httpResponse).toEqual(badRequest(new NotFound({
+    const httpResponse = sut.handle();
+    await expect(httpResponse).rejects.toThrow(new NotFound({
       entity: 'Business',
       message: 'No business found on Db',
-    })));
+    }));
   });
 });

@@ -1,5 +1,5 @@
 import { AddCategory } from '@/domain/usecases/category/add-category';
-import { internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
 namespace AddCategoryController {
@@ -15,19 +15,15 @@ export class AddCategoryController implements BaseController {
   ) {}
 
   async handle(data: AddCategoryController.Request): Promise<HttpResponse> {
-    try {
-      const {
-        name, description,
-      } = data;
+    const {
+      name, description,
+    } = data;
 
-      const result = await this.addCategory.add({
-        name,
-        description,
-      });
+    const result = await this.addCategory.add({
+      name,
+      description,
+    });
 
-      return success({ id: result.id });
-    } catch (error) {
-      return internalServerError(error);
-    }
+    return success({ id: result.id });
   }
 }
