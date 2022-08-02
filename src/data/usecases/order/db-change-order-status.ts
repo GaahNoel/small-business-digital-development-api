@@ -1,4 +1,5 @@
 import { GetAccountByIdRepository } from '@/data/protocols';
+import { ChangeBonusStatusRepository } from '@/data/protocols/db/bonus';
 import { GetOrderByIdRepository, UpdateOrderByIdRepository } from '@/data/protocols/db/order';
 import { EmailVerificationSender } from '@/data/protocols/email/email-verification-sender';
 import { ChangeOrderStatus } from '@/domain/usecases/order/change-order-status';
@@ -11,7 +12,13 @@ enum TranslateOrderStatus {
 }
 
 export class DbChangeOrderStatus implements ChangeOrderStatus {
-  constructor(private readonly getOrderById: GetOrderByIdRepository, private readonly updateOrderById: UpdateOrderByIdRepository, private readonly getAccountById: GetAccountByIdRepository, private readonly emailSender: EmailVerificationSender) {}
+  constructor(
+    private readonly getOrderById: GetOrderByIdRepository,
+    private readonly updateOrderById: UpdateOrderByIdRepository,
+    private readonly getAccountById: GetAccountByIdRepository,
+    private readonly emailSender: EmailVerificationSender,
+    private readonly changeBonusStatusRepository: ChangeBonusStatusRepository,
+  ) {}
 
   public async changeOrderStatus(params: ChangeOrderStatus.Params): Promise<ChangeOrderStatus.Result> {
     const order = await this.getOrderById.getOrderById({
@@ -62,6 +69,13 @@ export class DbChangeOrderStatus implements ChangeOrderStatus {
         qualquer dúvida entre em contato com o comprador por meio do email: ${sellerEmail}
       `,
     });
+
+    if (status === 'CANCELED' && order.accountBonusId) {
+      await this.changeBonusStatusRepository.changeBonusStatus({
+        accountBonusId: order.accountBonusId,
+        status: 'ACTIVE',
+      });
+    }
 
     return {
       orderId: updatedOrder.orderId,

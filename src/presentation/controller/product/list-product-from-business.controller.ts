@@ -1,5 +1,5 @@
 import { ListProductFromBusiness } from '@/domain/usecases/product';
-import { internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
 export class ListProductFromBusinessController implements BaseController {

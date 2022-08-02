@@ -46,6 +46,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         buyerStatus: true,
         latitude: true,
         longitude: true,
+        accountBonusId: true,
         items: {
           select: {
             id: true,

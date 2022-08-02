@@ -151,6 +151,7 @@ describe('OrderPrismaRepository', () => {
         longitude: '10',
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        accountBonusId: '',
       });
     });
   });

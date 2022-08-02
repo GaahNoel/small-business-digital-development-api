@@ -32,6 +32,7 @@ export namespace GetOrderByIdRepository {
     buyerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
     latitude: string;
     longitude: string;
+    accountBonusId?: string;
   };
 }
 

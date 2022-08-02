@@ -9,6 +9,7 @@ export namespace UpdateOrderByIdRepository {
     buyerStatus?: OrderStatus;
     sellerStatus?: OrderStatus;
     total: number;
+    accountBonusId?: string
   };
 }
 
