@@ -142,9 +142,11 @@ describe('DbCreateOrder', () => {
     const order = makeCreateOrderParams();
     order.couponId = 'any_id';
     await sut.create(order);
+
+    delete order.couponId;
     expect(createOrderRepository.create).toHaveBeenCalledWith({
       ...order,
-      accountBonusId: order.couponId,
+      accountBonusId: 'any_id',
       total: order.total - order.total * 0.1,
     });
   });
