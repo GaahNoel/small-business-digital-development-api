@@ -9,18 +9,22 @@ import {
 } from '@/data';
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 import { GetBusinessCitiesAndStatesRepository } from '@/data/protocols/db/business/get-business-cities-and-states.repository';
+import { BonusPrismaRepository } from '@/infra/db/prisma/bonus';
 
 type SutTypes = {
   sut: AddBusinessRepository & ListBusinessFromAccountRepository & DeleteBusinessRepository & EditBusinessRepository & ListBusinessByIdRepository & ListBusinessRepository & GetBusinessCitiesAndStatesRepository;
   addAccountRepository: AccountPrismaRepository;
+  bonusRepository: BonusPrismaRepository;
 };
 
 const makeSut = (): SutTypes => {
   const sut = new BusinessPrismaRepository();
   const addAccountRepository = new AccountPrismaRepository();
+  const bonusRepository = new BonusPrismaRepository();
   return {
     sut,
     addAccountRepository,
+    bonusRepository,
   };
 };
 
@@ -41,6 +45,8 @@ describe('BusinessPrismaRepository', () => {
     maxPermittedCouponPercentage: 5,
   };
   beforeEach(async () => {
+    await prisma.accountBonus.deleteMany({});
+    await prisma.bonus.deleteMany({});
     await prisma.orderItem.deleteMany();
     await prisma.order.deleteMany();
     await prisma.business.deleteMany({});
@@ -48,6 +54,8 @@ describe('BusinessPrismaRepository', () => {
   });
 
   beforeAll(async () => {
+    const deleteAccountBonus = prisma.accountBonus.deleteMany({});
+    const deleteBonus = prisma.bonus.deleteMany({});
     const deleteActiveChallenges = prisma.activeChallenge.deleteMany({});
     const deleteOrderItems = prisma.orderItem.deleteMany();
     const deleteOrders = prisma.order.deleteMany();
@@ -57,6 +65,8 @@ describe('BusinessPrismaRepository', () => {
     const deleteAccount = prisma.account.deleteMany();
 
     await prisma.$transaction([
+      deleteAccountBonus,
+      deleteBonus,
       deleteActiveChallenges,
       deleteOrderItems,
       deleteOrders,
@@ -203,7 +213,7 @@ describe('BusinessPrismaRepository', () => {
 
   describe('list', () => {
     it('should return business on list success', async () => {
-      const { sut, addAccountRepository } = makeSut();
+      const { sut, addAccountRepository, bonusRepository } = makeSut();
       const account = mockAddAccountParams();
 
       const addedAccount = await addAccountRepository.add(account);
@@ -211,11 +221,43 @@ describe('BusinessPrismaRepository', () => {
       const business = mockAddBusinessParams(addedAccount.id);
       const addedBusiness = await sut.add(business);
 
+      const addedBusinessWithBonus = await sut.add(business);
+
+      const bonus = await bonusRepository.create({
+        name: 'Bonus 2',
+        description: 'Bonus 2 description',
+        price: 20,
+        duration: 2,
+        type: 'highlight' as 'highlight',
+        percent: 20,
+      });
+
+      const accountBonus = await bonusRepository.createAccountBonus({
+        accountId: addedAccount.id,
+        bonusId: bonus.bonusId,
+        quantity: 1,
+        measure: 'priority' as 'priority',
+        value: 0,
+        businessId: addedBusinessWithBonus.id,
+      });
+
       const result = await sut.list({});
 
       expect(result).toEqual([
         {
+          id: addedBusinessWithBonus.id,
+          highlighted: true,
+          AccountBonus: [{
+            id: accountBonus.accountBonusId,
+            status: 'ACTIVE',
+            value: 0,
+            measure: 'priority',
+          }],
+          ...business,
+        },
+        {
           id: addedBusiness.id,
+          highlighted: false,
           ...business,
         },
       ]);
@@ -239,6 +281,7 @@ describe('BusinessPrismaRepository', () => {
       expect(result).toEqual([
         {
           id: otherCityAddedBusiness.id,
+          highlighted: false,
           ...otherCityBusiness,
         },
       ]);

@@ -1,3 +1,6 @@
+import { BonusMeasure } from '@prisma/client';
+import { BonusStatus } from '@/domain/models/bonus';
+
 export type ListBusinessParams = {
   location?: {
     latitude: number;
@@ -29,5 +32,13 @@ export namespace ListBusiness {
     zip: String;
     country: String;
     maxPermittedCouponPercentage: number;
+    highlighted?: boolean;
+    AccountBonus?: {
+      id: string,
+      status: BonusStatus,
+      value: number,
+      measure: BonusMeasure,
+    }
+
   }[];
 }
