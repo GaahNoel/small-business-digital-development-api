@@ -2,6 +2,7 @@ import { CreateAccountBonusRepository } from '@/data/protocols/db/bonus';
 import { GetAccountBonusRepository } from '@/data/protocols/db/bonus/get-account-bonus.repository';
 import { GetBonusByIdRepository } from '@/data/protocols/db/bonus/get-bonus-by-id.repository';
 import { DbCreateAccountBonus } from '@/data/usecases/bonus';
+import { MissingParamsError } from '@/presentation/errors';
 
 describe('DbCreateAccountBonus', () => {
   let sut: DbCreateAccountBonus;
@@ -67,6 +68,7 @@ describe('DbCreateAccountBonus', () => {
       quantity: 1,
       measure: 'priority',
       value: 0,
+      businessId: 'any_id',
     };
 
     await sut.createAccountBonus(params);
@@ -104,5 +106,31 @@ describe('DbCreateAccountBonus', () => {
     const promise = sut.createAccountBonus(params);
 
     await expect(promise).rejects.toThrow();
+  });
+
+  it('should throw missingParamsError if called with highlight and business id was not provided', async () => {
+    (getBonusByIdRepository.getBonusById as jest.Mock).mockImplementationOnce(async () => Promise.resolve({
+      id: 'any_id',
+      name: 'any_name',
+      description: 'any_description',
+      price: 10,
+      duration: 10,
+      type: 'highlight',
+      percent: 10,
+    }));
+
+    const params = {
+      accountId: 'any_id',
+      bonusId: 'any_id',
+      quantity: 1,
+      measure: 'priority',
+      value: 0,
+    };
+
+    const promise = sut.createAccountBonus(params);
+
+    await expect(promise).rejects.toThrow(new MissingParamsError({
+      params: ['businessId'],
+    }));
   });
 });

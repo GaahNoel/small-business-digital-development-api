@@ -6,7 +6,8 @@ export namespace CreateAccountBonusRepository {
     bonusId: string,
     quantity: number,
     measure: BonusMeasure,
-    value: number
+    value: number,
+    businessId?: string,
   };
 
   export type Result = {

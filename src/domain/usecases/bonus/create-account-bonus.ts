@@ -2,6 +2,7 @@ type CreateAccountBonusParams = {
   bonusId: string;
   quantity: number;
   accountId: string;
+  businessId?: string;
 };
 
 export namespace CreateAccountBonus {

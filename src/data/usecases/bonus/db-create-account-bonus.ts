@@ -3,6 +3,7 @@ import { GetAccountBonusRepository } from '@/data/protocols/db/bonus/get-account
 import { GetBonusByIdRepository } from '@/data/protocols/db/bonus/get-bonus-by-id.repository';
 import { BonusMeasure } from '@/domain/models/bonus';
 import { CreateAccountBonus } from '@/domain/usecases/bonus';
+import { MissingParamsError } from '@/presentation/errors';
 
 export class DbCreateAccountBonus implements CreateAccountBonus {
   constructor(
@@ -16,12 +17,21 @@ export class DbCreateAccountBonus implements CreateAccountBonus {
 
     const value = bonus.type === 'coupon' ? bonus.percent : await this.calculatePriority(params);
 
+    const additionalParams = bonus.type === 'highlight' ? { businessId: params.businessId } : {};
+
+    if (bonus.type === 'highlight' && !params.businessId) {
+      throw new MissingParamsError({
+        params: ['businessId'],
+      });
+    }
+
     const createdAccountBonus = await this.createAccountBonusRepository.createAccountBonus({
       accountId: params.accountId,
       bonusId: params.bonusId,
       quantity: params.quantity,
       measure: CreateAccountBonus.bonusesMeasures[bonus.type as BonusMeasure],
       value,
+      ...additionalParams,
     });
 
     return {

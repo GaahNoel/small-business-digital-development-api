@@ -10,6 +10,7 @@ namespace BuyBonusController {
     bonusId: string;
     quantity: number;
     accountId: string;
+    businessId?: string;
   };
   export type Response = HttpResponse;
 }
@@ -31,6 +32,7 @@ export class BuyBonusController implements BaseController {
       bonusId: data.bonusId,
       quantity: data.quantity,
       accountId: data.accountId,
+      businessId: data.businessId,
     });
 
     return success({

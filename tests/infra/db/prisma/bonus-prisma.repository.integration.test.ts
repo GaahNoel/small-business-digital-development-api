@@ -2,13 +2,17 @@ import { prisma } from '@/infra/db/helpers/connection.helper';
 import { BonusPrismaRepository } from '@/infra/db/prisma/bonus';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account';
 import { CreateBonusRepository } from '@/data/protocols/db/bonus';
-import { AddAccountRepository } from '@/data';
+import { AddAccountRepository, AddBusinessRepository } from '@/data';
+import { BusinessPrismaRepository } from '@/infra/db/prisma/business';
+import { mockAddBusinessParams } from '@/tests/domain/mocks/business.mock';
 
 describe('BonusPrismaRepository', () => {
   let sut: BonusPrismaRepository;
-  let createAccountRepository = new AccountPrismaRepository();
+  let createAccountRepository: AddAccountRepository;
+  let createBusinessRepository: AddBusinessRepository;
   let createdBonus: CreateBonusRepository.Result;
   let createdAccount: AddAccountRepository.Result;
+  let createdBusiness: AddBusinessRepository.Result;
 
   beforeAll(async () => {
     await prisma.accountBonus.deleteMany({});
@@ -20,11 +24,13 @@ describe('BonusPrismaRepository', () => {
     await prisma.account.deleteMany({});
 
     createAccountRepository = new AccountPrismaRepository();
+    createBusinessRepository = new BusinessPrismaRepository();
   });
 
   beforeEach(async () => {
     await prisma.accountBonus.deleteMany({});
     await prisma.bonus.deleteMany({});
+    await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
 
     sut = new BonusPrismaRepository();
@@ -44,10 +50,13 @@ describe('BonusPrismaRepository', () => {
       type: 'coupon' as 'coupon',
       percent: 10,
     });
+
+    createdBusiness = await createBusinessRepository.add(mockAddBusinessParams(createdAccount.id));
   });
   afterAll(async () => {
     await prisma.accountBonus.deleteMany({});
     await prisma.bonus.deleteMany({});
+    await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
   });
 
@@ -168,6 +177,22 @@ describe('BonusPrismaRepository', () => {
         quantity: 1,
         measure: 'percent' as 'percent',
         value: 10,
+      };
+
+      const result = await sut.createAccountBonus(params);
+
+      expect(result).toEqual({
+        accountBonusId: expect.any(String),
+      });
+    });
+    it('should create account bonus with business id and return your id if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+        businessId: createdBusiness.id,
       };
 
       const result = await sut.createAccountBonus(params);

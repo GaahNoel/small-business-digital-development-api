@@ -1155,6 +1155,10 @@
                     "change": {
                       "type": "number",
                       "required": true
+                    },
+                    "couponId": {
+                      "type": "string",
+                      "required": false
                     }
                   }
                 },
@@ -1168,7 +1172,8 @@
                   "items": {
                     "quantity": 1,
                     "productId": "123"
-                  }
+                  },
+                  "couponId": "any-coupon-id"
                 }
               }
             }
@@ -1452,13 +1457,18 @@
                     "quantity": {
                       "type": "number",
                       "required": true
+                    },
+                    "businessId": {
+                      "type": "string",
+                      "required": false
                     }
                   }
                 },
                 "example": {
                   "accountId":"Any account id",
                   "bonusId": "Any bonus id",
-                  "quantity": "1"
+                  "quantity": "1",
+                  "businessId": "any-business-id"
                 }
               }
             }

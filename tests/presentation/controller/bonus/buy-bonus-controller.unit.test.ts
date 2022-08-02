@@ -69,6 +69,20 @@ describe('BuyBonusController', () => {
       accountId: fakeRequest.accountId,
       quantity: 1,
       bonusId: fakeRequest.bonusId,
+      businessId: undefined,
+    });
+  });
+  it('should call createAccountBonus with correct params and business id', async () => {
+    const fakeRequest = makeRequest();
+    await sut.handle({
+      ...fakeRequest,
+      businessId: 'any_id',
+    });
+    expect(createAccountBonus.createAccountBonus).toHaveBeenCalledWith({
+      accountId: fakeRequest.accountId,
+      quantity: 1,
+      bonusId: fakeRequest.bonusId,
+      businessId: 'any_id',
     });
   });
 
