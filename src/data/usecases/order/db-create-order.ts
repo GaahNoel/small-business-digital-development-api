@@ -70,6 +70,7 @@ export class DbCreateOrder implements CreateOrder {
     const result = await this.createOrderRepository.create({
       ...order,
       total: totalOrderValue,
+      accountBonusId: order.couponId,
       sellerId: business.accountId,
     });
 

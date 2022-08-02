@@ -115,7 +115,10 @@ describe('DbCreateOrder', () => {
     const order = makeCreateOrderParams();
 
     await sut.create(order);
-    expect(createOrderRepository.create).toHaveBeenCalledWith(order);
+    expect(createOrderRepository.create).toHaveBeenCalledWith({
+      ...order,
+      accountBonusId: order.couponId,
+    });
   });
 
   it('should call listBusinessByIdRepository with correct values', async () => {
@@ -141,6 +144,7 @@ describe('DbCreateOrder', () => {
     await sut.create(order);
     expect(createOrderRepository.create).toHaveBeenCalledWith({
       ...order,
+      accountBonusId: order.couponId,
       total: order.total - order.total * 0.1,
     });
   });

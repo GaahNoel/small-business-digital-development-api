@@ -56,7 +56,7 @@ export class DbChangeOrderStatus implements ChangeOrderStatus {
 
     await this.emailSender.send({
       toEmail: sellerEmail,
-      subject: 'Order status changed',
+      subject: 'Status do pedido alterado',
       message: `
         Olá, os status do seu pedido - ${order.id} foi alterado para: ${TranslateOrderStatus[status]},
         qualquer dúvida entre em contato com o comprador por meio do email: ${sellerEmail}

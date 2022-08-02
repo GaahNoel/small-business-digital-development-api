@@ -17,7 +17,7 @@ export namespace CreateOrderRepository {
     items: OrderItem[];
     latitude?: number;
     longitude?: number;
-    couponId?: string;
+    accountBonusId?: string;
   };
   export type Result = CreateOrder.Result;
 }
