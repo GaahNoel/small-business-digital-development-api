@@ -3,6 +3,7 @@ import { DbListBusinessById } from '@/data/usecases/business/db-list-business-by
 import { DbUpdateActiveChallenge } from '@/data/usecases/challenge';
 import { DbChangeOrderStatus, DbGetOrderById, DbListAccountOrders } from '@/data/usecases/order';
 import { AccountPrismaRepository } from '@/infra';
+import { BonusPrismaRepository } from '@/infra/db/prisma/bonus';
 import { BusinessPrismaRepository } from '@/infra/db/prisma/business';
 import { ChallengePrismaRepository } from '@/infra/db/prisma/challenge';
 import { OrderPrismaRepository } from '@/infra/db/prisma/order';
@@ -21,6 +22,7 @@ export const makeChangeOrderStatusControllerFactory = (): BaseController => {
   const updateOrderByIdRepository = new OrderPrismaRepository();
   const challengeRepository = new ChallengePrismaRepository();
   const businessRepository = new BusinessPrismaRepository();
+  const bonusRepository = new BonusPrismaRepository();
 
   const EmailVerificationSender = new NodeMailerAdapter(
     env.emailAccount,
@@ -31,7 +33,7 @@ export const makeChangeOrderStatusControllerFactory = (): BaseController => {
     true,
   );
 
-  const changeOrderStatus = new DbChangeOrderStatus(orderRepository, updateOrderByIdRepository, accountRepository, EmailVerificationSender);
+  const changeOrderStatus = new DbChangeOrderStatus(orderRepository, updateOrderByIdRepository, accountRepository, EmailVerificationSender, bonusRepository);
   const updateActiveChallenge = new DbUpdateActiveChallenge(challengeRepository);
   const getOrderById = new DbGetOrderById(orderRepository);
   const getBusinessById = new DbListBusinessById(businessRepository);
