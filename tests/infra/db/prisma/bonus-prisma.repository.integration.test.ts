@@ -13,6 +13,8 @@ describe('BonusPrismaRepository', () => {
   beforeAll(async () => {
     await prisma.accountBonus.deleteMany({});
     await prisma.bonus.deleteMany({});
+    await prisma.orderItem.deleteMany({});
+    await prisma.order.deleteMany({});
     await prisma.product.deleteMany({});
     await prisma.business.deleteMany({});
     await prisma.account.deleteMany({});
@@ -277,6 +279,67 @@ describe('BonusPrismaRepository', () => {
         name: 'Bonus 1',
         description: 'Bonus 1 description',
         percent: 10,
+      });
+    });
+  });
+
+  describe('getAccountBonusById', () => {
+    it('should return account bonus if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      const createdAccountBonus = await sut.createAccountBonus(params);
+
+      const result = await sut.getAccountBonusById({
+        bonusId: createdAccountBonus.accountBonusId,
+      });
+
+      expect(result).toEqual({
+        id: createdAccountBonus.accountBonusId,
+        accountId: createdAccount.id,
+        bonus: {
+          id: createdBonus.bonusId,
+          type: 'coupon' as 'coupon',
+          duration: 1,
+          price: 10,
+          name: 'Bonus 1',
+          description: 'Bonus 1 description',
+          percent: 10,
+        },
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+        status: 'ACTIVE',
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
+    });
+  });
+
+  describe('changeBonusStatus', () => {
+    it('should change bonus status if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      const createdAccountBonus = await sut.createAccountBonus(params);
+
+      const result = await sut.changeBonusStatus({
+        accountBonusId: createdAccountBonus.accountBonusId,
+        status: 'USED',
+      });
+
+      expect(result).toEqual({
+        status: 'USED',
       });
     });
   });

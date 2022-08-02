@@ -1,4 +1,6 @@
-import { CreateAccountBonusRepository, ListBonusRepository } from '@/data/protocols/db/bonus';
+import {
+  ChangeBonusStatusRepository, CreateAccountBonusRepository, GetAccountBonusByIdRepository, ListBonusRepository,
+} from '@/data/protocols/db/bonus';
 import { CreateBonusRepository } from '@/data/protocols/db/bonus/create-bonus.repository';
 import { GetAccountBonusRepository } from '@/data/protocols/db/bonus/get-account-bonus.repository';
 import { GetBonusByIdRepository } from '@/data/protocols/db/bonus/get-bonus-by-id.repository';
@@ -9,7 +11,9 @@ export class BonusPrismaRepository implements
   ListBonusRepository,
   CreateAccountBonusRepository,
   GetBonusByIdRepository,
-  GetAccountBonusRepository {
+  GetAccountBonusRepository,
+  GetAccountBonusByIdRepository,
+  ChangeBonusStatusRepository {
   async create(params: CreateBonusRepository.Params): Promise<CreateBonusRepository.Result> {
     const createdBonus = await prisma.bonus.create({
       data: {
@@ -108,5 +112,51 @@ export class BonusPrismaRepository implements
     });
 
     return bonus;
+  }
+
+  async getAccountBonusById(params: GetAccountBonusByIdRepository.Params): Promise<GetAccountBonusByIdRepository.Result> {
+    const accountBonus = await prisma.accountBonus.findFirst({
+      where: {
+        id: params.bonusId,
+      },
+      select: {
+        id: true,
+        accountId: true,
+        bonus: {
+          select: {
+            id: true,
+            type: true,
+            duration: true,
+            price: true,
+            name: true,
+            description: true,
+            percent: true,
+          },
+        },
+        quantity: true,
+        measure: true,
+        value: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return accountBonus;
+  }
+
+  async changeBonusStatus(params: ChangeBonusStatusRepository.Params): Promise<ChangeBonusStatusRepository.Result> {
+    const updatedBonus = await prisma.accountBonus.update({
+      where: {
+        id: params.accountBonusId,
+      },
+      data: {
+        status: params.status,
+      },
+    });
+
+    return {
+      status: updatedBonus.status,
+    };
   }
 }

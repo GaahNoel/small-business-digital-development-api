@@ -4,12 +4,35 @@ import { DbCreateOrder } from '@/data/usecases/order';
 import { ListBusinessByIdRepository } from '@/data/protocols/db/business/list-business-by-id.repository';
 import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 import { GetProductByIdRepository } from '@/data';
+import { GetAccountBonusByIdRepository, ChangeBonusStatusRepository } from '@/data/protocols/db/bonus';
 
 describe('DbCreateOrder', () => {
   let sut: DbCreateOrder;
   let createOrderRepository: CreateOrderRepository;
   let listBusinessByIdRepository: ListBusinessByIdRepository;
   let getProductByIdRepository: GetProductByIdRepository;
+  let getAccountBonusByIdRepository: GetAccountBonusByIdRepository;
+  let changeBonusStatusRepository : ChangeBonusStatusRepository;
+
+  const mockAccountBonusInfo = {
+    id: 'any_id',
+    accountId: 'any_account_id',
+    status: 'EXPIRED',
+    bonus: {
+      id: 'any_bonus_id',
+      type: 'coupon',
+      name: 'any_bonus_name',
+      description: 'any_bonus_description',
+      price: 10,
+      duration: 30,
+      percent: 10,
+    },
+    quantity: 1,
+    measure: 'percent',
+    value: 10,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
   beforeAll(() => {
     createOrderRepository = {
@@ -33,6 +56,7 @@ describe('DbCreateOrder', () => {
         state: 'any_state',
         zip: 'any_zip',
         country: 'any_country',
+        maxPermittedCouponPercentage: 10,
       })),
     };
 
@@ -53,10 +77,38 @@ describe('DbCreateOrder', () => {
         createdAt: expect.any(Date),
       })),
     };
+
+    getAccountBonusByIdRepository = {
+      getAccountBonusById: jest.fn(async () => Promise.resolve({
+        id: 'any_id',
+        accountId: 'any_account_id',
+        status: 'ACTIVE',
+        bonus: {
+          id: 'any_bonus_id',
+          type: 'coupon',
+          name: 'any_bonus_name',
+          description: 'any_bonus_description',
+          price: 10,
+          duration: 30,
+          percent: 10,
+        },
+        quantity: 1,
+        measure: 'percent',
+        value: 10,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
+    };
+
+    changeBonusStatusRepository = {
+      changeBonusStatus: jest.fn(async () => Promise.resolve({
+        status: 'ACTIVE',
+      })),
+    };
   });
 
   beforeEach(() => {
-    sut = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository, getProductByIdRepository);
+    sut = new DbCreateOrder(createOrderRepository, listBusinessByIdRepository, getProductByIdRepository, getAccountBonusByIdRepository, changeBonusStatusRepository);
   });
 
   it('should call createOrderRepository with correct params', async () => {
@@ -81,6 +133,57 @@ describe('DbCreateOrder', () => {
     expect(result).toEqual({
       orderId: 'any_id',
     });
+  });
+
+  it('should create order with discount if valid coupon was provided', async () => {
+    const order = makeCreateOrderParams();
+    order.couponId = 'any_id';
+    await sut.create(order);
+    expect(createOrderRepository.create).toHaveBeenCalledWith({
+      ...order,
+      total: order.total - order.total * 0.1,
+    });
+  });
+
+  it('should not create order if expired coupon was provided', async () => {
+    (getAccountBonusByIdRepository.getAccountBonusById as jest.Mock).mockResolvedValueOnce({
+      ...mockAccountBonusInfo,
+      createdAt: new Date('2020-01-01'),
+      updatedAt: new Date('2020-01-01'),
+    });
+    const order = makeCreateOrderParams();
+    order.couponId = 'any_id';
+    const promise = sut.create(order);
+    await expect(promise).rejects.toThrow(new InvalidParamsError({
+      params: ['couponId'],
+    }));
+  });
+  it('should not create order if expired coupon was provided', async () => {
+    (getAccountBonusByIdRepository.getAccountBonusById as jest.Mock).mockResolvedValueOnce({
+      ...mockAccountBonusInfo,
+      status: 'EXPIRED',
+    });
+    const order = makeCreateOrderParams();
+    order.couponId = 'any_id';
+    const promise = sut.create(order);
+    await expect(promise).rejects.toThrow(new InvalidParamsError({
+      params: ['couponId'],
+    }));
+  });
+  it('should not create order if bonus that is not coupon was provided', async () => {
+    (getAccountBonusByIdRepository.getAccountBonusById as jest.Mock).mockResolvedValueOnce({
+      ...mockAccountBonusInfo,
+      bonus: {
+        ...mockAccountBonusInfo.bonus,
+        type: 'highlight',
+      },
+    });
+    const order = makeCreateOrderParams();
+    order.couponId = 'any_id';
+    const promise = sut.create(order);
+    await expect(promise).rejects.toThrow(new InvalidParamsError({
+      params: ['couponId'],
+    }));
   });
 
   it('should throw error if createOrderRepository throws', async () => {

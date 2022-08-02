@@ -27,6 +27,7 @@ describe('CreateOrderController', () => {
     total: 10,
     latitude: 10,
     longitude: 10,
+    couponId: 'any_id',
   };
 
   beforeAll(() => {

@@ -11,6 +11,7 @@ type CreateOrderParams = {
   items: OrderItem[];
   latitude?: number;
   longitude?: number;
+  couponId?: string;
 };
 
 export namespace CreateOrder {

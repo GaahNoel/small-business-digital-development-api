@@ -82,21 +82,23 @@ enum ProductType {
 }
 
 model Order {
-  id            String        @id @default(uuid())
-  total         Float         @default(0)
-  status        OrderStatus   @default(PENDING)
-  items         OrderItem[]
-  Buyer         Account       @relation(name: "BuyOrders", fields: [buyerId], references: [id])
-  buyerId       String
-  sellerId      String
-  Seller        Account       @relation(name: "SellerOrders", fields: [sellerId], references: [id])
-  description   String        @default("")
-  paymentMethod PaymentMethod
-  change        Float         @default(0)
-  sellerStatus  OrderStatus   @default(PENDING)
-  buyerStatus   OrderStatus   @default(PENDING)
-  latitude      String        @default("")
-  longitude     String        @default("")
+  id             String        @id @default(uuid())
+  total          Float         @default(0)
+  status         OrderStatus   @default(PENDING)
+  items          OrderItem[]
+  Buyer          Account       @relation(name: "BuyOrders", fields: [buyerId], references: [id])
+  buyerId        String
+  sellerId       String
+  Seller         Account       @relation(name: "SellerOrders", fields: [sellerId], references: [id])
+  description    String        @default("")
+  paymentMethod  PaymentMethod
+  change         Float         @default(0)
+  sellerStatus   OrderStatus   @default(PENDING)
+  buyerStatus    OrderStatus   @default(PENDING)
+  latitude       String        @default("")
+  longitude      String        @default("")
+  accountBonusId String?       @default("")
+  AccountBonus   AccountBonus?
 
   Business   Business @relation(fields: [businessId], references: [id])
   businessId String
@@ -202,8 +204,11 @@ model AccountBonus {
   business   Business?    @relation(fields: [businessId], references: [id])
   value      Float        @default(0)
   quantity   Int          @default(1)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  orderId    String?      @unique
+  order      Order?       @relation(fields: [orderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum BonusStatus {

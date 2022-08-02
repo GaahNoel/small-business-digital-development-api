@@ -6,7 +6,7 @@ import { CreateOrder } from '@/domain/usecases/order';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
@@ -21,6 +21,7 @@ namespace CreateOrderController {
     change?: number;
     latitude?: number;
     longitude?: number;
+    couponId?: string
   };
   export type Result = HttpResponse;
 
@@ -59,6 +60,7 @@ export class CreateOrderController implements BaseController {
       change: data.change,
       latitude: data.latitude,
       longitude: data.longitude,
+      couponId: data.couponId,
     });
 
     await this.emailVerificationSender.send({
