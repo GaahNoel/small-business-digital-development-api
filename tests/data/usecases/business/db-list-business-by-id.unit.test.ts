@@ -22,6 +22,7 @@ describe('DbListBusinessById', () => {
         state: 'any_state',
         zip: 'any_zip',
         country: 'any_country',
+        maxPermittedCouponPercentage: 10,
       })),
     };
   });
@@ -52,6 +53,7 @@ describe('DbListBusinessById', () => {
       state: 'any_state',
       zip: 'any_zip',
       country: 'any_country',
+      maxPermittedCouponPercentage: 10,
     });
   });
 

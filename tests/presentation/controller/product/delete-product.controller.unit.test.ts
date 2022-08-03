@@ -1,5 +1,5 @@
 import { DeleteProduct } from '@/domain/usecases/product';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { DeleteProductController } from '@/presentation/controller/product/delete-product.controller';
 import { MissingParamsError } from '@/presentation/errors';
 
@@ -32,23 +32,23 @@ describe('DeleteProductController', () => {
     }));
   });
 
-  it('should return internal server error if delete product throws', async () => {
+  it('should throw error if delete product throws', async () => {
     deleteProduct.delete = jest.fn(() => Promise.reject(new Error()));
 
-    const response = await deleteProductController.handle({
+    const response = deleteProductController.handle({
       productId: mockProduct.id,
     });
 
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 
-  it('should return bad request if id not provided', async () => {
-    const response = await deleteProductController.handle({
+  it('should throw MissingParamsError if id not provided', async () => {
+    const response = deleteProductController.handle({
       productId: '',
     });
 
-    expect(response).toEqual(badRequest(new MissingParamsError({
+    await expect(response).rejects.toThrow(new MissingParamsError({
       params: ['productId'],
-    })));
+    }));
   });
 });

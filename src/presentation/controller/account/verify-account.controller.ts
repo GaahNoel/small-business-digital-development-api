@@ -12,12 +12,8 @@ export class VerifyAccountController implements BaseController {
   constructor(private readonly verifyAccount: VerifyAccount) { }
 
   async handle(data: VerifyAccountController.Request): Promise<HttpResponse> {
-    try {
-      const result = await this.verifyAccount.verify(data.id);
+    const result = await this.verifyAccount.verify(data.id);
 
-      return success(result);
-    } catch (error) {
-      return internalServerError(error);
-    }
+    return success(result);
   }
 }

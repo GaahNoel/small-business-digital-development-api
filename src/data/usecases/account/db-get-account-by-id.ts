@@ -21,6 +21,7 @@ export class DBGetAccountById implements GetAccountById {
       email: account.email,
       verified: account.verified,
       provider: account.provider,
+      balance: account.balance,
     };
   }
 }

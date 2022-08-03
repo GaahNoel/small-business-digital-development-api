@@ -2,6 +2,7 @@ type UpdateOrderByIdParams = {
   orderId: string;
   status?: 'CANCELED' | 'COMPLETED' | 'PENDING';
   total?: number;
+  statusType?: 'order' | 'buyer' | 'seller';
 };
 
 export namespace UpdateOrderById {

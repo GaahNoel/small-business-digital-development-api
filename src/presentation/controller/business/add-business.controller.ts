@@ -15,6 +15,7 @@ namespace AddBusinessController {
     state: string;
     street: string;
     zip: string;
+    maxPermittedCouponPercentage?: number
   };
 }
 
@@ -24,12 +25,21 @@ export class AddBusinessController implements BaseController {
   ) {}
 
   async handle(data: AddBusinessController.Request): Promise<HttpResponse> {
-    try {
-      const result = await this.addBusiness.add(data);
+    const result = await this.addBusiness.add({
+      name: data.name,
+      description: data.description,
+      imageUrl: data.imageUrl,
+      accountId: data.accountId,
+      city: data.city,
+      country: data.country,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      state: data.state,
+      street: data.street,
+      zip: data.zip,
+      maxPermittedCouponPercentage: data.maxPermittedCouponPercentage,
+    });
 
-      return success({ id: result.id });
-    } catch (error) {
-      return internalServerError(error);
-    }
+    return success({ id: result.id });
   }
 }

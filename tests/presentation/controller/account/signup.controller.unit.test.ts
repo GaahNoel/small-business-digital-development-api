@@ -1,7 +1,7 @@
 import { Provider } from '@prisma/client';
 import { AddAccount } from '@/domain/usecases/account/add-account';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { mockAddAccount } from '@/tests/presentation/mocks/account.mock';
 import { SignUpController } from '@/presentation/controller/account';
 
@@ -47,10 +47,10 @@ describe('SignUpController', () => {
       provider: 'credentials' as Provider,
     };
 
-    const httpResponse = await sut.handle(request);
-    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+    const httpResponse = sut.handle(request);
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
       params: ['name'],
-    })));
+    }));
   });
 
   it('should return bad request if email is not provided', async () => {
@@ -62,10 +62,10 @@ describe('SignUpController', () => {
       provider: 'credentials' as Provider,
     };
 
-    const httpResponse = await sut.handle(request);
-    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+    const httpResponse = sut.handle(request);
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
       params: ['email'],
-    })));
+    }));
   });
 
   it('should return bad request if is credentials and password is not provided', async () => {
@@ -77,10 +77,10 @@ describe('SignUpController', () => {
       provider: 'credentials' as Provider,
     };
 
-    const httpResponse = await sut.handle(request);
-    expect(httpResponse).toEqual(badRequest(new MissingParamsError({
+    const httpResponse = sut.handle(request);
+    await expect(httpResponse).rejects.toThrow(new MissingParamsError({
       params: ['password'],
-    })));
+    }));
   });
 
   it('should return response status success if receive correct params', async () => {
@@ -114,7 +114,7 @@ describe('SignUpController', () => {
     }));
   });
 
-  it('should return internal server error if addAccount throw an error', async () => {
+  it('should throw error if addAccount throw an error', async () => {
     const { sut, addAccountStub } = makeSut();
     jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => Promise.reject(new Error()));
     const request = {
@@ -124,7 +124,7 @@ describe('SignUpController', () => {
       provider: 'credentials' as Provider,
     };
 
-    const httpResponse = await sut.handle(request);
-    expect(httpResponse).toEqual(internalServerError(new Error()));
+    const httpResponse = sut.handle(request);
+    await expect(httpResponse).rejects.toThrow(new Error());
   });
 });

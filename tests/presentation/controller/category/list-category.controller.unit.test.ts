@@ -1,5 +1,5 @@
 import { ListCategory } from '@/domain/usecases/category';
-import { internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 import { mockCategoryModel } from '@/tests/domain/mocks/category.mock';
 import { ListCategoryController } from '@/presentation/controller/category';
 
@@ -43,8 +43,8 @@ describe('ListCategoryController', () => {
   it('should return internal server error if ListCategory throws', async () => {
     listCategory.list = jest.fn(async () => Promise.reject(new Error()));
 
-    const result = await sut.handle();
+    const result = sut.handle();
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 });

@@ -16,4 +16,6 @@ export const makeCreateOrderParams = (
     quantity: 10,
     productId: 'any_product_id',
   }],
+  latitude: 10,
+  longitude: 10,
 });

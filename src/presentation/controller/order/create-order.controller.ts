@@ -6,7 +6,7 @@ import { CreateOrder } from '@/domain/usecases/order';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
@@ -19,6 +19,9 @@ namespace CreateOrderController {
     description?: string;
     paymentMethod: 'CreditCard' | 'Cash'
     change?: number;
+    latitude?: number;
+    longitude?: number;
+    couponId?: string
   };
   export type Result = HttpResponse;
 
@@ -33,61 +36,48 @@ export class CreateOrderController implements BaseController {
   ) {}
 
   async handle(data: CreateOrderController.Params): Promise<CreateOrderController.Result> {
-    try {
-      this.validate(data);
+    this.validate(data);
 
-      const buyerAccount = await this.getAccountById.getById({
-        accountId: data.buyerId,
-      });
+    const buyerAccount = await this.getAccountById.getById({
+      accountId: data.buyerId,
+    });
 
-      const business = await this.getBusinessById.list({
-        businessId: data.businessId,
-      });
+    const business = await this.getBusinessById.list({
+      businessId: data.businessId,
+    });
 
-      const sellerAccount = await this.getAccountById.getById({
-        accountId: business.accountId,
-      });
+    const sellerAccount = await this.getAccountById.getById({
+      accountId: business.accountId,
+    });
 
-      const order = await this.createOrder.create({
-        businessId: data.businessId,
-        buyerId: data.buyerId,
-        total: data.total,
-        items: data.items,
-        description: data.description,
-        paymentMethod: data.paymentMethod,
-        change: data.change,
-      });
+    const order = await this.createOrder.create({
+      businessId: data.businessId,
+      buyerId: data.buyerId,
+      total: data.total,
+      items: data.items,
+      description: data.description,
+      paymentMethod: data.paymentMethod,
+      change: data.change,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      couponId: data.couponId,
+    });
 
-      await this.emailVerificationSender.send({
-        message: `Your order has been created. OrderId: ${order.orderId}`,
-        subject: 'Order created',
-        toEmail: buyerAccount.email,
-      });
+    await this.emailVerificationSender.send({
+      message: `Seu pedido foi criada com sucesso! Id do Pedido: ${order.orderId}`,
+      subject: 'Pedido Criado',
+      toEmail: buyerAccount.email,
+    });
 
-      await this.emailVerificationSender.send({
-        message: `You received an order. OrderId: ${order.orderId}`,
-        subject: 'Order created',
-        toEmail: sellerAccount.email,
-      });
+    await this.emailVerificationSender.send({
+      message: `Você recebeu um novo pedido! Id do Pedido: ${order.orderId}`,
+      subject: 'Pedido Recebido',
+      toEmail: sellerAccount.email,
+    });
 
-      return success({
-        orderId: order.orderId,
-      });
-    } catch (error) {
-      if (error instanceof InvalidParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      if (error instanceof MissingParamsError || error instanceof InvalidParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success({
+      orderId: order.orderId,
+    });
   }
 
   private validate(data: CreateOrderController.Params): void {

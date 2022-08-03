@@ -45,12 +45,12 @@ describe('ListProductFromBusinessController', () => {
     }]));
   });
 
-  it('should return internal server error listProductFromBusiness throws', async () => {
+  it('should throw error listProductFromBusiness throws', async () => {
     listProductFromBusiness.list = jest.fn().mockReturnValueOnce(Promise.reject(new Error()));
-    const response = await sut.handle({
+    const response = sut.handle({
       businessId: 'any-business-id',
     });
 
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 });

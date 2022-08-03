@@ -8,6 +8,7 @@ export namespace GetAccountByIdRepository {
     email: string;
     verified: boolean;
     provider: 'credentials' | 'socialMedia';
+    balance: number;
   };
 }
 

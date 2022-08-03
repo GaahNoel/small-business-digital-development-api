@@ -1,3 +1,4 @@
+import { truncateSync } from 'fs';
 import {
   DeleteBusinessRepository, EditBusinessRepository, ListBusinessFromAccountRepository, ListBusinessRepository,
 } from '@/data';
@@ -71,6 +72,7 @@ export class BusinessPrismaRepository implements
         state: data.state,
         zip: data.zip,
         country: data.country,
+        maxPermittedCouponPercentage: data.maxPermittedCouponPercentage,
       },
     });
 
@@ -99,6 +101,7 @@ export class BusinessPrismaRepository implements
       zip: result.zip,
       country: result.country,
       accountId: result.accountId,
+      maxPermittedCouponPercentage: result.maxPermittedCouponPercentage,
     };
   }
 
@@ -118,8 +121,15 @@ export class BusinessPrismaRepository implements
       };
     }
 
-    return prisma.business.findMany({
-      where,
+    const businessesWithHighlight = await prisma.business.findMany({
+      where: {
+        ...where,
+        AccountBonus: {
+          some: {
+            status: 'ACTIVE',
+          },
+        },
+      },
       select: {
         id: true,
         name: true,
@@ -133,8 +143,58 @@ export class BusinessPrismaRepository implements
         zip: true,
         country: true,
         accountId: true,
+        maxPermittedCouponPercentage: true,
+        AccountBonus: {
+          select: {
+            id: true,
+            status: true,
+            value: true,
+            measure: true,
+          },
+          orderBy: {
+            value: 'asc',
+          },
+        },
       },
     });
+
+    const businessesWithoutHighlight = await prisma.business.findMany({
+      where: {
+        ...where,
+        AccountBonus: undefined,
+        NOT: {
+          id: {
+            in: businessesWithHighlight.map((business) => business.id),
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        description: true,
+        latitude: true,
+        longitude: true,
+        street: true,
+        city: true,
+        state: true,
+        zip: true,
+        country: true,
+        accountId: true,
+        maxPermittedCouponPercentage: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return [...businessesWithHighlight.map((business) => ({
+      ...business,
+      highlighted: true,
+    })), ...businessesWithoutHighlight.map((business) => ({
+      ...business,
+      highlighted: false,
+    }))];
   }
 
   async getCitiesAndStates(): Promise<GetBusinessCitiesAndStatesRepository.Result> {

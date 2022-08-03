@@ -21,6 +21,10 @@ describe('GetOrderById', () => {
         paymentMethod: 'CreditCard' as 'CreditCard',
         change: 10,
         sellerId: 'any-seller-id',
+        sellerStatus: 'PENDING' as 'PENDING',
+        buyerStatus: 'PENDING' as 'PENDING',
+        latitude: '10',
+        longitude: '10',
       })),
     };
   });
@@ -53,6 +57,52 @@ describe('GetOrderById', () => {
       paymentMethod: 'CreditCard' as 'CreditCard',
       change: 10,
       sellerId: 'any-seller-id',
+      sellerStatus: 'PENDING' as 'PENDING',
+      buyerStatus: 'PENDING' as 'PENDING',
+      latitude: 10,
+      longitude: 10,
+    });
+  });
+
+  it('should return a order on success without latitude and longitude', async () => {
+    (getOrderByIdRepository.getOrderById as jest.Mock).mockImplementationOnce(
+      async () => ({
+        id: 'any-id',
+        businessId: 'string',
+        buyerId: 'string',
+        total: 100,
+        items: [],
+        status: 'PENDING' as 'PENDING',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: 'any-description',
+        paymentMethod: 'CreditCard' as 'CreditCard',
+        change: 10,
+        sellerId: 'any-seller-id',
+        sellerStatus: 'PENDING' as 'PENDING',
+        buyerStatus: 'PENDING' as 'PENDING',
+      }),
+    );
+
+    const orderId = 'any_id';
+    const order = await getOrderById.getOrderById({ orderId });
+    expect(order).toEqual({
+      id: 'any-id',
+      businessId: 'string',
+      buyerId: 'string',
+      total: 100,
+      items: [],
+      status: 'PENDING' as 'PENDING',
+      createdAt: expect.any(Date),
+      updatedAt: expect.any(Date),
+      description: 'any-description',
+      paymentMethod: 'CreditCard' as 'CreditCard',
+      change: 10,
+      sellerId: 'any-seller-id',
+      sellerStatus: 'PENDING' as 'PENDING',
+      buyerStatus: 'PENDING' as 'PENDING',
+      latitude: undefined,
+      longitude: undefined,
     });
   });
 

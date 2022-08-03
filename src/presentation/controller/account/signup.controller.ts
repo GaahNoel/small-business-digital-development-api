@@ -16,21 +16,19 @@ export class SignUpController implements BaseController<SignUpController.Request
   constructor(private readonly addAccount: AddAccount) {}
 
   async handle(data: SignUpController.Request): Promise<HttpResponse> {
-    try {
-      this.validateParams(data);
-      const accountAdded = await this.addAccount.add(data);
+    this.validateParams(data);
 
-      return success({
-        id: accountAdded.id,
-        created: accountAdded.created,
-      });
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
+    const accountAdded = await this.addAccount.add({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      provider: data.provider,
+    });
 
-      return internalServerError(error as Error);
-    }
+    return success({
+      id: accountAdded.id,
+      created: accountAdded.created,
+    });
   }
 
   private validateParams(data: SignUpController.Request): void {

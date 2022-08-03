@@ -2,7 +2,7 @@ import { CreateOrder } from '@/domain/usecases/order';
 import { makeCreateOrderParams } from '@/tests/domain/mocks/order.mock';
 import { CreateOrderController } from '@/presentation/controller/order/';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import { GetAccountById } from '@/domain/usecases/account';
@@ -25,6 +25,9 @@ describe('CreateOrderController', () => {
     paymentMethod: 'CreditCard' as 'CreditCard',
     change: 0,
     total: 10,
+    latitude: 10,
+    longitude: 10,
+    couponId: 'any_id',
   };
 
   beforeAll(() => {
@@ -34,7 +37,7 @@ describe('CreateOrderController', () => {
 
     getAccountById = {
       getById: jest.fn(async () => Promise.resolve({
-        email: 'any_email', name: 'any_name', id: 'any_id', verified: false, provider: 'credentials',
+        email: 'any_email', name: 'any_name', id: 'any_id', verified: false, provider: 'credentials', balance: 10,
       })),
     };
 
@@ -52,6 +55,7 @@ describe('CreateOrderController', () => {
         state: 'any_state',
         zip: 'any_zip',
         country: 'any_country',
+        maxPermittedCouponPercentage: 10,
       })),
     };
 
@@ -78,11 +82,11 @@ describe('CreateOrderController', () => {
     expect(response).toEqual(success({ orderId: 'any_id' }));
   });
 
-  it('should return internal server error if CreateOrder throws unhandled error', async () => {
+  it('should throw error if CreateOrder throws unhandled error', async () => {
     (createOrder.create as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
-    const response = await sut.handle(order);
+    const response = sut.handle(order);
 
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 
   it.each([{
@@ -134,23 +138,23 @@ describe('CreateOrderController', () => {
     },
     missing: ['items'],
   },
-  ])('should return bad request if missing required params ', async (params) => {
-    const response = await sut.handle(params.data);
+  ])('should throw MissingParamsError if missing required params ', async (params) => {
+    const response = sut.handle(params.data);
 
-    expect(response).toEqual(badRequest(new MissingParamsError({
+    await expect(response).rejects.toThrow(new MissingParamsError({
       params: params.missing,
-    })));
+    }));
   });
 
-  it('should return bad request if invalid params was provided', async () => {
+  it('should throw InvalidParamsError if invalid params was provided', async () => {
     (createOrder.create as jest.Mock).mockImplementationOnce(async () => Promise.reject(new InvalidParamsError({
       params: ['total'],
     })));
-    const response = await sut.handle(order);
+    const response = sut.handle(order);
 
-    expect(response).toEqual(badRequest(new InvalidParamsError({
+    await expect(response).rejects.toThrow(new InvalidParamsError({
       params: ['total'],
-    })));
+    }));
   });
 
   it('should call emailVerificationSender two times', async () => {
@@ -189,9 +193,9 @@ describe('CreateOrderController', () => {
 
   it('should return notFound if any entity was not found', async () => {
     (getAccountById.getById as jest.Mock).mockImplementationOnce(async () => Promise.reject(new NotFound({ entity: 'Account' })));
-    const response = await sut.handle(order);
+    const response = sut.handle(order);
 
-    expect(response).toEqual(notFound(new NotFound({ entity: 'Account' })));
+    await expect(response).rejects.toThrow(new NotFound({ entity: 'Account' }));
   });
 
   it('should return badRequest if invalid paymentMethod was provided', async () => {
@@ -200,10 +204,10 @@ describe('CreateOrderController', () => {
       paymentMethod: undefined,
     };
 
-    const response = await sut.handle(invalidPaymentMethod);
+    const response = sut.handle(invalidPaymentMethod);
 
-    expect(response).toEqual(badRequest(new InvalidParamsError({
+    await expect(response).rejects.toThrow(new InvalidParamsError({
       params: ['paymentMethod'],
-    })));
+    }));
   });
 });

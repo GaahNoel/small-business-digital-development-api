@@ -9,6 +9,25 @@
     }
   },
   "paths": {
+    "/api/account/all": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Get All Account ids",
+        "description": "Get All Account ids",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/account/{id}": {
       "get": {
         "tags": ["Account"],
@@ -476,6 +495,10 @@
                   "zip": {
                     "type": "string",
                     "required": true
+                  },
+                  "maxPermittedCouponPercentage": {
+                    "type": "number",
+                    "required": false
                   }
                 },
                 "example": {
@@ -489,7 +512,8 @@
                   "longitude":"-123123",
                   "state":"state",
                   "street":"street",
-                  "zip":"111111000"
+                  "zip":"111111000",
+                  "maxPermittedCouponPercentage": 10
                 }
               }
             }
@@ -536,47 +560,51 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "description": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "imageUrl": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "accountId": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "city": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "country": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "latitude": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "longitude": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "state": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "street": {
                     "type": "string",
-                    "required": true
+                    "required": false
                   },
                   "zip": {
                     "type": "string",
-                    "required": true
+                    "required": false
+                  },
+                  "maxPermittedCouponPercentage": {
+                    "type": "number",
+                    "required": false
                   }
                 },
                 "example": {
@@ -590,7 +618,8 @@
                   "longitude":"-123123",
                   "state":"state",
                   "street":"street",
-                  "zip":"111111000"
+                  "zip":"111111000",
+                  "maxPermittedCouponPercentage": 5
                 }
               }
             }
@@ -1126,6 +1155,10 @@
                     "change": {
                       "type": "number",
                       "required": true
+                    },
+                    "couponId": {
+                      "type": "string",
+                      "required": false
                     }
                   }
                 },
@@ -1133,10 +1166,14 @@
                   "businessId":"123",
                   "buyerId":"1223",
                   "total":100,
+                  "description": "any-example",
+                  "paymentMethod": "CreditCard | Cash",
+                  "change": 10,
                   "items": {
                     "quantity": 1,
                     "productId": "123"
-                  }
+                  },
+                  "couponId": "any-coupon-id"
                 }
               }
             }
@@ -1195,6 +1232,259 @@
           }
         }
       
+    },
+    "/api/challenge/{accountId}": {
+      "get": {
+        "tags": ["Challenge"],
+        "summary": "Get account challenges",
+        "description": "Get account challenges",
+        "parameters": [{
+          "name": "token",
+          "in": "header",
+          "description": "Jwt token",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "accountId",
+          "in": "path",
+          "description": "Account Id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
+    "/api/challenge/renew/{accountId}": {
+      "get": {
+        "tags": ["Challenge"],
+        "summary": "Renew",
+        "description": "Renew account challenges",
+        "parameters": [{
+          "name": "accountId",
+          "in": "path",
+          "description": "Account id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "periodicity",
+          "in": "query",
+          "description": "periodicity of challenge",
+          "required": true,
+          "schema": {
+            "type": "daily | weekly"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+    },
+    "/api/challenge/create": {
+      "post": {
+        "tags": ["Challenge"],
+        "summary": "Create",
+        "description": "Create new challenge",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                    "description": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "type": {
+                      "type": "buyAny | sellAny | buyProximity | buyback | buyProduct | buyService | sellProduct | sellService",
+                      "required": true
+                    },
+                    "goal": {
+                      "type": "number",
+                      "required": true
+                    },
+                    "periodicity": {
+                      "type": "daily | weekly",
+                      "required": true
+                    },
+                    "reward": {
+                      "type": "number",
+                      "required": true
+                    }
+                  }
+                },
+                "example": {
+                  "description":"Buy 5 products",
+                  "goal":5,
+                  "type": "buyProduct",
+                  "periodicity": "daily",
+                  "reward": 50
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      
+    },
+    "/api/bonus/{accountId}": {
+      "get": {
+          "tags": ["Bonus"],
+          "summary": "Get account bonuses",
+          "description": "Get account bonuses",
+          "parameters": [{
+            "name": "token",
+            "in": "headers",
+            "description": "Jwt auth token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },{
+            "name": "type",
+            "in": "query",
+            "description": "coupon | highlight",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },{
+            "name": "state",
+            "in": "query",
+            "description": "ACTIVE | EXPIRED | USED",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }]
+        },
+      "responses": {
+        "200": {
+          "description": "Success"
+        },
+        "404": {
+          "description": "Not Found"
+        },
+        "500": {
+          "description": "Internal server error"
+        }
+      }
+    },
+    "/api/bonus/list": {
+      "get": {
+        "tags": ["Bonus"],
+        "summary": "List",
+        "description": "List all bonus",
+        "parameters": [{
+          "name": "type",
+          "in": "query",
+          "description": "client | business",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }]
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+    },
+    "/api/bonus/buy": {
+      "post": {
+        "tags": ["Bonus"],
+        "summary": "Buy",
+        "description": "Buy bonus for account",
+        "parameters": [{
+          "name": "token",
+          "in": "headers",
+          "description": "Jwt auth token",
+          "required": false,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": true,
+                "properties": {
+                    "accountId": {
+                      "type": "string",
+                      "required": true
+                    },
+                    "bonusId": {
+                      "type":  "string",
+                      "required": true
+                    },
+                    "quantity": {
+                      "type": "number",
+                      "required": true
+                    },
+                    "businessId": {
+                      "type": "string",
+                      "required": false
+                    }
+                  }
+                },
+                "example": {
+                  "accountId":"Any account id",
+                  "bonusId": "Any bonus id",
+                  "quantity": "1",
+                  "businessId": "any-business-id"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
     }
   }
 }

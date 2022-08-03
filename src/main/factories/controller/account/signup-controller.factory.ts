@@ -4,6 +4,7 @@ import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prism
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 import { env } from '@/main/config/env';
 import { SignUpController } from '@/presentation/controller/account/signup.controller';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeSignUpController = (): BaseController => {
@@ -31,5 +32,5 @@ export const makeSignUpController = (): BaseController => {
     encrypter,
   );
 
-  return new SignUpController(addAccount);
+  return new ErrorHandlerDecorator(new SignUpController(addAccount));
 };

@@ -18,6 +18,7 @@ describe('DbEditBusiness', () => {
     state: 'any_state',
     zip: 'any_zip',
     country: 'any_country',
+    maxPermittedCouponPercentage: 5,
   };
 
   beforeAll(() => {

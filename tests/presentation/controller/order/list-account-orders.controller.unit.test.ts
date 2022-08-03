@@ -1,8 +1,7 @@
-import { ListBusinessById } from '@/domain/usecases/business';
 import { ListAccountOrders } from '@/domain/usecases/order';
 import { ListAccountOrdersController } from '@/presentation/controller/order';
 import { MissingParamsError } from '@/presentation/errors';
-import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
+import { success } from '@/presentation/helpers/http.helpers';
 
 describe('ListAccountOrdersController', () => {
   const request = {
@@ -213,20 +212,20 @@ describe('ListAccountOrdersController', () => {
       type: 'buy' as 'buy',
     },
     missing: ['accountId'],
-  }])('should return badRequest if required params are missing', async ({ params, missing }) => {
-    const response = await sut.handle(params);
-    expect(response).toEqual(badRequest(
+  }])('should throw MissingParamsError if required params are missing', async ({ params, missing }) => {
+    const response = sut.handle(params);
+    await expect(response).rejects.toThrow(
       new MissingParamsError({
         params: missing,
       }),
-    ));
+    );
   });
 
-  it('should return internal server error if throws unhandled error ', async () => {
+  it('should throw error if throws unhandled error ', async () => {
     (listAccountOrders.listAccountOrders as jest.Mock).mockImplementation(async () => {
       throw new Error();
     });
-    const response = await sut.handle(request);
-    expect(response).toEqual(internalServerError(new Error()));
+    const response = sut.handle(request);
+    await expect(response).rejects.toThrow(new Error());
   });
 });

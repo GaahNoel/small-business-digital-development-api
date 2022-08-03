@@ -38,22 +38,22 @@ describe('EditProductController', () => {
 
     expect(result).toEqual(success({ productId: 'any_id' }));
   });
-  it('should return internal server error if edit product throws error', async () => {
+  it('should throw error if edit product throws error', async () => {
     (editProduct.edit as jest.Mock).mockImplementation(async () => Promise.reject(new Error()));
 
-    const result = await editProductController.handle(editProductParams);
+    const result = editProductController.handle(editProductParams);
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 
-  it('should return bad request if productId was not provided', async () => {
-    const result = await editProductController.handle({
+  it('should throw MissingParamsError if productId was not provided', async () => {
+    const result = editProductController.handle({
       ...editProductParams,
       productId: undefined,
     });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: ['productId'],
-    })));
+    }));
   });
 });

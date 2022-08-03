@@ -12,22 +12,15 @@ export class GetBusinessCitiesAndStatesController implements BaseController {
   constructor(private readonly getBusinessCitiesAndStates: GetBusinessCitiesAndStates) {}
 
   async handle(): Promise<GetBusinessCitiesAndStatesController.Result> {
-    try {
-      const result = await this.getBusinessCitiesAndStates.getCitiesAndStates({});
+    const result = await this.getBusinessCitiesAndStates.getCitiesAndStates({});
 
-      if (result.length <= 0) {
-        throw new NotFound({
-          entity: 'Business',
-          message: 'No business found on Db',
-        });
-      }
-
-      return success(result);
-    } catch (error) {
-      if (error instanceof NotFound) {
-        return badRequest(error);
-      }
-      return internalServerError(error);
+    if (result.length <= 0) {
+      throw new NotFound({
+        entity: 'Business',
+        message: 'No business found on Db',
+      });
     }
+
+    return success(result);
   }
 }

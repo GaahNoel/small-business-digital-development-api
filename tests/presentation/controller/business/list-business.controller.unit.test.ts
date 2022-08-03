@@ -1,6 +1,5 @@
 import { ListBusiness } from '@/domain/usecases/business';
 import { MissingParamsError } from '@/presentation/errors';
-import { badRequest, internalServerError } from '@/presentation/helpers/http.helpers';
 import { ListBusinessController } from '@/presentation/controller/business/';
 
 describe('ListBusinessController', () => {
@@ -22,6 +21,7 @@ describe('ListBusinessController', () => {
           state: 'any-state',
           zip: 'any-zip',
           country: 'any-country',
+          maxPermittedCouponPercentage: 5,
         },
       ])),
     };
@@ -70,13 +70,13 @@ describe('ListBusinessController', () => {
         missing: ['latitude', 'radius'],
       },
     ])('should return MissingParamsError if location is missing', async (params: { location: { latitude: number, longitude:number, radius: number }, missing: string[] }) => {
-      const result = await sut.handle({
+      const result = sut.handle({
         ...params.location,
       });
 
-      expect(result).toEqual(badRequest(new MissingParamsError({
+      await expect(result).rejects.toThrow(new MissingParamsError({
         params: params.missing,
-      })));
+      }));
     });
 
     it.each([
@@ -95,14 +95,14 @@ describe('ListBusinessController', () => {
         missing: ['city'],
       },
     ])('should return MissingParamsError if city is missing', async (params: { city: { name: string, state: string }, missing: string[] }) => {
-      const result = await sut.handle({
+      const result = sut.handle({
         city: params.city.name,
         state: params.city.state,
       });
 
-      expect(result).toEqual(badRequest(new MissingParamsError({
+      await expect(result).rejects.toThrow(new MissingParamsError({
         params: params.missing,
-      })));
+      }));
     });
   });
 
@@ -155,6 +155,7 @@ describe('ListBusinessController', () => {
             state: 'any-state',
             zip: 'any-zip',
             country: 'any-country',
+            maxPermittedCouponPercentage: 5,
           },
         ],
       });
@@ -163,7 +164,7 @@ describe('ListBusinessController', () => {
     it('should throw internalServerError if ListBusiness throws unhandled error', async () => {
       listBusiness.list = jest.fn(() => Promise.reject(new Error()));
 
-      const result = await sut.handle({
+      const result = sut.handle({
         latitude: 123,
         longitude: 456,
         radius: 2,
@@ -171,7 +172,7 @@ describe('ListBusinessController', () => {
         state: 'any-state',
       });
 
-      expect(result).toEqual(internalServerError(new Error()));
+      await expect(result).rejects.toThrow(new Error());
     });
   });
 });

@@ -13,12 +13,13 @@ export namespace ListBusinessById {
     description: string;
     accountId: string;
     imageUrl: string;
-    latitude: String
-    longitude: String
-    street: String
-    city: String
-    state: String
-    zip: String
-    country: String
+    latitude: String;
+    longitude: String;
+    street: String;
+    city: String;
+    state: String;
+    zip: String;
+    country: String;
+    maxPermittedCouponPercentage: number;
   };
 }

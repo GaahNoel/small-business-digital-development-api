@@ -10,6 +10,7 @@ export type AddBusinessParams = {
   state: string
   zip: string
   country: string
+  maxPermittedCouponPercentage: number;
 };
 
 export interface AddBusiness {

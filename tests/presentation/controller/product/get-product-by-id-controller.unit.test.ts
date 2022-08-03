@@ -2,7 +2,7 @@ import { GetProductById } from '@/domain/usecases/product';
 import { GetProductByIdController } from '@/presentation/controller/product';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 
 describe('GetProductByIdController', () => {
@@ -61,11 +61,11 @@ describe('GetProductByIdController', () => {
     }));
   });
 
-  it('should return bad request if validation fails', async () => {
-    const response = await sut.handle({
+  it('should throw MissingParamsError if validation fails', async () => {
+    const response = sut.handle({
       productId: undefined,
     });
-    expect(response).toEqual(badRequest(new MissingParamsError({ params: ['productId'] })));
+    await expect(response).rejects.toThrow(new MissingParamsError({ params: ['productId'] }));
   });
 
   it('should return not found if GetProductById throws NotFound Error', async () => {
@@ -73,20 +73,20 @@ describe('GetProductByIdController', () => {
       entity: 'Product',
     })));
     const productId = 'any-product-id';
-    const response = await sut.handle({
+    const response = sut.handle({
       productId,
     });
-    expect(response).toEqual(notFound(new NotFound({
+    await expect(response).rejects.toThrow(new NotFound({
       entity: 'Product',
-    })));
+    }));
   });
 
-  it('should return internalServerError if GetProductById throws unhandled error ', async () => {
+  it('should thhrow error if GetProductById throws unhandled error ', async () => {
     (getProductById.get as jest.Mock).mockImplementation(async () => Promise.reject(new Error()));
     const productId = 'any-product-id';
-    const response = await sut.handle({
+    const response = sut.handle({
       productId,
     });
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 });

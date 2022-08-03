@@ -17,7 +17,11 @@ export class CategoryPrismaRepository implements AddCategoryRepository, ListCate
   }
 
   async list(): Promise<ListCategoryRepository.Result> {
-    const categories = await prisma.category.findMany({});
+    const categories = await prisma.category.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
 
     return categories;
   }

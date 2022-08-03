@@ -19,4 +19,8 @@ export type Order = {
   paymentMethod: 'CreditCard' | 'Cash'
   change?: number;
   items: OrderItem[];
+  sellerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
+  buyerStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
 };
+
+export type OrderStatus = 'CANCELED' | 'COMPLETED' | 'PENDING';

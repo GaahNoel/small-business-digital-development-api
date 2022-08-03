@@ -11,6 +11,7 @@ describe('AccountPrismaRepository', () => {
   });
 
   beforeAll(async () => {
+    const deleteActiveChallenges = prisma.activeChallenge.deleteMany({});
     const deleteOrderItems = prisma.orderItem.deleteMany();
     const deleteOrders = prisma.order.deleteMany();
     const deleteProduct = prisma.product.deleteMany();
@@ -19,6 +20,7 @@ describe('AccountPrismaRepository', () => {
     const deleteAccount = prisma.account.deleteMany();
 
     await prisma.$transaction([
+      deleteActiveChallenges,
       deleteOrderItems,
       deleteOrders,
       deleteProduct,
@@ -27,7 +29,11 @@ describe('AccountPrismaRepository', () => {
       deleteAccount,
     ]);
 
-    prisma.$disconnect();
+    await prisma.$disconnect();
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
   describe('add', () => {
     it('should return account on add success ', async () => {
@@ -103,6 +109,33 @@ describe('AccountPrismaRepository', () => {
       const account = await sut.getById({ accountId: id });
 
       expect(account.id).toEqual(id);
+    });
+  });
+
+  describe('getAllAccountIds', () => {
+    it('should return all account ids', async () => {
+      const sut = makeSut();
+
+      const request = mockAddAccountParams();
+      const { id } = await sut.add(request);
+
+      const { accountIds } = await sut.getAllAccountIds();
+
+      expect(accountIds).toContain(id);
+    });
+  });
+
+  describe('updateBalance', () => {
+    it('should add balance to account', async () => {
+      const sut = makeSut();
+
+      const request = mockAddAccountParams();
+      const { id } = await sut.add(request);
+
+      const balance = 1;
+      const result = await sut.updateBalance({ accountId: id, balance });
+
+      expect(result.newBalance).toBe(1);
     });
   });
 });

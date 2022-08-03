@@ -2,6 +2,7 @@ import { DbCheckAccountPassword } from '@/data/usecases/account/db-check-account
 import { AccountPrismaRepository } from '@/infra';
 import { BcryptAdapter } from '@/infra/cryptography';
 import { CheckAccountPasswordController } from '@/presentation/controller/account/check-account-password.controller';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeCheckAccountPasswordController = (): BaseController => {
@@ -11,5 +12,5 @@ export const makeCheckAccountPasswordController = (): BaseController => {
 
   const checkAccountPassword = new DbCheckAccountPassword(getUserByEmailRepository, hashComparer);
 
-  return new CheckAccountPasswordController(checkAccountPassword);
+  return new ErrorHandlerDecorator(new CheckAccountPasswordController(checkAccountPassword));
 };

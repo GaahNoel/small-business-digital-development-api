@@ -3,7 +3,7 @@ import { CheckAccountPasswordController } from '@/presentation/controller/accoun
 import { NotFound } from '@/presentation/errors';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 
 const fakeValidRequest = {
@@ -56,11 +56,11 @@ describe('CheckAccountPasswordController', () => {
       password: undefined,
     };
 
-    const response = await sut.handle(fakeInvalidValidRequest);
+    const response = sut.handle(fakeInvalidValidRequest);
 
-    expect(response).toEqual(badRequest(new MissingParamsError({
+    await expect(response).rejects.toThrow(new MissingParamsError({
       params: ['password'],
-    })));
+    }));
   });
 
   it('should return bad request if email was not provided', async () => {
@@ -69,28 +69,28 @@ describe('CheckAccountPasswordController', () => {
       password: 'fake-password',
     };
 
-    const response = await sut.handle(fakeInvalidValidRequest);
+    const response = sut.handle(fakeInvalidValidRequest);
 
-    expect(response).toEqual(badRequest(new MissingParamsError({
+    await expect(response).rejects.toThrow(new MissingParamsError({
       params: ['email'],
-    })));
+    }));
   });
 
   it('should return internalServerError if CheckAccountPassword throws', async () => {
     jest.spyOn(checkAccountPassword, 'check').mockReturnValueOnce(Promise.reject(new Error()));
-    const response = await sut.handle(fakeValidRequest);
+    const response = sut.handle(fakeValidRequest);
 
-    expect(response).toEqual(internalServerError(new Error()));
+    await expect(response).rejects.toThrow(new Error());
   });
 
   it('should return notFound if checkAccountPassword throws NotFound error', async () => {
     jest.spyOn(checkAccountPassword, 'check').mockReturnValueOnce(Promise.reject(new NotFound({
       entity: 'Account',
     })));
-    const response = await sut.handle(fakeValidRequest);
+    const response = sut.handle(fakeValidRequest);
 
-    expect(response).toEqual(notFound(new NotFound({
+    await expect(response).rejects.toThrow(new NotFound({
       entity: 'Account',
-    })));
+    }));
   });
 });

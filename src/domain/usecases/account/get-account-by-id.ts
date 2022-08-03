@@ -9,6 +9,7 @@ export namespace GetAccountById {
     email: string;
     verified: boolean;
     provider: 'credentials' | 'socialMedia';
+    balance: number;
   };
 }
 

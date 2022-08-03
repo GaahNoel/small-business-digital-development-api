@@ -17,26 +17,14 @@ export class CheckAccountPasswordController implements BaseController {
   constructor(private readonly checkAccountPassword: CheckAccountPassword) {}
 
   async handle(data: CheckAccountPasswordController.Request): Promise<HttpResponse> {
-    try {
-      this.validateParams(data);
+    this.validateParams(data);
 
-      const result = await this.checkAccountPassword.check({
-        email: data.email,
-        password: data.password,
-      });
+    const result = await this.checkAccountPassword.check({
+      email: data.email,
+      password: data.password,
+    });
 
-      return success(result);
-    } catch (error) {
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    return success(result);
   }
 
   private validateParams(data: CheckAccountPasswordController.Request): void {

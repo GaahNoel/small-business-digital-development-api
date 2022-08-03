@@ -15,6 +15,9 @@ export namespace CreateOrderRepository {
     paymentMethod: 'CreditCard' | 'Cash'
     change?: number;
     items: OrderItem[];
+    latitude?: number;
+    longitude?: number;
+    accountBonusId?: string;
   };
   export type Result = CreateOrder.Result;
 }

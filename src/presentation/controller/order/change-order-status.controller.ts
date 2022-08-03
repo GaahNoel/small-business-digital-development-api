@@ -5,36 +5,28 @@ import {
 } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
+export type ChangeOrderStatusControllerParams = {
+  orderId: string;
+  status: 'COMPLETED' | 'CANCELED'
+  authAccountId: string,
+};
+
 namespace ChangeOrderStatusController {
-  export type Params = {
-    orderId: string;
-    status: 'COMPLETED' | 'CANCELED'
-  };
-  export type Result = HttpResponse;
+  export type Params = ChangeOrderStatusControllerParams;
+  export type Result = HttpResponse<ChangeOrderStatus.Result>;
 }
 
 export class ChangeOrderStatusController implements BaseController {
   constructor(private readonly changeOrderStatus: ChangeOrderStatus) {}
 
   async handle(data: ChangeOrderStatusController.Params): Promise<ChangeOrderStatusController.Result> {
-    try {
-      this.validate(data);
-      const order = await this.changeOrderStatus.changeOrderStatus({
-        orderId: data.orderId,
-        status: data.status,
-      });
-      return success(order);
-    } catch (error) {
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      return internalServerError(error);
-    }
+    this.validate(data);
+    const order = await this.changeOrderStatus.changeOrderStatus({
+      orderId: data.orderId,
+      status: data.status,
+      accountId: data.authAccountId,
+    });
+    return success(order);
   }
 
   private validate(data: ChangeOrderStatusController.Params): void {

@@ -3,7 +3,7 @@ import { ListProductsByBusinesses } from '@/domain/usecases/product';
 import { ListProductsByBusinessesController } from '@/presentation/controller/product';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 
 describe('ListProductsByBusinessesController', () => {
@@ -22,7 +22,7 @@ describe('ListProductsByBusinessesController', () => {
         salePrice: 2,
         imageUrl: 'any_product_image_url',
         business: {
-          id: 'any_product_business_id',
+          id: 'any-business-id',
           name: 'any_product_business_name',
           distance: 1,
         },
@@ -46,6 +46,8 @@ describe('ListProductsByBusinessesController', () => {
         state: 'any-state',
         zip: 'any-zip',
         country: 'any-country',
+        maxPermittedCouponPercentage: 10,
+        highlighted: true,
       }])),
     };
   });
@@ -125,14 +127,14 @@ describe('ListProductsByBusinessesController', () => {
       missing: ['latitude', 'radius'],
     },
   ])('should return MissingParamsError if location is missing', async (params: { location: { latitude: number, longitude:number, radius: number }, missing: string[] }) => {
-    const result = await sut.handle({
+    const result = sut.handle({
       ...params.location,
       type: 'product',
     });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: params.missing,
-    })));
+    }));
   });
 
   it.each([
@@ -151,30 +153,30 @@ describe('ListProductsByBusinessesController', () => {
       missing: ['city'],
     },
   ])('should return MissingParamsError if city is missing', async (params: { city: { name: string, state: string }, missing: string[] }) => {
-    const result = await sut.handle({
+    const result = sut.handle({
       city: params.city.name,
       state: params.city.state,
       type: 'product',
     });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: params.missing,
-    })));
+    }));
   });
 
   it('should return MissingParamsError if type is missing', async () => {
-    const result = await sut.handle({
+    const result = sut.handle({
       type: undefined,
     });
 
-    expect(result).toEqual(badRequest(new MissingParamsError({
+    await expect(result).rejects.toThrow(new MissingParamsError({
       params: ['type'],
-    })));
+    }));
   });
 
   it('should return internalServerError if ListBusiness throws an error', async () => {
     (listBusiness.list as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
-    const result = await sut.handle({
+    const result = sut.handle({
       type: 'product',
       latitude: 1,
       longitude: 2,
@@ -183,12 +185,12 @@ describe('ListProductsByBusinessesController', () => {
       state: 'any_city_state',
     });
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 
   it('should return internalServerError if listProductsByBusinesses throws an error', async () => {
     (listProductsByBusinesses.listProductsByBusinesses as jest.Mock).mockImplementationOnce(async () => Promise.reject(new Error()));
-    const result = await sut.handle({
+    const result = sut.handle({
       type: 'product',
       latitude: 1,
       longitude: 2,
@@ -197,7 +199,7 @@ describe('ListProductsByBusinessesController', () => {
       state: 'any_city_state',
     });
 
-    expect(result).toEqual(internalServerError(new Error()));
+    await expect(result).rejects.toThrow(new Error());
   });
 
   it('should return a list of products', async () => {
@@ -219,9 +221,10 @@ describe('ListProductsByBusinessesController', () => {
       salePrice: 2,
       imageUrl: 'any_product_image_url',
       business: {
-        id: 'any_product_business_id',
+        id: 'any-business-id',
         name: 'any_product_business_name',
         distance: 1,
+        highlighted: true,
       },
       category: {
         id: 'any_product_category_id',
@@ -233,7 +236,7 @@ describe('ListProductsByBusinessesController', () => {
 
   it('should return not found if businesses not found', async () => {
     (listBusiness.list as jest.Mock).mockImplementationOnce(async () => Promise.resolve([]));
-    const result = await sut.handle({
+    const result = sut.handle({
       type: 'product',
       latitude: 1,
       longitude: 2,
@@ -242,8 +245,8 @@ describe('ListProductsByBusinessesController', () => {
       state: 'any_city_state',
     });
 
-    expect(result).toEqual(notFound(new NotFound({
+    await expect(result).rejects.toThrow(new NotFound({
       entity: 'business',
-    })));
+    }));
   });
 });

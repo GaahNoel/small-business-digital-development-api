@@ -1,3 +1,4 @@
+import { OrderStatus } from '@prisma/client';
 import { prisma } from '@/infra/db/helpers';
 import { CreateOrderRepository } from '@/data/protocols/db/order/create-order.repository';
 import { OrderItem } from '@/domain/models/order';
@@ -9,6 +10,8 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
     const result = await prisma.order.create({
       data: {
         ...order,
+        latitude: order.latitude ? String(order.latitude) : undefined,
+        longitude: order.longitude ? String(order.longitude) : undefined,
         items: {
           create: order.items.map((orderItem: OrderItem) => ({
             ...orderItem,
@@ -39,11 +42,26 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         change: true,
         createdAt: true,
         updatedAt: true,
+        sellerStatus: true,
+        buyerStatus: true,
+        latitude: true,
+        longitude: true,
+        accountBonusId: true,
         items: {
           select: {
             id: true,
             quantity: true,
-            productId: true,
+            product: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                salePrice: true,
+                listPrice: true,
+                imageUrl: true,
+                type: true,
+              },
+            },
           },
         },
       },
@@ -53,18 +71,32 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
   async updateOrderById(params: UpdateOrderByIdRepository.Params): Promise<UpdateOrderByIdRepository.Result> {
     const { orderId, status } = params;
 
+    const data : { status?: OrderStatus, sellerStatus?: OrderStatus, buyerStatus?: OrderStatus } = {};
+
+    if (params.statusType === 'seller') {
+      data.sellerStatus = status;
+    }
+
+    if (params.statusType === 'buyer') {
+      data.buyerStatus = status;
+    }
+
+    if (params.statusType === 'order' || Object.keys(data).length === 0) {
+      data.status = status;
+    }
+
     const updatedOrder = await prisma.order.update({
       where: {
         id: orderId,
       },
-      data: {
-        status,
-      },
+      data,
     });
 
     return {
       orderId,
       status: updatedOrder.status,
+      buyerStatus: updatedOrder.buyerStatus,
+      sellerStatus: updatedOrder.sellerStatus,
       total: updatedOrder.total,
     };
   }

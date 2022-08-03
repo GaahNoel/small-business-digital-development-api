@@ -14,6 +14,7 @@ describe('DbGetAccountById', () => {
         email: 'email@email.com',
         verified: true,
         provider: 'credentials',
+        balance: 0,
       })),
     };
   });
@@ -36,6 +37,7 @@ describe('DbGetAccountById', () => {
       email: 'email@email.com',
       verified: true,
       provider: 'credentials',
+      balance: 0,
     });
   });
 

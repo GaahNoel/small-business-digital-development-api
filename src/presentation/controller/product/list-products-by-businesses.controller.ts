@@ -22,49 +22,48 @@ export class ListProductsByBusinessesController implements BaseController {
   constructor(private readonly listBusiness: ListBusiness, private readonly listProductsByBusinesses: ListProductsByBusinesses) {}
 
   async handle(data: ListProductsByBusinessesController.Params): Promise<ListProductsByBusinessesController.Result> {
-    try {
-      this.validate(data);
-      const businesses = await this.listBusiness.list({
-        location: {
-          latitude: data.latitude,
-          longitude: data.longitude,
-          radius: data.radius,
-        },
-        city: {
-          name: data.city,
-          state: data.state,
-        },
+    this.validate(data);
+    const businesses = await this.listBusiness.list({
+      location: {
+        latitude: data.latitude,
+        longitude: data.longitude,
+        radius: data.radius,
+      },
+      city: {
+        name: data.city,
+        state: data.state,
+      },
+    });
+
+    if (businesses.length <= 0) {
+      throw new NotFound({
+        entity: 'Business',
       });
-
-      if (businesses.length <= 0) {
-        throw new NotFound({
-          entity: 'Business',
-        });
-      }
-      const mappedBusinessesIds = businesses.map((business) => business.id);
-
-      const products = await this.listProductsByBusinesses.listProductsByBusinesses({
-        businessesIds: mappedBusinessesIds,
-        type: data.type.toLocaleLowerCase() as 'product' | 'service',
-        location: {
-          latitude: data.latitude,
-          longitude: data.longitude,
-          radius: data.radius,
-        },
-      });
-
-      return success(products);
-    } catch (error) {
-      if (error instanceof MissingParamsError) {
-        return badRequest(error);
-      }
-
-      if (error instanceof NotFound) {
-        return notFound(error);
-      }
-
-      return internalServerError(error);
     }
+    const mappedBusinessesIds = businesses.map((business) => business.id);
+
+    const products = await this.listProductsByBusinesses.listProductsByBusinesses({
+      businessesIds: mappedBusinessesIds as string[],
+      type: data.type.toLocaleLowerCase() as 'product' | 'service',
+      location: {
+        latitude: data.latitude,
+        longitude: data.longitude,
+        radius: data.radius,
+      },
+    });
+
+    const mappedProducts = products.map((product) => {
+      const businessFound = businesses.find((business) => business.id === product.business.id);
+      return {
+        ...product,
+        business: {
+          ...product.business,
+          highlighted: businessFound.highlighted,
+        },
+      };
+    });
+
+    return success(mappedProducts);
   }
 
   private validate(data: ListProductsByBusinessesController.Params): void {
