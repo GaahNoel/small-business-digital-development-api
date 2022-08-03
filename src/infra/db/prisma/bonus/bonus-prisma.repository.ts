@@ -4,16 +4,18 @@ import {
 import { CreateBonusRepository } from '@/data/protocols/db/bonus/create-bonus.repository';
 import { GetAccountBonusRepository } from '@/data/protocols/db/bonus/get-account-bonus.repository';
 import { GetBonusByIdRepository } from '@/data/protocols/db/bonus/get-bonus-by-id.repository';
+import { ListAccountBonusRepository } from '@/data/protocols/db/bonus/list-account-bonuses.repository';
 import { prisma } from '../../helpers';
 
 export class BonusPrismaRepository implements
- CreateBonusRepository,
+  CreateBonusRepository,
   ListBonusRepository,
   CreateAccountBonusRepository,
   GetBonusByIdRepository,
   GetAccountBonusRepository,
   GetAccountBonusByIdRepository,
-  ChangeBonusStatusRepository {
+  ChangeBonusStatusRepository,
+  ListAccountBonusRepository {
   async create(params: CreateBonusRepository.Params): Promise<CreateBonusRepository.Result> {
     const createdBonus = await prisma.bonus.create({
       data: {
@@ -158,5 +160,38 @@ export class BonusPrismaRepository implements
     return {
       status: updatedBonus.status,
     };
+  }
+
+  async listAccountBonuses(params: ListAccountBonusRepository.Params): Promise<ListAccountBonusRepository.Result> {
+    const where = params.accountId ? {
+      accountId: params.accountId,
+    } : {};
+
+    const accountBonuses = await prisma.accountBonus.findMany({
+      where,
+      select: {
+        id: true,
+        accountId: true,
+        bonus: {
+          select: {
+            id: true,
+            type: true,
+            duration: true,
+            price: true,
+            name: true,
+            description: true,
+            percent: true,
+          },
+        },
+        quantity: true,
+        measure: true,
+        value: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return accountBonuses;
   }
 }

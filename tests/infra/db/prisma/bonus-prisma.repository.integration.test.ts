@@ -368,4 +368,75 @@ describe('BonusPrismaRepository', () => {
       });
     });
   });
+
+  describe('listAccountBonuses', () => {
+    it('should return account bonuses if called successfully', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      await sut.createAccountBonus(params);
+
+      const result = await sut.listAccountBonuses({
+        accountId: createdAccount.id,
+      });
+
+      expect(result).toEqual([{
+        id: expect.any(String),
+        accountId: createdAccount.id,
+        bonus: {
+          id: createdBonus.bonusId,
+          type: 'coupon' as 'coupon',
+          duration: 1,
+          price: 10,
+          name: 'Bonus 1',
+          description: 'Bonus 1 description',
+          percent: 10,
+        },
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+        status: 'ACTIVE',
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      }]);
+    });
+    it('should return account bonuses if called successfully without account id', async () => {
+      const params = {
+        accountId: createdAccount.id,
+        bonusId: createdBonus.bonusId,
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+      };
+
+      await sut.createAccountBonus(params);
+
+      const result = await sut.listAccountBonuses({});
+
+      expect(result).toEqual([{
+        id: expect.any(String),
+        accountId: createdAccount.id,
+        bonus: {
+          id: createdBonus.bonusId,
+          type: 'coupon' as 'coupon',
+          duration: 1,
+          price: 10,
+          name: 'Bonus 1',
+          description: 'Bonus 1 description',
+          percent: 10,
+        },
+        quantity: 1,
+        measure: 'percent' as 'percent',
+        value: 10,
+        status: 'ACTIVE',
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      }]);
+    });
+  });
 });
