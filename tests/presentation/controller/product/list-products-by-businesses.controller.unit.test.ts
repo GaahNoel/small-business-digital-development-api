@@ -22,7 +22,7 @@ describe('ListProductsByBusinessesController', () => {
         salePrice: 2,
         imageUrl: 'any_product_image_url',
         business: {
-          id: 'any_product_business_id',
+          id: 'any-business-id',
           name: 'any_product_business_name',
           distance: 1,
         },
@@ -47,6 +47,7 @@ describe('ListProductsByBusinessesController', () => {
         zip: 'any-zip',
         country: 'any-country',
         maxPermittedCouponPercentage: 10,
+        highlighted: true,
       }])),
     };
   });
@@ -220,9 +221,10 @@ describe('ListProductsByBusinessesController', () => {
       salePrice: 2,
       imageUrl: 'any_product_image_url',
       business: {
-        id: 'any_product_business_id',
+        id: 'any-business-id',
         name: 'any_product_business_name',
         distance: 1,
+        highlighted: true,
       },
       category: {
         id: 'any_product_category_id',

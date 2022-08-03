@@ -43,7 +43,7 @@ export class ListProductsByBusinessesController implements BaseController {
     const mappedBusinessesIds = businesses.map((business) => business.id);
 
     const products = await this.listProductsByBusinesses.listProductsByBusinesses({
-      businessesIds: mappedBusinessesIds,
+      businessesIds: mappedBusinessesIds as string[],
       type: data.type.toLocaleLowerCase() as 'product' | 'service',
       location: {
         latitude: data.latitude,
@@ -52,7 +52,18 @@ export class ListProductsByBusinessesController implements BaseController {
       },
     });
 
-    return success(products);
+    const mappedProducts = products.map((product) => {
+      const businessFound = businesses.find((business) => business.id === product.business.id);
+      return {
+        ...product,
+        business: {
+          ...product.business,
+          highlighted: businessFound.highlighted,
+        },
+      };
+    });
+
+    return success(mappedProducts);
   }
 
   private validate(data: ListProductsByBusinessesController.Params): void {
