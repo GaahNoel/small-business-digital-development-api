@@ -11,19 +11,20 @@ datasource db {
 }
 
 model Account {
-  id              String            @id @default(uuid())
-  name            String
-  password        String?
-  email           String            @unique
-  createdAt       DateTime          @default(now())
-  verified        Boolean           @default(false)
-  provider        Provider
-  Businesses      Business[]
-  BuyOrders       Order[]           @relation(name: "BuyOrders")
-  SellerOrders    Order[]           @relation(name: "SellerOrders")
-  ActiveChallenge ActiveChallenge[]
-  balance         Float             @default(0)
-  AccountBonus    AccountBonus[]
+  id                   String                 @id @default(uuid())
+  name                 String
+  password             String?
+  email                String                 @unique
+  createdAt            DateTime               @default(now())
+  verified             Boolean                @default(false)
+  provider             Provider
+  Businesses           Business[]
+  BuyOrders            Order[]                @relation(name: "BuyOrders")
+  SellerOrders         Order[]                @relation(name: "SellerOrders")
+  ActiveChallenge      ActiveChallenge[]
+  balance              Float                  @default(0)
+  AccountBonus         AccountBonus[]
+  AccountWatchedVideos AccountWatchedVideos[]
 }
 
 enum Provider {
@@ -220,4 +221,12 @@ enum BonusStatus {
 enum BonusMeasure {
   percent
   priority
+}
+
+model AccountWatchedVideos {
+  id        String  @id @default(uuid())
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String
+  url       String?
+  createdAt DateTime @default(now())
 }

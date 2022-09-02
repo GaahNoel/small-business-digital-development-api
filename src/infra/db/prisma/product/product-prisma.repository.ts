@@ -1,4 +1,3 @@
-import { GetBusinessCitiesAndStatesRepository } from '@/data/protocols/db/business/get-business-cities-and-states.repository';
 import { AddProductRepository, GetProductByIdRepository, ListProductFromBusinessRepository } from '@/data/protocols/db/product';
 import { DeleteProductRepository } from '@/data/protocols/db/product/delete-product.repository';
 import { EditProductRepository } from '@/data/protocols/db/product/edit-product.repository';
