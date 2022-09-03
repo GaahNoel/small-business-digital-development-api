@@ -13,8 +13,9 @@ describe('WatchedVideoPrismaRepository', () => {
     addedAccount = await addAccountRepository.add(mockAddAccountParams());
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     watchedVideoPrismaRepository = new WatchedVideoPrismaRepository();
+    await prisma.accountWatchedVideos.deleteMany({});
   });
 
   afterAll(async () => {
@@ -31,6 +32,28 @@ describe('WatchedVideoPrismaRepository', () => {
 
       expect(response).toEqual({
         watchedVideoId: expect.any(String),
+      });
+    });
+  });
+
+  describe('getAccountVideos', () => {
+    it('should return account videos', async () => {
+      await watchedVideoPrismaRepository.create({
+        accountId: addedAccount.id,
+        url: 'any-url',
+      });
+
+      const response = await watchedVideoPrismaRepository.getAccountVideos({
+        accountId: addedAccount.id,
+      });
+
+      expect(response).toEqual({
+        videos: [{
+          id: expect.any(String),
+          accountId: addedAccount.id,
+          url: 'any-url',
+          createdAt: expect.any(Date),
+        }],
       });
     });
   });

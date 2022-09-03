@@ -1,4 +1,5 @@
 import { GetAccountById } from '@/domain/usecases/account';
+import { AddAccountBalance } from '@/domain/usecases/account/add-account-balance';
 import { CreateWatchedVideo } from '@/domain/usecases/watched-video';
 import { CreateWatchedVideoController } from '@/presentation/controller/watched-video';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
@@ -12,6 +13,7 @@ const mockRequest = () => ({
 describe('CreateWatchedVideoController', () => {
   let createWatchedVideoController: CreateWatchedVideoController;
   let createWatchedVideo: CreateWatchedVideo;
+  let addAccountBalance: AddAccountBalance;
   let getAccountById: GetAccountById;
 
   beforeAll(() => {
@@ -30,10 +32,16 @@ describe('CreateWatchedVideoController', () => {
         balance: 10,
       })),
     };
+
+    addAccountBalance = {
+      addBalance: jest.fn(async () => Promise.resolve({
+        newBalance: 10,
+      })),
+    };
   });
 
   beforeEach(() => {
-    createWatchedVideoController = new CreateWatchedVideoController(createWatchedVideo, getAccountById);
+    createWatchedVideoController = new CreateWatchedVideoController(createWatchedVideo, getAccountById, addAccountBalance);
   });
 
   it('should call getAccountById with correct params', async () => {
@@ -53,11 +61,21 @@ describe('CreateWatchedVideoController', () => {
     });
   });
 
+  it('should call addAccountBalance with correct params', async () => {
+    await createWatchedVideoController.handle(mockRequest());
+
+    expect(addAccountBalance.addBalance).toHaveBeenCalledWith({
+      accountId: 'any-account-id',
+      balance: 10,
+    });
+  });
+
   it('should return success if called successfully', async () => {
     const response = await createWatchedVideoController.handle(mockRequest());
 
     expect(response).toEqual(success({
       watchedVideoId: 'any-id',
+      newBalance: 10,
     }));
   });
 

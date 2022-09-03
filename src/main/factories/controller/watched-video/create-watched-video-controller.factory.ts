@@ -1,4 +1,4 @@
-import { DBGetAccountById } from '@/data';
+import { DbAddAccountBalance, DBGetAccountById } from '@/data';
 import { DbCreateWatchedVideo } from '@/data/usecases/watched-video';
 import { AccountPrismaRepository } from '@/infra';
 import { WatchedVideoPrismaRepository } from '@/infra/db/prisma/watched-video';
@@ -11,6 +11,7 @@ export const makeCreateWatchedVideoController = () : BaseController => {
 
   const createWatchedVideo = new DbCreateWatchedVideo(watchedVideoRepository);
   const getAccountById = new DBGetAccountById(accountRepository);
+  const addAccountBalance = new DbAddAccountBalance(accountRepository, accountRepository);
 
-  return new CreateWatchedVideoController(createWatchedVideo, getAccountById);
+  return new CreateWatchedVideoController(createWatchedVideo, getAccountById, addAccountBalance);
 };
