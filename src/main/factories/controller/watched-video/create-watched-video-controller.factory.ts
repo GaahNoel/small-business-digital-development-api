@@ -3,6 +3,7 @@ import { DbCreateWatchedVideo } from '@/data/usecases/watched-video';
 import { AccountPrismaRepository } from '@/infra';
 import { WatchedVideoPrismaRepository } from '@/infra/db/prisma/watched-video';
 import { CreateWatchedVideoController } from '@/presentation/controller/watched-video';
+import { ErrorHandlerDecorator } from '@/presentation/decorators';
 import { BaseController } from '@/presentation/protocols';
 
 export const makeCreateWatchedVideoController = () : BaseController => {
@@ -13,5 +14,5 @@ export const makeCreateWatchedVideoController = () : BaseController => {
   const getAccountById = new DBGetAccountById(accountRepository);
   const addAccountBalance = new DbAddAccountBalance(accountRepository, accountRepository);
 
-  return new CreateWatchedVideoController(createWatchedVideo, getAccountById, addAccountBalance);
+  return new ErrorHandlerDecorator(new CreateWatchedVideoController(createWatchedVideo, getAccountById, addAccountBalance));
 };

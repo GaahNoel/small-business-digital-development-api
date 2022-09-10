@@ -17,9 +17,18 @@ export class WatchedVideoPrismaRepository implements CreateWatchedVideoRepositor
   }
 
   async getAccountVideos(params: GetAccountWatchedVideosRepository.Params) {
+    const todayInitialDate = new Date();
+    todayInitialDate.setHours(0, 0, 0, 0);
+    const tomorrowInitialDate = new Date(todayInitialDate);
+    tomorrowInitialDate.setDate(todayInitialDate.getDate() + 1);
+
     const result = await prisma.accountWatchedVideos.findMany({
       where: {
         accountId: params.accountId,
+        createdAt: {
+          lte: tomorrowInitialDate,
+          gte: todayInitialDate,
+        },
       },
     });
 
