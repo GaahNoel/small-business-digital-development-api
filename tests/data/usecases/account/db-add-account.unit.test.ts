@@ -1,4 +1,4 @@
-import { mockAddAccountRepository, mockFindAccountByEmailRepository } from '@/tests/data/mocks/db-account.mock';
+import { mockAddAccountRepository } from '@/tests/data/mocks/db-account.mock';
 import { mockAccountModel } from '@/tests/domain/mocks/account.mock';
 import { throwError } from '@/tests/domain/mocks/test.helpers';
 import { DbAddAccount } from '@/data/usecases/account';

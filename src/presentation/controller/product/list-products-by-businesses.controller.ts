@@ -52,18 +52,19 @@ export class ListProductsByBusinessesController implements BaseController {
       },
     });
 
-    const mappedProducts = products.map((product) => {
-      const businessFound = businesses.find((business) => business.id === product.business.id);
-      return {
+    const orderedProducts = businesses.flatMap((business) => {
+      const businessProducts = products.filter((product) => product.business.id === business.id);
+      const mappedProducts = businessProducts.map((product) => ({
         ...product,
         business: {
           ...product.business,
-          highlighted: businessFound.highlighted,
+          highlighted: business.highlighted,
         },
-      };
+      }));
+      return mappedProducts;
     });
 
-    return success(mappedProducts);
+    return success(orderedProducts);
   }
 
   private validate(data: ListProductsByBusinessesController.Params): void {

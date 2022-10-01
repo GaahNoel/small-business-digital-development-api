@@ -7,13 +7,27 @@ import { ListAccountOrdersRepository } from '@/data/protocols/db/order/list-acco
 
 export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByIdRepository, UpdateOrderByIdRepository, ListAccountOrdersRepository {
   async create(order: CreateOrderRepository.Params): Promise<CreateOrderRepository.Result> {
+    const items = await Promise.all(order.items.map(async (orderItem: OrderItem) => {
+      const productInfos = await prisma.product.findFirst({
+        where:
+        {
+          id: orderItem.productId,
+        },
+      });
+
+      return {
+        quantity: orderItem.quantity,
+        product: productInfos,
+      };
+    }));
+
     const result = await prisma.order.create({
       data: {
         ...order,
         latitude: order.latitude ? String(order.latitude) : undefined,
         longitude: order.longitude ? String(order.longitude) : undefined,
         items: {
-          create: order.items.map((orderItem: OrderItem) => ({
+          create: items.map((orderItem) => ({
             ...orderItem,
           })),
         },
@@ -51,17 +65,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
           select: {
             id: true,
             quantity: true,
-            product: {
-              select: {
-                id: true,
-                name: true,
-                description: true,
-                salePrice: true,
-                listPrice: true,
-                imageUrl: true,
-                type: true,
-              },
-            },
+            product: true,
           },
         },
       },
@@ -122,16 +126,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         select: {
           id: true,
           quantity: true,
-          product: {
-            select: {
-              id: true,
-              name: true,
-              description: true,
-              salePrice: true,
-              listPrice: true,
-              imageUrl: true,
-            },
-          },
+          product: true,
         },
       },
     };
