@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, Prisma } from '@prisma/client';
 import { prisma } from '@/infra/db/helpers';
 import { CreateOrderRepository } from '@/data/protocols/db/order/create-order.repository';
 import { OrderItem } from '@/domain/models/order';
@@ -29,6 +29,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         items: {
           create: items.map((orderItem) => ({
             ...orderItem,
+            product: orderItem.product as unknown as Prisma.JsonObject,
           })),
         },
       },
@@ -40,7 +41,7 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
   }
 
   async getOrderById(params: GetOrderByIdRepository.Params): Promise<GetOrderByIdRepository.Result> {
-    return prisma.order.findFirst({
+    const order = await prisma.order.findFirst({
       where: {
         id: params.orderId,
       },
@@ -70,6 +71,24 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
         },
       },
     });
+
+    return {
+      ...order,
+      items: order.items.map((item) => ({
+        ...item,
+        product: item.product as {
+          id: string;
+          name: string;
+          description: string;
+          salePrice: number;
+          listPrice: number;
+          imageUrl: string;
+          type: 'product' | 'service';
+          businessId: string;
+          categoryId: string,
+        },
+      })),
+    };
   }
 
   async updateOrderById(params: UpdateOrderByIdRepository.Params): Promise<UpdateOrderByIdRepository.Result> {
@@ -139,6 +158,22 @@ export class OrderPrismaRepository implements CreateOrderRepository, GetOrderByI
       },
     });
 
-    return orders;
+    return orders.map((order) => ({
+      ...order,
+      items: order.items.map((item) => ({
+        ...item,
+        product: item.product as {
+          id: string;
+          name: string;
+          description: string;
+          salePrice: number;
+          listPrice: number;
+          imageUrl: string;
+          type: 'product' | 'service';
+          businessId: string;
+          categoryId: string,
+        },
+      })),
+    }));
   }
 }
