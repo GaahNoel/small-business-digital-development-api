@@ -66,7 +66,6 @@ model Product {
   type        ProductType
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])
-  orderItems  OrderItem[]
 }
 
 model Category {
@@ -121,8 +120,7 @@ enum OrderStatus {
 
 model OrderItem {
   id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Json  
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
