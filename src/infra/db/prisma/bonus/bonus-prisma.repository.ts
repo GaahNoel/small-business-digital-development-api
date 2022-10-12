@@ -41,6 +41,9 @@ export class BonusPrismaRepository implements
         type: true,
         percent: true,
       },
+      orderBy: {
+        price: 'asc',
+      },
     });
     return bonuses;
   }

@@ -94,6 +94,15 @@ describe('BonusPrismaRepository', () => {
         percent: 20,
       });
 
+      await sut.create({
+        name: 'Bonus 2',
+        description: 'Bonus 2 description',
+        price: 20,
+        duration: 2,
+        type: 'coupon' as 'coupon',
+        percent: 20,
+      });
+
       const result = await sut.list(params);
 
       expect(result).toEqual([
@@ -105,6 +114,15 @@ describe('BonusPrismaRepository', () => {
           duration: 1,
           type: 'coupon',
           percent: 10,
+        },
+        {
+          id: expect.any(String),
+          name: 'Bonus 2',
+          description: 'Bonus 2 description',
+          price: 20,
+          duration: 2,
+          type: 'coupon' as 'coupon',
+          percent: 20,
         },
       ]);
     });
