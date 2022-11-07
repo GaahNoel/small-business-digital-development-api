@@ -1,6 +1,8 @@
 import { DbAddAccount } from '@/data/usecases/account';
+import { DbRenewAccountChallenges } from '@/data/usecases/challenge';
 import { BcryptAdapter, JwtAdapter } from '@/infra/cryptography';
 import { AccountPrismaRepository } from '@/infra/db/prisma/account/account-prisma.repository';
+import { ChallengePrismaRepository } from '@/infra/db/prisma/challenge';
 import { NodeMailerAdapter } from '@/infra/email/nodemailer-adapter';
 import { env } from '@/main/config/env';
 import { SignUpController } from '@/presentation/controller/account/signup.controller';
@@ -20,6 +22,7 @@ export const makeSignUpController = (): BaseController => {
     465,
     true,
   );
+  const challengeRepository = new ChallengePrismaRepository();
   const hasher = new BcryptAdapter(salt);
 
   const encrypter = new JwtAdapter(env.jwtSecret);
@@ -32,5 +35,7 @@ export const makeSignUpController = (): BaseController => {
     encrypter,
   );
 
-  return new ErrorHandlerDecorator(new SignUpController(addAccount));
+  const renewAccountChallenges = new DbRenewAccountChallenges(challengeRepository, challengeRepository, challengeRepository);
+
+  return new ErrorHandlerDecorator(new SignUpController(addAccount, renewAccountChallenges));
 };

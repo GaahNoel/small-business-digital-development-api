@@ -4,18 +4,29 @@ import { MissingParamsError } from '@/presentation/errors/missing-params.error';
 import { success } from '@/presentation/helpers/http.helpers';
 import { mockAddAccount } from '@/tests/presentation/mocks/account.mock';
 import { SignUpController } from '@/presentation/controller/account';
+import { RenewAccountChallenges } from '@/domain/usecases/challenge';
 
 type SutTypes = {
   sut: SignUpController,
   addAccountStub: AddAccount,
+  renewAccountChallenges: RenewAccountChallenges
 };
 
 const makeSut = (): SutTypes => {
   const addAccountStub = mockAddAccount();
-  const sut = new SignUpController(addAccountStub);
+  const renewAccountChallenges = {
+    renew: jest.fn(async () => Promise.resolve({
+      challenges: [{
+        id: 'any_id',
+      }],
+    })),
+  };
+
+  const sut = new SignUpController(addAccountStub, renewAccountChallenges);
   return {
     sut,
     addAccountStub,
+    renewAccountChallenges,
   };
 };
 
@@ -36,6 +47,30 @@ describe('SignUpController', () => {
       password: 'any_password',
       provider: 'credentials' as Provider,
     });
+  });
+
+  it('should call renewAccountChallenges with correct values if created is true', async () => {
+    const { sut, renewAccountChallenges } = makeSut();
+    const request = {
+      email: 'any_email',
+      name: 'any_name',
+      password: 'any_password',
+      provider: 'credentials' as Provider,
+    };
+
+    const httpResponse = await sut.handle(request);
+    expect(renewAccountChallenges.renew).toBeCalledWith({
+      accountId: 'any_id',
+      periodicity: 'daily',
+    });
+    expect(renewAccountChallenges.renew).toBeCalledWith({
+      accountId: 'any_id',
+      periodicity: 'weekly',
+    });
+    expect(httpResponse).toEqual(success({
+      id: 'any_id',
+      created: true,
+    }));
   });
 
   it('should return bad request if name is not provided', async () => {

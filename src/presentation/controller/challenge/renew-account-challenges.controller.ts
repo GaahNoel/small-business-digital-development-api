@@ -3,7 +3,7 @@ import { RenewAccountChallenges } from '@/domain/usecases/challenge';
 import { MissingParamsError, NotFound } from '@/presentation/errors';
 import { InvalidParamsError } from '@/presentation/errors/invalid-params.error';
 import {
-  badRequest, internalServerError, notFound, success,
+  success,
 } from '@/presentation/helpers/http.helpers';
 import { BaseController, HttpResponse } from '@/presentation/protocols';
 
