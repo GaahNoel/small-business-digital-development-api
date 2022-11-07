@@ -1,4 +1,5 @@
 import { AddAccount } from '@/domain/usecases/account/add-account';
+import { RenewAccountChallenges } from '@/domain/usecases/challenge';
 import { MissingParamsError } from '@/presentation/errors/missing-params.error';
 import { badRequest, internalServerError, success } from '@/presentation/helpers/http.helpers';
 import { BaseController } from '@/presentation/protocols/base-controller';
@@ -13,7 +14,7 @@ namespace SignUpController {
   };
 }
 export class SignUpController implements BaseController<SignUpController.Request> {
-  constructor(private readonly addAccount: AddAccount) {}
+  constructor(private readonly addAccount: AddAccount, private readonly renewAccountChallenges: RenewAccountChallenges) {}
 
   async handle(data: SignUpController.Request): Promise<HttpResponse> {
     this.validateParams(data);
@@ -24,6 +25,18 @@ export class SignUpController implements BaseController<SignUpController.Request
       password: data.password,
       provider: data.provider,
     });
+
+    if (accountAdded.created) {
+      await this.renewAccountChallenges.renew({
+        accountId: accountAdded.id,
+        periodicity: 'daily',
+      });
+
+      await this.renewAccountChallenges.renew({
+        accountId: accountAdded.id,
+        periodicity: 'weekly',
+      });
+    }
 
     return success({
       id: accountAdded.id,
